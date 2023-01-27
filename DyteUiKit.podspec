@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'DyteUiKit'
-  s.version          = '0.0.1'
+  s.version          = '0.0.2'
   s.summary          = 'Customise UI of your Dyte meetings'
 
 # This description is used to generate tags and improve search results.
@@ -33,7 +33,6 @@ Pod::Spec.new do |s|
  s.swift_version = "5.0"
  s.ios.deployment_target  = '12.0'
  s.dependency 'DyteiOSCore'
-#  s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
-#  s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+
 
 end
