@@ -3538,7 +3538,7 @@
           {
             "kind": "Constructor",
             "name": "init",
-            "printedName": "init(authtoken:baseUrl:completion:)",
+            "printedName": "init(authToken:enableAudio:enableVideo:baseUrl:completion:)",
             "children": [
               {
                 "kind": "TypeNominal",
@@ -3551,6 +3551,18 @@
                 "name": "String",
                 "printedName": "Swift.String",
                 "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
               },
               {
                 "kind": "TypeNominal",
@@ -3586,8 +3598,8 @@
               }
             ],
             "declKind": "Constructor",
-            "usr": "s:9DyteUiKit19SetupViewControllerC9authtoken7baseUrl10completionACSS_SSSgyyctcfc",
-            "mangledName": "$s9DyteUiKit19SetupViewControllerC9authtoken7baseUrl10completionACSS_SSSgyyctcfc",
+            "usr": "s:9DyteUiKit19SetupViewControllerC9authToken11enableAudio0I5Video7baseUrl10completionACSS_S2bSSSgyyctcfc",
+            "mangledName": "$s9DyteUiKit19SetupViewControllerC9authToken11enableAudio0I5Video7baseUrl10completionACSS_S2bSSSgyyctcfc",
             "moduleName": "DyteUiKit",
             "declAttributes": [
               "Custom",
@@ -3797,6 +3809,34 @@
             "declAttributes": [
               "Dynamic",
               "ObjC",
+              "Custom",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "set",
+            "printedName": "set(name:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:9DyteUiKit19SetupViewControllerC3set4nameySS_tF",
+            "mangledName": "$s9DyteUiKit19SetupViewControllerC3set4nameySS_tF",
+            "moduleName": "DyteUiKit",
+            "declAttributes": [
               "Custom",
               "AccessControl"
             ],
@@ -15062,6 +15102,32 @@
           },
           {
             "kind": "Function",
+            "name": "setNameTag",
+            "printedName": "setNameTag(name:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:9DyteUiKit18VideoPeerViewModelC10setNameTag4nameySS_tF",
+            "mangledName": "$s9DyteUiKit18VideoPeerViewModelC10setNameTag4nameySS_tF",
+            "moduleName": "DyteUiKit",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
             "name": "setPartcipant",
             "printedName": "setPartcipant(participant:)",
             "children": [
@@ -20719,7 +20785,7 @@
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteNameTag.swift",
       "kind": "StringLiteral",
-      "offset": 2731,
+      "offset": 2735,
       "length": 2,
       "value": "\"\""
     },
@@ -20810,70 +20876,70 @@
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 768,
+      "offset": 710,
       "length": 18,
       "value": "\"icon_mic_enabled\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 868,
+      "offset": 810,
       "length": 19,
       "value": "\"icon_mic_disabled\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 1081,
+      "offset": 1023,
       "length": 20,
       "value": "\"icon_video_enabled\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 1183,
+      "offset": 1125,
       "length": 21,
       "value": "\"icon_video_disabled\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 1401,
+      "offset": 1343,
       "length": 14,
       "value": "\"icon_setting\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 1551,
+      "offset": 1493,
       "length": 12,
       "value": "\"Join in as\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 1689,
-      "length": 15,
-      "value": "\"Join as UIKIT\""
+      "offset": 1645,
+      "length": 18,
+      "value": "\"Insert your name\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 1830,
+      "offset": 1790,
       "length": 6,
       "value": "\"Join\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 1948,
+      "offset": 1908,
       "length": 19,
       "value": "\"24 people Present\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 2749,
+      "offset": 2847,
       "length": 5,
       "value": "false"
     },
@@ -21440,84 +21506,84 @@
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "StringLiteral",
-      "offset": 3785,
+      "offset": 3784,
       "length": 9,
       "value": "\"#050505\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "StringLiteral",
-      "offset": 3851,
+      "offset": 3850,
       "length": 9,
       "value": "\"#0246FD\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "StringLiteral",
-      "offset": 3930,
+      "offset": 3929,
       "length": 9,
       "value": "\"#FFFFFF\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "StringLiteral",
-      "offset": 4000,
+      "offset": 3999,
       "length": 9,
       "value": "\"#111111\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "StringLiteral",
-      "offset": 4073,
+      "offset": 4072,
       "length": 9,
       "value": "\"#FF2D2D\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "StringLiteral",
-      "offset": 4143,
+      "offset": 4142,
       "length": 9,
       "value": "\"#83D017\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "StringLiteral",
-      "offset": 4213,
+      "offset": 4212,
       "length": 9,
       "value": "\"#FFCD07\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "FloatLiteral",
-      "offset": 4279,
+      "offset": 4278,
       "length": 3,
       "value": "4.0"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "FloatLiteral",
-      "offset": 4338,
+      "offset": 4337,
       "length": 3,
       "value": "8.0"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "FloatLiteral",
-      "offset": 4395,
+      "offset": 4394,
       "length": 3,
       "value": "8.0"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "FloatLiteral",
-      "offset": 4451,
+      "offset": 4450,
       "length": 3,
       "value": "1.0"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "FloatLiteral",
-      "offset": 4501,
+      "offset": 4500,
       "length": 3,
       "value": "2.0"
     },
@@ -21790,21 +21856,21 @@
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButtonAtom.swift",
       "kind": "BooleanLiteral",
-      "offset": 1426,
+      "offset": 1427,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButtonAtom.swift",
       "kind": "FloatLiteral",
-      "offset": 2936,
+      "offset": 2937,
       "length": 4,
       "value": "48.0"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButtonAtom.swift",
       "kind": "StringLiteral",
-      "offset": 1355,
+      "offset": 1356,
       "length": 14,
       "value": "\"DyteUiKit.DyteButtonAtom\""
     },
@@ -21860,7 +21926,7 @@
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteVideoPeerView.swift",
       "kind": "StringLiteral",
-      "offset": 473,
+      "offset": 530,
       "length": 17,
       "value": "\"DyteUiKit.DyteVideoPeerView\""
     },

@@ -112,7 +112,7 @@ public protocol NameTagDesignDependency {
   @objc deinit
 }
 @objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class SetupViewController : UIKit.UIViewController {
-  @_Concurrency.MainActor(unsafe) public init(authtoken: Swift.String, baseUrl: Swift.String? = nil, completion: @escaping () -> Swift.Void)
+  @_Concurrency.MainActor(unsafe) public init(authToken: Swift.String, enableAudio: Swift.Bool, enableVideo: Swift.Bool, baseUrl: Swift.String? = nil, completion: @escaping () -> Swift.Void)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidLoad()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewWillAppear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidAppear(_ animated: Swift.Bool)
@@ -121,6 +121,7 @@ public protocol NameTagDesignDependency {
 extension DyteUiKit.SetupViewController : UIKit.UITextFieldDelegate {
   @_Concurrency.MainActor(unsafe) @objc dynamic public func textFieldShouldReturn(_ textField: UIKit.UITextField) -> Swift.Bool
   @_Concurrency.MainActor(unsafe) @objc dynamic public func textFieldDidEndEditing(_ textField: UIKit.UITextField)
+  @_Concurrency.MainActor(unsafe) public func set(name: Swift.String)
 }
 public struct BackgroundColor {
   public let shade1000: UIKit.UIColor
@@ -415,6 +416,7 @@ extension UIKit.UIStackView {
   public var audioUpdate: ((_ enabled: Swift.Bool, _ participant: DyteiOSCore.DyteMeetingParticipant) -> Swift.Void)?
   public var nameUpdate: ((_ name: Swift.String) -> Swift.Void)?
   public func setInitialName(name: Swift.String)
+  public func setNameTag(name: Swift.String)
   public func setPartcipant(participant: DyteiOSCore.DyteMeetingParticipant)
   @objc deinit
 }
