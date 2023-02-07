@@ -997,6 +997,180 @@
         "children": [
           {
             "kind": "Var",
+            "name": "selectedStateTintColor",
+            "printedName": "selectedStateTintColor",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "UIColor",
+                "printedName": "UIKit.UIColor",
+                "usr": "c:objc(cs)UIColor"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:9DyteUiKit16ControlBarButtonC22selectedStateTintColorSo7UIColorCvp",
+            "mangledName": "$s9DyteUiKit16ControlBarButtonC22selectedStateTintColorSo7UIColorCvp",
+            "moduleName": "DyteUiKit",
+            "declAttributes": [
+              "Custom",
+              "HasInitialValue",
+              "HasStorage",
+              "AccessControl"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UIColor",
+                    "printedName": "UIKit.UIColor",
+                    "usr": "c:objc(cs)UIColor"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit16ControlBarButtonC22selectedStateTintColorSo7UIColorCvg",
+                "mangledName": "$s9DyteUiKit16ControlBarButtonC22selectedStateTintColorSo7UIColorCvg",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "get"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Set",
+                "printedName": "Set()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UIColor",
+                    "printedName": "UIKit.UIColor",
+                    "usr": "c:objc(cs)UIColor"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit16ControlBarButtonC22selectedStateTintColorSo7UIColorCvs",
+                "mangledName": "$s9DyteUiKit16ControlBarButtonC22selectedStateTintColorSo7UIColorCvs",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "set"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Modify",
+                "printedName": "Modify()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit16ControlBarButtonC22selectedStateTintColorSo7UIColorCvM",
+                "mangledName": "$s9DyteUiKit16ControlBarButtonC22selectedStateTintColorSo7UIColorCvM",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "_modify"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "normalStateTintColor",
+            "printedName": "normalStateTintColor",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "UIColor",
+                "printedName": "UIKit.UIColor",
+                "usr": "c:objc(cs)UIColor"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:9DyteUiKit16ControlBarButtonC20normalStateTintColorSo7UIColorCvp",
+            "mangledName": "$s9DyteUiKit16ControlBarButtonC20normalStateTintColorSo7UIColorCvp",
+            "moduleName": "DyteUiKit",
+            "declAttributes": [
+              "Custom",
+              "HasInitialValue",
+              "HasStorage",
+              "AccessControl"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UIColor",
+                    "printedName": "UIKit.UIColor",
+                    "usr": "c:objc(cs)UIColor"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit16ControlBarButtonC20normalStateTintColorSo7UIColorCvg",
+                "mangledName": "$s9DyteUiKit16ControlBarButtonC20normalStateTintColorSo7UIColorCvg",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "get"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Set",
+                "printedName": "Set()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UIColor",
+                    "printedName": "UIKit.UIColor",
+                    "usr": "c:objc(cs)UIColor"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit16ControlBarButtonC20normalStateTintColorSo7UIColorCvs",
+                "mangledName": "$s9DyteUiKit16ControlBarButtonC20normalStateTintColorSo7UIColorCvs",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "set"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Modify",
+                "printedName": "Modify()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit16ControlBarButtonC20normalStateTintColorSo7UIColorCvM",
+                "mangledName": "$s9DyteUiKit16ControlBarButtonC20normalStateTintColorSo7UIColorCvM",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "_modify"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
             "name": "isEnabled",
             "printedName": "isEnabled",
             "children": [
@@ -9208,6 +9382,64 @@
           },
           {
             "kind": "Var",
+            "name": "cornerRadiusTypeNameBottomSheet",
+            "printedName": "cornerRadiusTypeNameBottomSheet",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "DyteUiKit.CornerRadius.RadiusType?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "RadiusType",
+                    "printedName": "DyteUiKit.CornerRadius.RadiusType",
+                    "usr": "s:9DyteUiKit12CornerRadiusC0E4TypeO"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:9DyteUiKit16AppThemeProtocolP31cornerRadiusTypeNameBottomSheetAA06CornerH0C0hI0OSgvp",
+            "mangledName": "$s9DyteUiKit16AppThemeProtocolP31cornerRadiusTypeNameBottomSheetAA06CornerH0C0hI0OSgvp",
+            "moduleName": "DyteUiKit",
+            "protocolReq": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "DyteUiKit.CornerRadius.RadiusType?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "RadiusType",
+                        "printedName": "DyteUiKit.CornerRadius.RadiusType",
+                        "usr": "s:9DyteUiKit12CornerRadiusC0E4TypeO"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit16AppThemeProtocolP31cornerRadiusTypeNameBottomSheetAA06CornerH0C0hI0OSgvg",
+                "mangledName": "$s9DyteUiKit16AppThemeProtocolP31cornerRadiusTypeNameBottomSheetAA06CornerH0C0hI0OSgvg",
+                "moduleName": "DyteUiKit",
+                "genericSig": "<τ_0_0 where τ_0_0 : DyteUiKit.AppThemeProtocol>",
+                "sugared_genericSig": "<Self where Self : DyteUiKit.AppThemeProtocol>",
+                "protocolReq": true,
+                "reqNewWitnessTableEntry": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
             "name": "borderSizeWidthTypeTextField",
             "printedName": "borderSizeWidthTypeTextField",
             "children": [
@@ -10539,6 +10771,116 @@
                 "declKind": "Accessor",
                 "usr": "s:9DyteUiKit8AppThemeC27borderSizeWidthTypeDropDownAA06BorderG0C0H0OSgvM",
                 "mangledName": "$s9DyteUiKit8AppThemeC27borderSizeWidthTypeDropDownAA06BorderG0C0H0OSgvM",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "_modify"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "cornerRadiusTypeNameBottomSheet",
+            "printedName": "cornerRadiusTypeNameBottomSheet",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "DyteUiKit.CornerRadius.RadiusType?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "RadiusType",
+                    "printedName": "DyteUiKit.CornerRadius.RadiusType",
+                    "usr": "s:9DyteUiKit12CornerRadiusC0E4TypeO"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:9DyteUiKit8AppThemeC31cornerRadiusTypeNameBottomSheetAA06CornerG0C0gH0OSgvp",
+            "mangledName": "$s9DyteUiKit8AppThemeC31cornerRadiusTypeNameBottomSheetAA06CornerG0C0gH0OSgvp",
+            "moduleName": "DyteUiKit",
+            "declAttributes": [
+              "HasInitialValue",
+              "HasStorage",
+              "AccessControl"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "DyteUiKit.CornerRadius.RadiusType?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "RadiusType",
+                        "printedName": "DyteUiKit.CornerRadius.RadiusType",
+                        "usr": "s:9DyteUiKit12CornerRadiusC0E4TypeO"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit8AppThemeC31cornerRadiusTypeNameBottomSheetAA06CornerG0C0gH0OSgvg",
+                "mangledName": "$s9DyteUiKit8AppThemeC31cornerRadiusTypeNameBottomSheetAA06CornerG0C0gH0OSgvg",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "get"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Set",
+                "printedName": "Set()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "DyteUiKit.CornerRadius.RadiusType?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "RadiusType",
+                        "printedName": "DyteUiKit.CornerRadius.RadiusType",
+                        "usr": "s:9DyteUiKit12CornerRadiusC0E4TypeO"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit8AppThemeC31cornerRadiusTypeNameBottomSheetAA06CornerG0C0gH0OSgvs",
+                "mangledName": "$s9DyteUiKit8AppThemeC31cornerRadiusTypeNameBottomSheetAA06CornerG0C0gH0OSgvs",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "set"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Modify",
+                "printedName": "Modify()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit8AppThemeC31cornerRadiusTypeNameBottomSheetAA06CornerG0C0gH0OSgvM",
+                "mangledName": "$s9DyteUiKit8AppThemeC31cornerRadiusTypeNameBottomSheetAA06CornerG0C0gH0OSgvM",
                 "moduleName": "DyteUiKit",
                 "implicit": true,
                 "accessorKind": "_modify"
@@ -14428,6 +14770,263 @@
               "AccessControl"
             ],
             "init_kind": "Designated"
+          },
+          {
+            "kind": "Var",
+            "name": "selectedStateTintColor",
+            "printedName": "selectedStateTintColor",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "UIColor",
+                "printedName": "UIKit.UIColor",
+                "usr": "c:objc(cs)UIColor"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:9DyteUiKit0A10ButtonAtomC22selectedStateTintColorSo7UIColorCvp",
+            "mangledName": "$s9DyteUiKit0A10ButtonAtomC22selectedStateTintColorSo7UIColorCvp",
+            "moduleName": "DyteUiKit",
+            "declAttributes": [
+              "HasInitialValue",
+              "HasStorage",
+              "Custom",
+              "AccessControl"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UIColor",
+                    "printedName": "UIKit.UIColor",
+                    "usr": "c:objc(cs)UIColor"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit0A10ButtonAtomC22selectedStateTintColorSo7UIColorCvg",
+                "mangledName": "$s9DyteUiKit0A10ButtonAtomC22selectedStateTintColorSo7UIColorCvg",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "get"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Set",
+                "printedName": "Set()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UIColor",
+                    "printedName": "UIKit.UIColor",
+                    "usr": "c:objc(cs)UIColor"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit0A10ButtonAtomC22selectedStateTintColorSo7UIColorCvs",
+                "mangledName": "$s9DyteUiKit0A10ButtonAtomC22selectedStateTintColorSo7UIColorCvs",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "set"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Modify",
+                "printedName": "Modify()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit0A10ButtonAtomC22selectedStateTintColorSo7UIColorCvM",
+                "mangledName": "$s9DyteUiKit0A10ButtonAtomC22selectedStateTintColorSo7UIColorCvM",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "_modify"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "normalStateTintColor",
+            "printedName": "normalStateTintColor",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "UIColor",
+                "printedName": "UIKit.UIColor",
+                "usr": "c:objc(cs)UIColor"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:9DyteUiKit0A10ButtonAtomC20normalStateTintColorSo7UIColorCvp",
+            "mangledName": "$s9DyteUiKit0A10ButtonAtomC20normalStateTintColorSo7UIColorCvp",
+            "moduleName": "DyteUiKit",
+            "declAttributes": [
+              "HasInitialValue",
+              "HasStorage",
+              "Custom",
+              "AccessControl"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UIColor",
+                    "printedName": "UIKit.UIColor",
+                    "usr": "c:objc(cs)UIColor"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit0A10ButtonAtomC20normalStateTintColorSo7UIColorCvg",
+                "mangledName": "$s9DyteUiKit0A10ButtonAtomC20normalStateTintColorSo7UIColorCvg",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "get"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Set",
+                "printedName": "Set()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UIColor",
+                    "printedName": "UIKit.UIColor",
+                    "usr": "c:objc(cs)UIColor"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit0A10ButtonAtomC20normalStateTintColorSo7UIColorCvs",
+                "mangledName": "$s9DyteUiKit0A10ButtonAtomC20normalStateTintColorSo7UIColorCvs",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "set"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Modify",
+                "printedName": "Modify()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit0A10ButtonAtomC20normalStateTintColorSo7UIColorCvM",
+                "mangledName": "$s9DyteUiKit0A10ButtonAtomC20normalStateTintColorSo7UIColorCvM",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "_modify"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "isSelected",
+            "printedName": "isSelected",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "c:@M@DyteUiKit@objc(cs)DyteButtonAtom(py)selected",
+            "mangledName": "$s9DyteUiKit0A10ButtonAtomC10isSelectedSbvp",
+            "moduleName": "DyteUiKit",
+            "overriding": true,
+            "objc_name": "selected",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "Override",
+              "AccessControl"
+            ],
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Bool",
+                    "printedName": "Swift.Bool",
+                    "usr": "s:Sb"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "c:@M@DyteUiKit@objc(cs)DyteButtonAtom(im)isSelected",
+                "mangledName": "$s9DyteUiKit0A10ButtonAtomC10isSelectedSbvg",
+                "moduleName": "DyteUiKit",
+                "overriding": true,
+                "implicit": true,
+                "objc_name": "isSelected",
+                "declAttributes": [
+                  "Dynamic",
+                  "ObjC"
+                ],
+                "accessorKind": "get"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Set",
+                "printedName": "Set()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Bool",
+                    "printedName": "Swift.Bool",
+                    "usr": "s:Sb"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "c:@M@DyteUiKit@objc(cs)DyteButtonAtom(im)setSelected:",
+                "mangledName": "$s9DyteUiKit0A10ButtonAtomC10isSelectedSbvs",
+                "moduleName": "DyteUiKit",
+                "overriding": true,
+                "implicit": true,
+                "objc_name": "setSelected:",
+                "declAttributes": [
+                  "Dynamic",
+                  "ObjC"
+                ],
+                "accessorKind": "set"
+              }
+            ]
           },
           {
             "kind": "Constructor",
@@ -21440,21 +22039,21 @@
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/ControlBarButton.swift",
       "kind": "StringLiteral",
-      "offset": 804,
+      "offset": 1016,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/ControlBarButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 1307,
+      "offset": 1509,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/ControlBarButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 1623,
+      "offset": 1826,
       "length": 4,
       "value": "true"
     },
@@ -21615,70 +22214,70 @@
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 768,
+      "offset": 763,
       "length": 18,
       "value": "\"icon_mic_enabled\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 868,
+      "offset": 1040,
       "length": 19,
       "value": "\"icon_mic_disabled\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 1081,
+      "offset": 1289,
       "length": 20,
       "value": "\"icon_video_enabled\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 1183,
+      "offset": 1487,
       "length": 21,
       "value": "\"icon_video_disabled\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 1401,
+      "offset": 1821,
       "length": 14,
       "value": "\"icon_setting\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 1551,
+      "offset": 1971,
       "length": 12,
       "value": "\"Join in as\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 1703,
+      "offset": 2123,
       "length": 18,
       "value": "\"Insert your name\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 1848,
+      "offset": 2268,
       "length": 6,
       "value": "\"Join\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "StringLiteral",
-      "offset": 1966,
+      "offset": 2386,
       "length": 19,
       "value": "\"24 people Present\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/SetupViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 3370,
+      "offset": 3790,
       "length": 5,
       "value": "false"
     },
@@ -22245,84 +22844,84 @@
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "StringLiteral",
-      "offset": 3784,
+      "offset": 3776,
       "length": 9,
       "value": "\"#050505\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "StringLiteral",
-      "offset": 3850,
+      "offset": 3842,
       "length": 9,
       "value": "\"#0246FD\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "StringLiteral",
-      "offset": 3929,
+      "offset": 3922,
       "length": 9,
       "value": "\"#FFFFFF\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "StringLiteral",
-      "offset": 3999,
+      "offset": 3992,
       "length": 9,
       "value": "\"#111111\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "StringLiteral",
-      "offset": 4072,
+      "offset": 4066,
       "length": 9,
       "value": "\"#FF2D2D\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "StringLiteral",
-      "offset": 4142,
+      "offset": 4136,
       "length": 9,
       "value": "\"#83D017\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "StringLiteral",
-      "offset": 4212,
+      "offset": 4206,
       "length": 9,
       "value": "\"#FFCD07\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "FloatLiteral",
-      "offset": 4278,
+      "offset": 4273,
       "length": 3,
       "value": "4.0"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "FloatLiteral",
-      "offset": 4337,
+      "offset": 4332,
       "length": 3,
       "value": "8.0"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "FloatLiteral",
-      "offset": 4394,
+      "offset": 4389,
       "length": 3,
       "value": "8.0"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "FloatLiteral",
-      "offset": 4450,
+      "offset": 4446,
       "length": 3,
       "value": "1.0"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Tokens\/DesignLibrary.swift",
       "kind": "FloatLiteral",
-      "offset": 4500,
+      "offset": 4496,
       "length": 3,
       "value": "2.0"
     },
@@ -22475,6 +23074,27 @@
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteMoreMenu.swift",
+      "kind": "IntegerLiteral",
+      "offset": 300,
+      "length": 5,
+      "value": "89372"
+    },
+    {
+      "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteMoreMenu.swift",
+      "kind": "IntegerLiteral",
+      "offset": 390,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteMoreMenu.swift",
+      "kind": "BooleanLiteral",
+      "offset": 6245,
+      "length": 4,
+      "value": "true"
+    },
+    {
+      "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteMoreMenu.swift",
       "kind": "StringLiteral",
       "offset": 259,
       "length": 12,
@@ -22619,6 +23239,13 @@
       "offset": 2937,
       "length": 4,
       "value": "48.0"
+    },
+    {
+      "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButtonAtom.swift",
+      "kind": "BooleanLiteral",
+      "offset": 4377,
+      "length": 4,
+      "value": "true"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButtonAtom.swift",

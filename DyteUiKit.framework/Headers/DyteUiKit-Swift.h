@@ -367,6 +367,7 @@ SWIFT_CLASS("_TtC9DyteUiKit25CreatePollsViewController")
 SWIFT_CLASS("_TtC9DyteUiKit14DyteButtonAtom")
 @interface DyteButtonAtom : UIButton
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
+@property (nonatomic, getter=isSelected) BOOL selected;
 - (nonnull instancetype)initWithFrame:(CGRect)frame SWIFT_UNAVAILABLE;
 @end
 
