@@ -444,6 +444,26 @@ SWIFT_CLASS("_TtC9DyteUiKit17DyteVideoPeerView")
 @end
 
 
+SWIFT_CLASS("_TtC9DyteUiKit13DyteVideoView")
+@interface DyteVideoView : UIView
+- (void)removeFromSuperview;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class DOSCDyteMeetingParticipant;
+
+@interface DyteVideoView (SWIFT_EXTENSION(DyteUiKit)) <DOSCDyteParticipantUpdateListener>
+- (void)onAudioUpdateParticipant:(DOSCDyteMeetingParticipant * _Nonnull)participant isEnabled:(BOOL)isEnabled;
+- (void)onPinnedParticipant:(DOSCDyteMeetingParticipant * _Nonnull)participant;
+- (void)onScreenShareEndedParticipant:(DOSCDyteMeetingParticipant * _Nonnull)participant;
+- (void)onScreenShareStartedParticipant:(DOSCDyteMeetingParticipant * _Nonnull)participant;
+- (void)onUnpinnedParticipant:(DOSCDyteMeetingParticipant * _Nonnull)participant;
+- (void)onUpdateParticipant:(DOSCDyteMeetingParticipant * _Nonnull)participant;
+- (void)onVideoUpdateParticipant:(DOSCDyteMeetingParticipant * _Nonnull)participant isEnabled:(BOOL)isEnabled;
+@end
+
+
 SWIFT_CLASS("_TtC9DyteUiKit21MeetingViewController")
 @interface MeetingViewController : UIViewController
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
@@ -537,13 +557,6 @@ SWIFT_CLASS("_TtC9DyteUiKit23ShowPollsViewController")
 
 
 
-
-
-SWIFT_CLASS("_TtC9DyteUiKit9VideoView")
-@interface VideoView : UIView
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
-@end
 
 #endif
 #if defined(__cplusplus)

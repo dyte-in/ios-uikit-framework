@@ -116,6 +116,7 @@ public protocol NameTagDesignDependency {
   @objc deinit
 }
 @objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class SetupViewController : UIKit.UIViewController {
+  @_Concurrency.MainActor(unsafe) public init(meetingInfo: DyteiOSCore.DyteMeetingInfo, mobileClient: DyteiOSCore.DyteMobileClient, baseUrl: Swift.String? = nil, completion: @escaping () -> Swift.Void)
   @_Concurrency.MainActor(unsafe) public init(meetingInfo: DyteiOSCore.DyteMeetingInfoV2, mobileClient: DyteiOSCore.DyteMobileClient, baseUrl: Swift.String? = nil, completion: @escaping () -> Swift.Void)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidLoad()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewWillAppear(_ animated: Swift.Bool)
@@ -420,13 +421,30 @@ extension UIKit.UIStackView {
 @_hasMissingDesignatedInitializers public class DyteUiKitEngine {
   public static let shared: DyteUiKit.DyteUiKitEngine
   final public let mobileClient: DyteiOSCore.DyteMobileClient
-  public class func setup(_ config: DyteiOSCore.DyteMeetingInfoV2)
+  public class func setup(_ config: DyteiOSCore.DyteMeetingInfo)
+  public class func setupV2(_ config: DyteiOSCore.DyteMeetingInfoV2)
   public func getInitialController(completion: @escaping () -> Swift.Void) -> DyteUiKit.SetupViewController
   @objc deinit
 }
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class DyteVideoView : UIKit.UIView {
+  @_Concurrency.MainActor(unsafe) public func renderVideo(for participant: DyteiOSCore.DyteMeetingParticipant?, showScreenShareVideo: Swift.Bool, rendered: @escaping (Swift.Bool) -> Swift.Void)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func removeFromSuperview()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+extension DyteUiKit.DyteVideoView : DyteiOSCore.DyteParticipantUpdateListener {
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onAudioUpdate(participant: DyteiOSCore.DyteMeetingParticipant, isEnabled: Swift.Bool)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onPinned(participant: DyteiOSCore.DyteMeetingParticipant)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onScreenShareEnded(participant: DyteiOSCore.DyteMeetingParticipant)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onScreenShareStarted(participant: DyteiOSCore.DyteMeetingParticipant)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onUnpinned(participant: DyteiOSCore.DyteMeetingParticipant)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onUpdate(participant: DyteiOSCore.DyteMeetingParticipant)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onVideoUpdate(participant: DyteiOSCore.DyteMeetingParticipant, isEnabled: Swift.Bool)
+}
 @_hasMissingDesignatedInitializers public class VideoPeerViewModel {
   public var nameInitialsUpdate: ((_ name: Swift.String) -> Swift.Void)?
-  public var videoUpdate: ((_ enabled: Swift.Bool, _ participant: DyteiOSCore.DyteMeetingParticipant) -> Swift.Void)?
+  public var loadWithParticipant: ((_ viewModel: DyteUiKit.VideoPeerViewModel, _ participant: DyteiOSCore.DyteMeetingParticipant) -> Swift.Void)?
   public var audioUpdate: ((_ enabled: Swift.Bool, _ participant: DyteiOSCore.DyteMeetingParticipant) -> Swift.Void)?
   public var nameUpdate: ((_ name: Swift.String) -> Swift.Void)?
   public func setInitialName(name: Swift.String)
@@ -459,15 +477,11 @@ extension DyteUiKit.VideoPeerViewModel : DyteiOSCore.DyteParticipantUpdateListen
   @_Concurrency.MainActor(unsafe) public func setClicks(nextButton: @escaping (DyteUiKit.ControlBarButton) -> Swift.Void, previousButton: @escaping (DyteUiKit.ControlBarButton) -> Swift.Void)
   @objc deinit
 }
-@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class VideoView : UIKit.UIView {
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
-  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
-  @objc deinit
-}
 @objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class DyteVideoPeerView : DyteUiKit.DytePeerView {
-  @_Concurrency.MainActor(unsafe) final public let videoView: DyteUiKit.VideoView
   @_Concurrency.MainActor(unsafe) final public let initialName: DyteUiKit.DyteTextAtom
   @_Concurrency.MainActor(unsafe) final public let viewModel: DyteUiKit.VideoPeerViewModel
+  @_Concurrency.MainActor(unsafe) public init(viewModel: DyteUiKit.VideoPeerViewModel)
+  @_Concurrency.MainActor(unsafe) public func renderVideo(for participant: DyteiOSCore.DyteMeetingParticipant?)
   @objc deinit
 }
 @objc public class ConstraintCreator : ObjectiveC.NSObject {
