@@ -296,6 +296,14 @@ SWIFT_CLASS("_TtC9DyteUiKit13BaseStackView")
 - (nonnull instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
+@class NSString;
+
+SWIFT_CLASS("_TtC9DyteUiKit17BaseTableViewCell")
+@interface BaseTableViewCell : UITableViewCell
+- (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier SWIFT_UNAVAILABLE;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
 
 SWIFT_CLASS("_TtC9DyteUiKit8BaseView")
 @interface BaseView : UIView
@@ -329,7 +337,6 @@ SWIFT_CLASS("_TtC9DyteUiKit16ControlBarButton")
 - (void)touchesCancelled:(NSSet<UITouch *> * _Nonnull)touches withEvent:(UIEvent * _Nullable)event;
 @end
 
-@class NSString;
 @class NSBundle;
 
 SWIFT_CLASS("_TtC9DyteUiKit25CreatePollsViewController")
@@ -340,33 +347,17 @@ SWIFT_CLASS("_TtC9DyteUiKit25CreatePollsViewController")
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
-@class DOSCDyteChatMessage;
-@class DOSCKotlinException;
-@class DOSCDyteRecordingState;
 @class DOSCDytePollMessage;
 
-@interface CreatePollsViewController (SWIFT_EXTENSION(DyteUiKit)) <DOSCDyteMeetingRoomEventsListener>
-- (void)onChatUpdatesMessages:(NSArray<DOSCDyteChatMessage *> * _Nonnull)messages;
-- (void)onHostKicked;
-- (void)onMeetingInitCompleted;
-- (void)onMeetingInitFailedException:(DOSCKotlinException * _Nonnull)exception;
-- (void)onMeetingInitStarted;
-- (void)onMeetingRecordingEnded;
-- (void)onMeetingRecordingStarted;
-- (void)onMeetingRecordingStateUpdatedState:(DOSCDyteRecordingState * _Nonnull)state;
-- (void)onMeetingRecordingStopErrorE:(DOSCKotlinException * _Nonnull)e;
-- (void)onNewChatMessageMessage:(DOSCDyteChatMessage * _Nonnull)message;
+@interface CreatePollsViewController (SWIFT_EXTENSION(DyteUiKit)) <DOSCDytePollEventsListener>
 - (void)onNewPollPoll:(DOSCDytePollMessage * _Nonnull)poll;
 - (void)onPollUpdatesPollMessages:(NSArray<DOSCDytePollMessage *> * _Nonnull)pollMessages;
-- (void)onWaitingRoomEntered;
-- (void)onWaitingRoomEntryAccepted;
-- (void)onWaitingRoomEntryRejected;
 @end
 
 
 SWIFT_CLASS("_TtC9DyteUiKit14DyteButtonAtom")
 @interface DyteButtonAtom : UIButton
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, getter=isSelected) BOOL selected;
 - (nonnull instancetype)initWithFrame:(CGRect)frame SWIFT_UNAVAILABLE;
 @end
@@ -375,9 +366,22 @@ SWIFT_CLASS("_TtC9DyteUiKit14DyteButtonAtom")
 
 
 
+SWIFT_CLASS("_TtC9DyteUiKit14DyteJoinButton")
+@interface DyteJoinButton : DyteButtonAtom
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
+@end
+
+
 SWIFT_CLASS("_TtC9DyteUiKit17DyteMeetingTopBar")
 @interface DyteMeetingTopBar : UIView
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithFrame:(CGRect)frame SWIFT_UNAVAILABLE;
+@end
+
+
+SWIFT_CLASS("_TtC9DyteUiKit12DyteMoreMenu")
+@interface DyteMoreMenu : UIView
+- (nonnull instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
 - (nonnull instancetype)initWithFrame:(CGRect)frame SWIFT_UNAVAILABLE;
 @end
 
@@ -440,8 +444,7 @@ SWIFT_CLASS("_TtC9DyteUiKit10DyteTopBar")
 
 SWIFT_CLASS("_TtC9DyteUiKit17DyteVideoPeerView")
 @interface DyteVideoPeerView : DytePeerView
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-+ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+- (void)removeFromSuperview;
 @end
 
 
@@ -452,16 +455,19 @@ SWIFT_CLASS("_TtC9DyteUiKit13DyteVideoView")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
+
 @class DOSCDyteMeetingParticipant;
 
 @interface DyteVideoView (SWIFT_EXTENSION(DyteUiKit)) <DOSCDyteParticipantUpdateListener>
-- (void)onAudioUpdateParticipant:(DOSCDyteMeetingParticipant * _Nonnull)participant isEnabled:(BOOL)isEnabled;
-- (void)onPinnedParticipant:(DOSCDyteMeetingParticipant * _Nonnull)participant;
-- (void)onScreenShareEndedParticipant:(DOSCDyteMeetingParticipant * _Nonnull)participant;
-- (void)onScreenShareStartedParticipant:(DOSCDyteMeetingParticipant * _Nonnull)participant;
-- (void)onUnpinnedParticipant:(DOSCDyteMeetingParticipant * _Nonnull)participant;
+- (void)onAudioUpdateIsEnabled:(BOOL)isEnabled;
+- (void)onPinned;
+- (void)onRemovedAsActiveSpeaker;
+- (void)onScreenShareEnded;
+- (void)onScreenShareStarted;
+- (void)onSetAsActiveSpeaker;
+- (void)onUnpinned;
 - (void)onUpdateParticipant:(DOSCDyteMeetingParticipant * _Nonnull)participant;
-- (void)onVideoUpdateParticipant:(DOSCDyteMeetingParticipant * _Nonnull)participant isEnabled:(BOOL)isEnabled;
+- (void)onVideoUpdateIsEnabled:(BOOL)isEnabled;
 @end
 
 
@@ -484,6 +490,7 @@ SWIFT_CLASS("_TtC9DyteUiKit21MeetingViewController")
 
 
 
+
 SWIFT_CLASS("_TtC9DyteUiKit22NextPreviousButtonView")
 @interface NextPreviousButtonView : UIView
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
@@ -493,10 +500,31 @@ SWIFT_CLASS("_TtC9DyteUiKit22NextPreviousButtonView")
 @end
 
 
+SWIFT_CLASS("_TtC9DyteUiKit25ParticipantViewController")
+@interface ParticipantViewController : UIViewController
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
+- (void)viewSafeAreaInsetsDidChange;
+- (void)viewDidLoad;
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
+@end
+
+@class UITableView;
+@class NSIndexPath;
+
+@interface ParticipantViewController (SWIFT_EXTENSION(DyteUiKit)) <UITableViewDelegate>
+- (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
+@end
+
+
+@interface ParticipantViewController (SWIFT_EXTENSION(DyteUiKit)) <UITableViewDataSource>
+- (NSInteger)numberOfSectionsInTableView:(UITableView * _Nonnull)tableView SWIFT_WARN_UNUSED_RESULT;
+- (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
+- (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
 SWIFT_CLASS("_TtC9DyteUiKit10PluginView")
 @interface PluginView : UIView
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-+ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
 - (nonnull instancetype)initWithFrame:(CGRect)frame SWIFT_UNAVAILABLE;
 @end
@@ -518,6 +546,28 @@ SWIFT_CLASS("_TtC9DyteUiKit21ScreenShareTabButtons")
 @end
 
 
+SWIFT_CLASS("_TtC9DyteUiKit20SearchViewController")
+@interface SearchViewController : UIViewController
+- (void)viewDidLoad;
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class UISearchBar;
+
+@interface SearchViewController (SWIFT_EXTENSION(DyteUiKit)) <UISearchBarDelegate>
+- (void)searchBar:(UISearchBar * _Nonnull)searchBar textDidChange:(NSString * _Nonnull)searchText;
+- (void)searchBarCancelButtonClicked:(UISearchBar * _Nonnull)searchBar;
+@end
+
+
+@interface SearchViewController (SWIFT_EXTENSION(DyteUiKit)) <UITableViewDataSource>
+- (NSInteger)numberOfSectionsInTableView:(UITableView * _Nonnull)tableView SWIFT_WARN_UNUSED_RESULT;
+- (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
+- (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
 SWIFT_CLASS("_TtC9DyteUiKit19SetupViewController")
 @interface SetupViewController : UIViewController
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
@@ -527,13 +577,12 @@ SWIFT_CLASS("_TtC9DyteUiKit19SetupViewController")
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
-
 @class UITextField;
 
 @interface SetupViewController (SWIFT_EXTENSION(DyteUiKit)) <UITextFieldDelegate>
 - (BOOL)textFieldShouldReturn:(UITextField * _Nonnull)textField SWIFT_WARN_UNUSED_RESULT;
-- (void)textFieldDidEndEditing:(UITextField * _Nonnull)textField;
 @end
+
 
 
 
@@ -547,6 +596,9 @@ SWIFT_CLASS("_TtC9DyteUiKit23ShowPollsViewController")
 - (void)viewDidAppear:(BOOL)animated;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
+
+
+
 
 
 
