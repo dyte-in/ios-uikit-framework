@@ -1,6 +1,6 @@
 // swift-interface-format-version: 1.0
 // swift-compiler-version: Apple Swift version 5.7 (swiftlang-5.7.0.127.4 clang-1400.0.29.50)
-// swift-module-flags: -target arm64-apple-ios12.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name DyteUiKit
+// swift-module-flags: -target arm64-apple-ios12.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -Onone -module-name DyteUiKit
 // swift-module-flags-ignorable: -enable-bare-slash-regex
 @_exported import DyteUiKit
 import DyteiOSCore
@@ -44,6 +44,7 @@ import _StringProcessing
 @objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class ControlBarButton : UIKit.UIButton {
   @_Concurrency.MainActor(unsafe) public var selectedStateTintColor: UIKit.UIColor
   @_Concurrency.MainActor(unsafe) public var normalStateTintColor: UIKit.UIColor
+  @_Concurrency.MainActor(unsafe) public var notificationBadge: UIKit.UIView
   @_Concurrency.MainActor(unsafe) @objc override dynamic public var isEnabled: Swift.Bool {
     @objc get
     @objc set
@@ -316,7 +317,7 @@ public enum MenuType {
   case chat
   case plugins
   case settings
-  case particpants
+  case particpants(notificationMessage: Swift.String)
   case recordingStart
   case recordingStop
   case muteAudio
@@ -325,11 +326,6 @@ public enum MenuType {
   case unPin
   case kick
   case cancel
-  public static func == (a: DyteUiKit.MenuType, b: DyteUiKit.MenuType) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
 }
 @objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class DyteMoreMenu : UIKit.UIView {
   @_Concurrency.MainActor(unsafe) public init(title: Swift.String? = nil, features: [DyteUiKit.MenuType], onSelect: @escaping (DyteUiKit.MenuType) -> ())
@@ -430,6 +426,12 @@ extension UIKit.UITableView {
 extension UIKit.UIView {
   @_Concurrency.MainActor(unsafe) public func addSubViews(_ views: UIKit.UIView...)
 }
+extension UIKit.UILabel {
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func draw(_ rect: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var intrinsicContentSize: CoreFoundation.CGSize {
+    @objc get
+  }
+}
 extension UIKit.UIStackView {
   @_Concurrency.MainActor(unsafe) public func addArrangedSubviews(_ views: UIKit.UIView...)
   @_Concurrency.MainActor(unsafe) public func removeFully(view: UIKit.UIView)
@@ -515,11 +517,14 @@ extension DyteUiKit.SearchViewController : UIKit.UITableViewDataSource {
 public protocol ReusableObject : AnyObject {
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class DyteVideoView : UIKit.UIView {
-  @_Concurrency.MainActor(unsafe) public func renderVideo(for participant: DyteiOSCore.DyteMeetingParticipant?, showScreenShareVideo: Swift.Bool, rendered: @escaping (Swift.Bool) -> Swift.Void)
+  @_Concurrency.MainActor(unsafe) public func renderVideo(for participant: DyteiOSCore.DyteMeetingParticipant, showScreenShareVideo: Swift.Bool, rendered: @escaping () -> Swift.Void)
+  @_Concurrency.MainActor(unsafe) public func prepareForReuse()
+  @_Concurrency.MainActor(unsafe) public func clean()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func removeFromSuperview()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func layoutSubviews()
+  @objc deinit
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
-  @objc deinit
 }
 extension DyteUiKit.DyteVideoView : DyteiOSCore.DyteParticipantUpdateListener {
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onAudioUpdate(isEnabled: Swift.Bool)
@@ -571,7 +576,8 @@ extension DyteUiKit.DyteVideoView : DyteiOSCore.DyteParticipantUpdateListener {
   @_Concurrency.MainActor(unsafe) final public let initialName: DyteUiKit.DyteTextAtom
   @_Concurrency.MainActor(unsafe) final public let viewModel: DyteUiKit.VideoPeerViewModel
   @_Concurrency.MainActor(unsafe) public init(viewModel: DyteUiKit.VideoPeerViewModel)
-  @_Concurrency.MainActor(unsafe) public func renderVideo(for participant: DyteiOSCore.DyteMeetingParticipant?)
+  @_Concurrency.MainActor(unsafe) public func prepareForReuse()
+  @_Concurrency.MainActor(unsafe) public func renderVideo(for participant: DyteiOSCore.DyteMeetingParticipant)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func removeFromSuperview()
   @objc deinit
 }
@@ -666,8 +672,6 @@ extension DyteUiKit.CornerRadius.Size : Swift.RawRepresentable {}
 extension DyteUiKit.BorderSize.Width : Swift.Equatable {}
 extension DyteUiKit.BorderSize.Width : Swift.Hashable {}
 extension DyteUiKit.BorderSize.Width : Swift.RawRepresentable {}
-extension DyteUiKit.MenuType : Swift.Equatable {}
-extension DyteUiKit.MenuType : Swift.Hashable {}
 extension DyteUiKit.DyteButtonAtom.States : Swift.Equatable {}
 extension DyteUiKit.DyteButtonAtom.States : Swift.Hashable {}
 extension DyteUiKit.DyteButtonAtom.Size : Swift.Equatable {}

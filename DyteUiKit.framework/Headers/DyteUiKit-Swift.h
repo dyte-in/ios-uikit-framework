@@ -379,6 +379,7 @@ SWIFT_CLASS("_TtC9DyteUiKit17DyteMeetingTopBar")
 @end
 
 
+
 SWIFT_CLASS("_TtC9DyteUiKit12DyteMoreMenu")
 @interface DyteMoreMenu : UIView
 - (nonnull instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
@@ -451,6 +452,7 @@ SWIFT_CLASS("_TtC9DyteUiKit17DyteVideoPeerView")
 SWIFT_CLASS("_TtC9DyteUiKit13DyteVideoView")
 @interface DyteVideoView : UIView
 - (void)removeFromSuperview;
+- (void)layoutSubviews;
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -598,6 +600,13 @@ SWIFT_CLASS("_TtC9DyteUiKit23ShowPollsViewController")
 @end
 
 
+
+
+
+@interface UILabel (SWIFT_EXTENSION(DyteUiKit))
+- (void)drawRect:(CGRect)rect;
+@property (nonatomic, readonly) CGSize intrinsicContentSize;
+@end
 
 
 
