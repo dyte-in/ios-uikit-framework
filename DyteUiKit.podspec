@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'DyteUiKit'
-  s.version          = '0.1.1'
+  s.version          = '0.1.2'
   s.summary          = 'Customise UI of your Dyte meetings'
 
 # This description is used to generate tags and improve search results.
@@ -26,12 +26,11 @@ Pod::Spec.new do |s|
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
 
-  s.ios.deployment_target = '12.0'
+  s.ios.deployment_target = '13.0'
 
   s.vendored_frameworks = "DyteUiKit.framework"
  s.platform = :ios
  s.swift_version = "5.0"
- s.ios.deployment_target  = '12.0'
  s.dependency 'DyteiOSCore'
 
 
