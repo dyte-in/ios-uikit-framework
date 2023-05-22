@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'DyteUiKit'
-  s.version          = '0.1.2'
+  s.version          = '0.1.3'
   s.summary          = 'Customise UI of your Dyte meetings'
 
 # This description is used to generate tags and improve search results.
@@ -28,10 +28,10 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '13.0'
 
-  s.vendored_frameworks = "DyteUiKit.framework"
+ s.vendored_frameworks = "DyteUiKit.framework"
  s.platform = :ios
  s.swift_version = "5.0"
- s.dependency 'DyteiOSCore'
+ s.dependency 'DyteiOSCore' , '~> 0.4.1'
 
 
 end
