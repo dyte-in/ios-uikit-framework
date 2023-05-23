@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'DyteUiKit'
-  s.version          = '0.1.9'
+  s.version          = '0.1.10'
   s.summary          = 'Customise UI of your Dyte meetings'
 
   s.description      = "Customise UI of your Dyte meetings. You can use this prebuilt meeting flow or you can customise it on individual component level"
@@ -22,9 +22,7 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target  = '13.0'
   s.vendored_frameworks = "DyteUiKit.framework"
-  s.platform = :ios
+  s.platform = :ios, '13.0'
   s.swift_version = "5.0"
-  s.dependency 'DyteiOSCore'
-  s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
-  s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+  s.dependency 'DyteiOSCore' , '~> 0.4.1'
 end
