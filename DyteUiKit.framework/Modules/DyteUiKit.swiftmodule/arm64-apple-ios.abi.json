@@ -20027,20 +20027,20 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
               },
               {
                 "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
               }
             ],
             "declKind": "Func",
-            "usr": "s:9DyteUiKit0A13MeetingTopBarC19setNextPreviousText5first6secondySS_SStF",
-            "mangledName": "$s9DyteUiKit0A13MeetingTopBarC19setNextPreviousText5first6secondySS_SStF",
+            "usr": "s:9DyteUiKit0A13MeetingTopBarC19setNextPreviousText5first6secondySi_SitF",
+            "mangledName": "$s9DyteUiKit0A13MeetingTopBarC19setNextPreviousText5first6secondySi_SitF",
             "moduleName": "DyteUiKit",
             "declAttributes": [
               "Custom",
@@ -26318,6 +26318,13 @@
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/ScreenShareTabButtons.swift",
       "kind": "StringLiteral",
+      "offset": 910,
+      "length": 24,
+      "value": "\"icon_topbar_autolayout\""
+    },
+    {
+      "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/ScreenShareTabButtons.swift",
+      "kind": "StringLiteral",
       "offset": 125,
       "length": 22,
       "value": "\"DyteUiKit.NextPreviousButtonView\""
@@ -26325,28 +26332,28 @@
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/ScreenShareTabButtons.swift",
       "kind": "IntegerLiteral",
-      "offset": 4396,
+      "offset": 4797,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/ScreenShareTabButtons.swift",
       "kind": "StringLiteral",
-      "offset": 4442,
+      "offset": 4843,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/ScreenShareTabButtons.swift",
       "kind": "BooleanLiteral",
-      "offset": 4866,
+      "offset": 5267,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/ScreenShareTabButtons.swift",
       "kind": "StringLiteral",
-      "offset": 3675,
+      "offset": 4076,
       "length": 21,
       "value": "\"DyteUiKit.ScreenShareTabButtons\""
     },

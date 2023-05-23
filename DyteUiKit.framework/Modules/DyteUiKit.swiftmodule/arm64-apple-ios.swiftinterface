@@ -565,7 +565,7 @@ extension DyteUiKit.DyteVideoView : DyteiOSCore.DyteParticipantUpdateListener {
   @_Concurrency.MainActor(unsafe) final public let lblSubtitle1: DyteUiKit.DyteTextAtom
   @_Concurrency.MainActor(unsafe) final public let rightButton: DyteUiKit.ControlBarButton
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
-  @_Concurrency.MainActor(unsafe) public func setNextPreviousText(first: Swift.String, second: Swift.String)
+  @_Concurrency.MainActor(unsafe) public func setNextPreviousText(first: Swift.Int, second: Swift.Int)
   @_Concurrency.MainActor(unsafe) public func setClicks(nextButton: @escaping (DyteUiKit.ControlBarButton) -> Swift.Void, previousButton: @escaping (DyteUiKit.ControlBarButton) -> Swift.Void)
   @objc deinit
 }
