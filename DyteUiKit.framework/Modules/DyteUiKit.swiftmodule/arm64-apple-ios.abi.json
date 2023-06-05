@@ -12589,6 +12589,93 @@
             ]
           },
           {
+            "kind": "Var",
+            "name": "autolayoutModeEnable",
+            "printedName": "autolayoutModeEnable",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:9DyteUiKit22NextPreviousButtonViewC20autolayoutModeEnableSbvp",
+            "mangledName": "$s9DyteUiKit22NextPreviousButtonViewC20autolayoutModeEnableSbvp",
+            "moduleName": "DyteUiKit",
+            "declAttributes": [
+              "Custom",
+              "HasInitialValue",
+              "HasStorage",
+              "AccessControl"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Bool",
+                    "printedName": "Swift.Bool",
+                    "usr": "s:Sb"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit22NextPreviousButtonViewC20autolayoutModeEnableSbvg",
+                "mangledName": "$s9DyteUiKit22NextPreviousButtonViewC20autolayoutModeEnableSbvg",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "get"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Set",
+                "printedName": "Set()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Bool",
+                    "printedName": "Swift.Bool",
+                    "usr": "s:Sb"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit22NextPreviousButtonViewC20autolayoutModeEnableSbvs",
+                "mangledName": "$s9DyteUiKit22NextPreviousButtonViewC20autolayoutModeEnableSbvs",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "set"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Modify",
+                "printedName": "Modify()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:9DyteUiKit22NextPreviousButtonViewC20autolayoutModeEnableSbvM",
+                "mangledName": "$s9DyteUiKit22NextPreviousButtonViewC20autolayoutModeEnableSbvM",
+                "moduleName": "DyteUiKit",
+                "implicit": true,
+                "accessorKind": "_modify"
+              }
+            ]
+          },
+          {
             "kind": "Constructor",
             "name": "init",
             "printedName": "init(frame:)",
@@ -13922,68 +14009,6 @@
               "Override"
             ],
             "init_kind": "Designated"
-          },
-          {
-            "kind": "Function",
-            "name": "scrollViewDidEndDecelerating",
-            "printedName": "scrollViewDidEndDecelerating(_:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Void",
-                "printedName": "()"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "UIScrollView",
-                "printedName": "UIKit.UIScrollView",
-                "usr": "c:objc(cs)UIScrollView"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "c:@CM@DyteUiKit@objc(cs)MeetingViewController(im)scrollViewDidEndDecelerating:",
-            "mangledName": "$s9DyteUiKit21MeetingViewControllerC06scrollE18DidEndDeceleratingyySo08UIScrollE0CF",
-            "moduleName": "DyteUiKit",
-            "objc_name": "scrollViewDidEndDecelerating:",
-            "declAttributes": [
-              "Dynamic",
-              "ObjC",
-              "Custom",
-              "AccessControl"
-            ],
-            "isFromExtension": true,
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "scrollViewDidEndScrollingAnimation",
-            "printedName": "scrollViewDidEndScrollingAnimation(_:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Void",
-                "printedName": "()"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "UIScrollView",
-                "printedName": "UIKit.UIScrollView",
-                "usr": "c:objc(cs)UIScrollView"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "c:@CM@DyteUiKit@objc(cs)MeetingViewController(im)scrollViewDidEndScrollingAnimation:",
-            "mangledName": "$s9DyteUiKit21MeetingViewControllerC06scrollE24DidEndScrollingAnimationyySo08UIScrollE0CF",
-            "moduleName": "DyteUiKit",
-            "objc_name": "scrollViewDidEndScrollingAnimation:",
-            "declAttributes": [
-              "Dynamic",
-              "ObjC",
-              "Custom",
-              "AccessControl"
-            ],
-            "isFromExtension": true,
-            "funcSelfKind": "NonMutating"
           }
         ],
         "declKind": "Class",
@@ -25450,21 +25475,28 @@
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteGridView.swift",
       "kind": "BooleanLiteral",
-      "offset": 812,
+      "offset": 747,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteGridView.swift",
       "kind": "IntegerLiteral",
-      "offset": 961,
+      "offset": 985,
       "length": 1,
       "value": "9"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteGridView.swift",
       "kind": "BooleanLiteral",
-      "offset": 2518,
+      "offset": 2542,
+      "length": 4,
+      "value": "true"
+    },
+    {
+      "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteGridView.swift",
+      "kind": "BooleanLiteral",
+      "offset": 3235,
       "length": 4,
       "value": "true"
     },
@@ -26317,8 +26349,15 @@
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/ScreenShareTabButtons.swift",
+      "kind": "BooleanLiteral",
+      "offset": 800,
+      "length": 4,
+      "value": "true"
+    },
+    {
+      "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/ScreenShareTabButtons.swift",
       "kind": "StringLiteral",
-      "offset": 910,
+      "offset": 958,
       "length": 24,
       "value": "\"icon_topbar_autolayout\""
     },
@@ -26332,28 +26371,28 @@
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/ScreenShareTabButtons.swift",
       "kind": "IntegerLiteral",
-      "offset": 4797,
+      "offset": 4845,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/ScreenShareTabButtons.swift",
       "kind": "StringLiteral",
-      "offset": 4843,
+      "offset": 4891,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/ScreenShareTabButtons.swift",
       "kind": "BooleanLiteral",
-      "offset": 5267,
+      "offset": 5315,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/ScreenShareTabButtons.swift",
       "kind": "StringLiteral",
-      "offset": 4076,
+      "offset": 4124,
       "length": 21,
       "value": "\"DyteUiKit.ScreenShareTabButtons\""
     },
@@ -26425,19 +26464,19 @@
       "kind": "FloatLiteral",
       "offset": 193,
       "length": 3,
-      "value": "0.2"
+      "value": "0.3"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/Meeting\/MeetingViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 627,
+      "offset": 590,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/Meeting\/MeetingViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 944,
+      "offset": 909,
       "length": 5,
       "value": "false"
     },
@@ -26447,6 +26486,13 @@
       "offset": 213,
       "length": 21,
       "value": "\"DyteUiKit.MeetingViewController\""
+    },
+    {
+      "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/Meeting\/MeetingViewController.swift",
+      "kind": "BooleanLiteral",
+      "offset": 24035,
+      "length": 5,
+      "value": "false"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/Setup\/SetupViewController.swift",
@@ -26591,14 +26637,14 @@
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DytePluginView.swift",
       "kind": "IntegerLiteral",
-      "offset": 3148,
+      "offset": 4883,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/sudhir\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DytePluginView.swift",
       "kind": "StringLiteral",
-      "offset": 2824,
+      "offset": 4559,
       "length": 10,
       "value": "\"DyteUiKit.PluginView\""
     },
