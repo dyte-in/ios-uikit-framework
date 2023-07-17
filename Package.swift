@@ -5,7 +5,7 @@ let package = Package(
     name: "DyteUiKit",
     platforms: [.iOS(.v13)],
     products: [
-        .library(name: "DyteUiKit", targets: ["DyteUiKit", "DyteiOSCore", "WebRTC", "DyteiOSSocketIO", "Starscream"]),
+        .library(name: "DyteUiKit", targets: ["DyteUiKit", "AmazonIVSPlayer","DyteiOSCore", "WebRTC", "DyteiOSSocketIO", "Starscream"]),
     ],
     targets: [
         .binaryTarget(
