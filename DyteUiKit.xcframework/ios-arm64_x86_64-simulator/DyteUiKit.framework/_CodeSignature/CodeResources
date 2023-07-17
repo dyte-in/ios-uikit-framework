@@ -6,23 +6,39 @@
 	<dict>
 		<key>Assets.car</key>
 		<data>
-		EUeFkVkqQvDqWuPmsZI+C6ECcIo=
+		ngeo0k1GnMq/eyyS4geyFJSxzAU=
 		</data>
-		<key>Frameworks/DyteiOSCore.framework/DyteiOSCore</key>
+		<key>Frameworks/Pods_DyteUiKit.framework/Info.plist</key>
 		<data>
-		IhvMvJmi95sYKOLOR5sOK+g/cTU=
+		+IOWj31dIkHMRUY9sgjM3IqKXAA=
 		</data>
-		<key>Frameworks/DyteiOSCore.framework/Info.plist</key>
+		<key>Frameworks/Pods_DyteUiKit.framework/Pods_DyteUiKit</key>
 		<data>
-		zQbhDSdycNvPAeE/3Va3ytO4Jko=
+		npjKJA3694GgVT33Myub6aWc/Zo=
 		</data>
-		<key>Frameworks/DyteiOSCore.framework/_CodeSignature/CodeResources</key>
+		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeDirectory</key>
 		<data>
-		1DxV4Kq2Cy++smcsEVtZDJVx3e4=
+		RoL9v7nRe41yx1Nb7hcGFlp/5ow=
+		</data>
+		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeRequirements</key>
+		<data>
+		OnX22wWFKRSOFN1+obRynMCeyXM=
+		</data>
+		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeRequirements-1</key>
+		<data>
+		n2fpev266C+N1mMEo0uNdMN3rgc=
+		</data>
+		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeResources</key>
+		<data>
+		FabrU0qeXRsFrguv9UtmSqXiXHY=
+		</data>
+		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeSignature</key>
+		<data>
+		2jmj7l5rSw0yVb/vlWAYkK/YBwk=
 		</data>
 		<key>Headers/DyteUiKit-Swift.h</key>
 		<data>
-		AHGZtRTwcE73jqnXYDlMrqkFlTM=
+		GivgiclbjxWvyQp4plaI7tmOhGI=
 		</data>
 		<key>Headers/DyteUiKit.h</key>
 		<data>
@@ -30,55 +46,55 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		dok/Ivdo3dTzmQ9VCBaoCoNP56M=
+		lfAgR+SwmzEtSAHrHUjjs+MCI24=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		sl34cPmGcRabVQjCRq9pBdZGyfo=
+		7PsoOEOplPHHduUhJB6UDGfgIcg=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		hxR6gJs0hPhYiB5H3h5agirwSLs=
+		saf8d6XnTD9IqwFD8Gp2/3TUisQ=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		vUeCJANvnuv97XiBw6/CiKiM1Xg=
+		DsvlDodhlAVBQ8Wfq3N6pvW/cRA=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		AdUfAGX1K8fxno6CKYmmpr/SI4k=
+		bn1RqeM8pLIos5Kj+xF5ia9p+Go=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		a7FIl0DWqTedYvK0ySi6Zf8FyDk=
+		9wKCuo11d1RCMTzZIQ6LCBlLLhA=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		AdUfAGX1K8fxno6CKYmmpr/SI4k=
+		bn1RqeM8pLIos5Kj+xF5ia9p+Go=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		wfeMg6cJwu+FWzTkm3dwBFmER6w=
+		OBJloA2L3T6XFGHqP2Uxz7ru8iU=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		vUeCJANvnuv97XiBw6/CiKiM1Xg=
+		DsvlDodhlAVBQ8Wfq3N6pvW/cRA=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		n91ShEAWRRoVrP6kzgT0p9QsQH8=
+		cLuBfemRzSHkwaAJxwCp5zdhXjM=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		UeZS2Oesjd9O7mIfICjQPsBfXLY=
+		Ayv2OKlfqhylwslkk3SNYhmdP5s=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		n91ShEAWRRoVrP6kzgT0p9QsQH8=
+		cLuBfemRzSHkwaAJxwCp5zdhXjM=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		fyeXtBPxsKLcX3lMSLVIz9aKHkg=
+		LeJX3FDljKicjF90A4FLbRNa1XY=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -86,7 +102,7 @@
 		</data>
 		<key>TokenConfiguration.plist</key>
 		<data>
-		seBpkFPaZaXnM3QjhXK0mFmksOQ=
+		MZEeNTONt5CyD6l4w9jqE3qLJ0M=
 		</data>
 		<key>notification_join.mp3</key>
 		<data>
@@ -103,35 +119,63 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			HcD853O+Ak5CrvdJCeGhR/JSdPGcZrOQBXqKe12s/hA=
+			iwWZF1PbWOTkBTWvUUwMeYDdO25cnqKST99qp5n4K5A=
 			</data>
 		</dict>
-		<key>Frameworks/DyteiOSCore.framework/DyteiOSCore</key>
+		<key>Frameworks/Pods_DyteUiKit.framework/Info.plist</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			s5jvtO/6//tNX+clIFfRt3sqkF2FBSldTSG4UQbgE/c=
+			MyMFopPB1jnbIkxWRKCUbtJblH2waEDCxTQyYjYJGPc=
 			</data>
 		</dict>
-		<key>Frameworks/DyteiOSCore.framework/Info.plist</key>
+		<key>Frameworks/Pods_DyteUiKit.framework/Pods_DyteUiKit</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			uwdUE9Sgr+FUBomMK1Ns+FFXPGb8ArgdlkM4bjvmX90=
+			2W6ZhGucxAJCnLIdKWnJ6IHQjYWkFhjnWllLAElMDhw=
 			</data>
 		</dict>
-		<key>Frameworks/DyteiOSCore.framework/_CodeSignature/CodeResources</key>
+		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeDirectory</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			cNLEPhqwelMbgEWXUzkNPKmKJsWddBGrC4FdORMHS/Q=
+			Ve39j0n5Q0TrE/Nt+ChsE+2p4x7KMrr3RLUuoJP9AIA=
+			</data>
+		</dict>
+		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeRequirements</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			mHkgkE6rZQ51eIwFSqCwUk5qgL/HGqMt+NI3phdD+YY=
+			</data>
+		</dict>
+		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeRequirements-1</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			4caWSI/Jy6IDJBhb3IOJ6VJ/zrwWonlNZgjbyEQXElc=
+			</data>
+		</dict>
+		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeResources</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			CMs8PURswqqmzcxvuv1l/9W7h0S8f7radXwuaqQGuEQ=
+			</data>
+		</dict>
+		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeSignature</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
 			</data>
 		</dict>
 		<key>Headers/DyteUiKit-Swift.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			OZConcRMO8PLPk7spS4LaREZYlD+Bhhq12dg17AutBo=
+			k4ZBEVjMswZPeJDKyj8HPl6nUufykjF3cpkMZuLinf4=
 			</data>
 		</dict>
 		<key>Headers/DyteUiKit.h</key>
@@ -145,84 +189,84 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			qULRJxFuCLbD1fyPLwYJBaUcHxVG5p1LCS1LHAe92BQ=
+			DCEWIREVp+hLRQYu4GKgaKrzaP6fCzHrIBYfwkOecCQ=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			EyzrBJatx1tD0R4ObfQiiWmrf6y+GwVEi0YYqY8tm0o=
+			IznE9/jqvWkL5fOapJ1zltBHmXWObNDvlL3BgUoo5lg=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			DfuggC2XBh0bci9copjt3SZCG2thyU9G9ISDYPayM6Y=
+			L6JW1JYERZXmvkCxnBLbLnUCD+ib0oIKEwwSKTi9J8k=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			DEqmMYGTKiszc84NkN2aNfEJmiKHITnDTcN0vazkaf4=
+			S4XFT06v00Z4JovovtN2PB3emRdZyjyGkv9MIh6bbWU=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			1LbyFn1Qx6pCTdS0l8NMcLDcD2Y6zojj4+2dbcPv6mg=
+			aFbh4R9A+NHvBYZobJqIAjVU8ppB/P0iYR7jcHC0fuE=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			DEqmMYGTKiszc84NkN2aNfEJmiKHITnDTcN0vazkaf4=
+			S4XFT06v00Z4JovovtN2PB3emRdZyjyGkv9MIh6bbWU=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			1hkfC/hiq0e2JpOegV/Vb93tk16awzruSzchmyeQHJI=
+			V7j2m8hL/S1OZ98umHMuGA0IWHiKaR9Kq11zVbYd+ro=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			DfuggC2XBh0bci9copjt3SZCG2thyU9G9ISDYPayM6Y=
+			L6JW1JYERZXmvkCxnBLbLnUCD+ib0oIKEwwSKTi9J8k=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			YJlWjSO0+8UeFi1b3kd8hwfETxlL26+YmjL/j0neVuw=
+			2aGnrWT5JnLhb/WYb/wY9j8WKiLkVlRknUvsDVWrvas=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			zf+bhw2bkzAkN9pBA+Hza4Lo1Dzzo1kjZ3d2cpfqfrc=
+			s/fx22P7v+aXzTxZO5j/3BXHBhVSYO2d88zVLRqgw+k=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			YJlWjSO0+8UeFi1b3kd8hwfETxlL26+YmjL/j0neVuw=
+			2aGnrWT5JnLhb/WYb/wY9j8WKiLkVlRknUvsDVWrvas=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Jq4lsBXGfZ3DnGSwqbE/fejqx7ebof6xOL9yLnCyJPI=
+			ExhHn+l5GXwqgvSYeZ+QGECjeFGHve3tVKz2kmMn8w0=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
@@ -236,7 +280,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			5AX/1oapvLjkE//cptp+dRTUPspfhT+l7uvx7jqdDco=
+			DxgpJLy3AG8lFNsirnDcgwKsIA/lo0vdGyojJN7rYAg=
 			</data>
 		</dict>
 		<key>notification_join.mp3</key>
