@@ -32,6 +32,11 @@ let package = Package(
             name: "Starscream",
             url: "https://github.com/dyte-in/DyteStarscream/archive/refs/tags/0.0.1.zip",
             checksum: "8aa8a8078b74aa4dcb86bf27ce2b46ef51b5e5f731226cd30fbd83ac5d1e633f"
+        ),
+        .binaryTarget(
+            name: "AmazonIVSPlayer",
+            url: "https://github.com/Video-io/AmazonIVSPlayer.swift/raw/main/AmazonIVSPlayer.xcframework.zip",
+            checksum: "7ae52c6e33b1c7faf2e6bccf9df0206ac9e2608355cfa76f2d8363146b500c49"
         )
     ]
 )
