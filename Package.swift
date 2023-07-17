@@ -35,8 +35,8 @@ let package = Package(
         ),
         .binaryTarget(
             name: "AmazonIVSPlayer",
-            url: "https://github.com/Video-io/AmazonIVSPlayer.swift/raw/main/AmazonIVSPlayer.xcframework.zip",
-            checksum: "7ae52c6e33b1c7faf2e6bccf9df0206ac9e2608355cfa76f2d8363146b500c49"
+            url: "https://github.com/dyte-in/AmazonIVSPlayer/archive/refs/tags/0.0.1.zip",
+            checksum: "6476a3ecd74acac0a11b6b772c579326c9606028b1389dda0dfb21b5beb2d204"
         )
     ]
 )
