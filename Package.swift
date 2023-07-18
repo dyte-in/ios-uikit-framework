@@ -11,7 +11,7 @@ let package = Package(
         .binaryTarget(
             name: "DyteUiKit",
             url: "https://github.com/dyte-in/ios-uikit-framework/archive/refs/tags/0.3.4.zip",
-            checksum: "3638a4e9f1cdfd5f3ca56a2f93506b26abc2530ed20774b6af88552075124a5b"
+            checksum: "8a21d373f9b8db40d65d66d18e9d91559272eefddd0639d0e6fb74b9cb1e0b37"
         ),
         .binaryTarget(
             name: "WebRTC",
