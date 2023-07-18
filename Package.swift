@@ -10,7 +10,7 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "DyteUiKit",
-            url: "https://github.com/dyte-in/ios-uikit-framework/archive/refs/tags/0.3.0.zip",
+            url: "https://github.com/dyte-in/ios-uikit-framework/archive/refs/tags/0.3.4.zip",
             checksum: "3638a4e9f1cdfd5f3ca56a2f93506b26abc2530ed20774b6af88552075124a5b"
         ),
         .binaryTarget(
