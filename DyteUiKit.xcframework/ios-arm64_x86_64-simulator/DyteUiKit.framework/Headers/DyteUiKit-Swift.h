@@ -607,12 +607,12 @@ SWIFT_CLASS("_TtC9DyteUiKit24LivestreamViewController")
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
-
 @class IVSPlayer;
 
 @interface LivestreamViewController (SWIFT_EXTENSION(DyteUiKit)) <IVSPlayerDelegate>
 - (void)player:(IVSPlayer * _Nonnull)player didChangeState:(IVSPlayerState)state;
 @end
+
 
 
 @class DOSCLiveStreamStagePeer;
@@ -646,6 +646,21 @@ SWIFT_CLASS("_TtC9DyteUiKit21MeetingViewController")
 @end
 
 
+
+
+@interface MeetingViewController (SWIFT_EXTENSION(DyteUiKit)) <DOSCDyteLiveStreamEventsListener>
+- (void)onJoinRequestAcceptedPeer:(DOSCLiveStreamStagePeer * _Nonnull)peer;
+- (void)onJoinRequestRejectedPeer:(DOSCLiveStreamStagePeer * _Nonnull)peer;
+- (void)onLiveStreamEnded;
+- (void)onLiveStreamEnding;
+- (void)onLiveStreamErrored;
+- (void)onLiveStreamStarted;
+- (void)onLiveStreamStarting;
+- (void)onLiveStreamStateUpdateData:(DOSCDyteLivestreamData * _Nonnull)data;
+- (void)onStageCountUpdatedCount:(int32_t)count;
+- (void)onStageRequestsUpdatedRequests:(NSArray<DOSCLiveStreamStageRequestPeer *> * _Nonnull)requests;
+- (void)onViewerCountUpdatedCount:(int32_t)count;
+@end
 
 
 
@@ -1379,12 +1394,12 @@ SWIFT_CLASS("_TtC9DyteUiKit24LivestreamViewController")
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
-
 @class IVSPlayer;
 
 @interface LivestreamViewController (SWIFT_EXTENSION(DyteUiKit)) <IVSPlayerDelegate>
 - (void)player:(IVSPlayer * _Nonnull)player didChangeState:(IVSPlayerState)state;
 @end
+
 
 
 @class DOSCLiveStreamStagePeer;
@@ -1418,6 +1433,21 @@ SWIFT_CLASS("_TtC9DyteUiKit21MeetingViewController")
 @end
 
 
+
+
+@interface MeetingViewController (SWIFT_EXTENSION(DyteUiKit)) <DOSCDyteLiveStreamEventsListener>
+- (void)onJoinRequestAcceptedPeer:(DOSCLiveStreamStagePeer * _Nonnull)peer;
+- (void)onJoinRequestRejectedPeer:(DOSCLiveStreamStagePeer * _Nonnull)peer;
+- (void)onLiveStreamEnded;
+- (void)onLiveStreamEnding;
+- (void)onLiveStreamErrored;
+- (void)onLiveStreamStarted;
+- (void)onLiveStreamStarting;
+- (void)onLiveStreamStateUpdateData:(DOSCDyteLivestreamData * _Nonnull)data;
+- (void)onStageCountUpdatedCount:(int32_t)count;
+- (void)onStageRequestsUpdatedRequests:(NSArray<DOSCLiveStreamStageRequestPeer *> * _Nonnull)requests;
+- (void)onViewerCountUpdatedCount:(int32_t)count;
+@end
 
 
 

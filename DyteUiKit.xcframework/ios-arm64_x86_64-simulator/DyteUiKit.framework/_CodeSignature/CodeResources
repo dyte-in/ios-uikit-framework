@@ -8,37 +8,69 @@
 		<data>
 		ngeo0k1GnMq/eyyS4geyFJSxzAU=
 		</data>
-		<key>Frameworks/Pods_DyteUiKit.framework/Info.plist</key>
+		<key>Frameworks/AmazonIVSPlayer.framework/AmazonIVSPlayer</key>
 		<data>
-		+IOWj31dIkHMRUY9sgjM3IqKXAA=
+		AfIdUfVX69mVVzOxd46F/o6HiDM=
 		</data>
-		<key>Frameworks/Pods_DyteUiKit.framework/Pods_DyteUiKit</key>
+		<key>Frameworks/AmazonIVSPlayer.framework/Info.plist</key>
 		<data>
-		npjKJA3694GgVT33Myub6aWc/Zo=
+		YF9+SbquOv1QWZGePoOv0wPXL54=
 		</data>
-		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeDirectory</key>
+		<key>Frameworks/AmazonIVSPlayer.framework/_CodeSignature/CodeResources</key>
 		<data>
-		RoL9v7nRe41yx1Nb7hcGFlp/5ow=
+		A0pMgjZ0xVyfOfBQ+GsVYl9NVu4=
 		</data>
-		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeRequirements</key>
+		<key>Frameworks/DyteiOSCore.framework/DyteiOSCore</key>
 		<data>
-		OnX22wWFKRSOFN1+obRynMCeyXM=
+		Z88fKQnl23YRBRMy8m4GeJRXGD0=
 		</data>
-		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeRequirements-1</key>
+		<key>Frameworks/DyteiOSCore.framework/Info.plist</key>
 		<data>
-		n2fpev266C+N1mMEo0uNdMN3rgc=
+		zQbhDSdycNvPAeE/3Va3ytO4Jko=
 		</data>
-		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeResources</key>
+		<key>Frameworks/DyteiOSCore.framework/_CodeSignature/CodeResources</key>
 		<data>
-		FabrU0qeXRsFrguv9UtmSqXiXHY=
+		1DxV4Kq2Cy++smcsEVtZDJVx3e4=
 		</data>
-		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeSignature</key>
+		<key>Frameworks/DyteiOSSocketIO.framework/DyteiOSSocketIO</key>
 		<data>
-		2jmj7l5rSw0yVb/vlWAYkK/YBwk=
+		NXhAs6gbE28DA1qIEDDVkudjf+I=
+		</data>
+		<key>Frameworks/DyteiOSSocketIO.framework/Info.plist</key>
+		<data>
+		5fgLYqs1OgffjRgXU8+nOPxpfWM=
+		</data>
+		<key>Frameworks/DyteiOSSocketIO.framework/_CodeSignature/CodeResources</key>
+		<data>
+		qeWlAHHw9PZdimHAwlplBCe+Kzo=
+		</data>
+		<key>Frameworks/Starscream.framework/Info.plist</key>
+		<data>
+		vooGgVRLKR0IjpEZpO5WMTQbMeM=
+		</data>
+		<key>Frameworks/Starscream.framework/Starscream</key>
+		<data>
+		qAZn30KG7W7xhHmxAwS70rg4Kr4=
+		</data>
+		<key>Frameworks/Starscream.framework/_CodeSignature/CodeResources</key>
+		<data>
+		2ZTCMQrIYdVRYHPhQFyN9MWtdoI=
+		</data>
+		<key>Frameworks/WebRTC.framework/Info.plist</key>
+		<data>
+		MeQE29wKFpMdKPnM4qHJUIkaqa8=
+		</data>
+		<key>Frameworks/WebRTC.framework/WebRTC</key>
+		<data>
+		y+53xuLM9K5avAvLdxDWDSYTZ4M=
+		</data>
+		<key>Frameworks/WebRTC.framework/_CodeSignature/CodeResources</key>
+		<data>
+		hgY10FlSCiJRNCRJc+39VcesAJg=
 		</data>
 		<key>Headers/DyteUiKit-Swift.h</key>
 		<data>
-		GivgiclbjxWvyQp4plaI7tmOhGI=
+		co1qKN9/I8OO0fmfXgybPqCTmxs=
 		</data>
 		<key>Headers/DyteUiKit.h</key>
 		<data>
@@ -50,19 +82,19 @@
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		7PsoOEOplPHHduUhJB6UDGfgIcg=
+		4sL4QuU34iFt0xgr06tnx7zajtI=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		saf8d6XnTD9IqwFD8Gp2/3TUisQ=
+		xQPOoe1oiUPI9klBDA7HNaxPl9U=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		DsvlDodhlAVBQ8Wfq3N6pvW/cRA=
+		gL12bJP0hPol0W1ZgIWZrZYSExg=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		bn1RqeM8pLIos5Kj+xF5ia9p+Go=
+		yCEom8f20V3CVtydgP0oOR0nyHA=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -70,19 +102,19 @@
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		bn1RqeM8pLIos5Kj+xF5ia9p+Go=
+		yCEom8f20V3CVtydgP0oOR0nyHA=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		OBJloA2L3T6XFGHqP2Uxz7ru8iU=
+		79cIlc4WM0zqienwaU+iugNntKQ=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		DsvlDodhlAVBQ8Wfq3N6pvW/cRA=
+		gL12bJP0hPol0W1ZgIWZrZYSExg=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		cLuBfemRzSHkwaAJxwCp5zdhXjM=
+		pTIidlgNe8lQcthVCz3PHICEkGo=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -90,11 +122,11 @@
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		cLuBfemRzSHkwaAJxwCp5zdhXjM=
+		pTIidlgNe8lQcthVCz3PHICEkGo=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		LeJX3FDljKicjF90A4FLbRNa1XY=
+		C/PW6xkSDQok+VzTLbQ8SATqL/8=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -122,60 +154,116 @@
 			iwWZF1PbWOTkBTWvUUwMeYDdO25cnqKST99qp5n4K5A=
 			</data>
 		</dict>
-		<key>Frameworks/Pods_DyteUiKit.framework/Info.plist</key>
+		<key>Frameworks/AmazonIVSPlayer.framework/AmazonIVSPlayer</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			MyMFopPB1jnbIkxWRKCUbtJblH2waEDCxTQyYjYJGPc=
+			fEa79xWRHLlOGmqqIUNJue0IPLOVJEfVoQLfdXnV5jU=
 			</data>
 		</dict>
-		<key>Frameworks/Pods_DyteUiKit.framework/Pods_DyteUiKit</key>
+		<key>Frameworks/AmazonIVSPlayer.framework/Info.plist</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			2W6ZhGucxAJCnLIdKWnJ6IHQjYWkFhjnWllLAElMDhw=
+			Eh+btsgFs5+utwZb1qN7eZqwmOtdLgxfwFfbOADFIlw=
 			</data>
 		</dict>
-		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeDirectory</key>
+		<key>Frameworks/AmazonIVSPlayer.framework/_CodeSignature/CodeResources</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Ve39j0n5Q0TrE/Nt+ChsE+2p4x7KMrr3RLUuoJP9AIA=
+			Jl5FdcBXj7MdsuHpxysnEcBJIKgxWsQND6T6BCvfpRU=
 			</data>
 		</dict>
-		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeRequirements</key>
+		<key>Frameworks/DyteiOSCore.framework/DyteiOSCore</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			mHkgkE6rZQ51eIwFSqCwUk5qgL/HGqMt+NI3phdD+YY=
+			al18xzKLsg20CpcWLNvfcrZRbS4kiZKKRZwyqIBpdF4=
 			</data>
 		</dict>
-		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeRequirements-1</key>
+		<key>Frameworks/DyteiOSCore.framework/Info.plist</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			4caWSI/Jy6IDJBhb3IOJ6VJ/zrwWonlNZgjbyEQXElc=
+			uwdUE9Sgr+FUBomMK1Ns+FFXPGb8ArgdlkM4bjvmX90=
 			</data>
 		</dict>
-		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeResources</key>
+		<key>Frameworks/DyteiOSCore.framework/_CodeSignature/CodeResources</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			CMs8PURswqqmzcxvuv1l/9W7h0S8f7radXwuaqQGuEQ=
+			cNLEPhqwelMbgEWXUzkNPKmKJsWddBGrC4FdORMHS/Q=
 			</data>
 		</dict>
-		<key>Frameworks/Pods_DyteUiKit.framework/_CodeSignature/CodeSignature</key>
+		<key>Frameworks/DyteiOSSocketIO.framework/DyteiOSSocketIO</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
+			ukp07uSQUY046W2mPQU2riXuMihJISgN5VzvolNa4qw=
+			</data>
+		</dict>
+		<key>Frameworks/DyteiOSSocketIO.framework/Info.plist</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			nHVC8AzcnlMzl8vWCMav1edaJE4GGk4b7MBXMUP5obc=
+			</data>
+		</dict>
+		<key>Frameworks/DyteiOSSocketIO.framework/_CodeSignature/CodeResources</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			q0MGpmYYY5oSqqKjFJXvU/92CdvBlK1L4vZtWXlVsOM=
+			</data>
+		</dict>
+		<key>Frameworks/Starscream.framework/Info.plist</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			1F2uSVWLS/VEq9IJWp9oTGOOGpCVoKraGgriA1VjqGY=
+			</data>
+		</dict>
+		<key>Frameworks/Starscream.framework/Starscream</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			dNCFEmizke90oAAiO2FUo+lbmg9c6iCwGkwldD5/gU8=
+			</data>
+		</dict>
+		<key>Frameworks/Starscream.framework/_CodeSignature/CodeResources</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Fx6kZrhyvkBLY4q4PPs1m4DWU9Abd2fkhMT395lcjEI=
+			</data>
+		</dict>
+		<key>Frameworks/WebRTC.framework/Info.plist</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			xP9Y360CjpJn9OCcbc1d1WDL8ZJ5R97jhYKbJ2eAZCE=
+			</data>
+		</dict>
+		<key>Frameworks/WebRTC.framework/WebRTC</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			OPZXRKU/hq2PToKmnxu92m8n+dcKRYiA5V0gitreFGI=
+			</data>
+		</dict>
+		<key>Frameworks/WebRTC.framework/_CodeSignature/CodeResources</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			h77GYYogDHif8IFLcNtlP2s114evr0xJbW1N+ZxAgCc=
 			</data>
 		</dict>
 		<key>Headers/DyteUiKit-Swift.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			k4ZBEVjMswZPeJDKyj8HPl6nUufykjF3cpkMZuLinf4=
+			+lRVQF/0gBg7UsFL66nSQdYYep+KwMDeFybjvFK680Q=
 			</data>
 		</dict>
 		<key>Headers/DyteUiKit.h</key>
@@ -189,28 +277,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			DCEWIREVp+hLRQYu4GKgaKrzaP6fCzHrIBYfwkOecCQ=
+			e2UBGAyqjHTOPxk2sDtbvCILA3IJfdWX7xJ1cG5EkdY=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			IznE9/jqvWkL5fOapJ1zltBHmXWObNDvlL3BgUoo5lg=
+			TdKM0O74rBv5rZ3MTV6rsSsaPOnE44jfiVErGkLyomM=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			L6JW1JYERZXmvkCxnBLbLnUCD+ib0oIKEwwSKTi9J8k=
+			dk4YbYVsYt3Y7346C8Tea/CNbMnO1P6vdK/XTtmzDNU=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			S4XFT06v00Z4JovovtN2PB3emRdZyjyGkv9MIh6bbWU=
+			GzC293ysYqwyOuxNqGb0Po9+6qxwNsdFEn9UZfe2wi0=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
@@ -224,28 +312,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			S4XFT06v00Z4JovovtN2PB3emRdZyjyGkv9MIh6bbWU=
+			GzC293ysYqwyOuxNqGb0Po9+6qxwNsdFEn9UZfe2wi0=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			V7j2m8hL/S1OZ98umHMuGA0IWHiKaR9Kq11zVbYd+ro=
+			X2GXN+PKeNmerJ5FCAG1+QhVieqq9RIxYRrpYTlDzCA=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			L6JW1JYERZXmvkCxnBLbLnUCD+ib0oIKEwwSKTi9J8k=
+			dk4YbYVsYt3Y7346C8Tea/CNbMnO1P6vdK/XTtmzDNU=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			2aGnrWT5JnLhb/WYb/wY9j8WKiLkVlRknUvsDVWrvas=
+			+qVB8Go3Rh+rjG21Q/3XTZNRMksAGyRH2W3jYSWAVnk=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
@@ -259,14 +347,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			2aGnrWT5JnLhb/WYb/wY9j8WKiLkVlRknUvsDVWrvas=
+			+qVB8Go3Rh+rjG21Q/3XTZNRMksAGyRH2W3jYSWAVnk=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ExhHn+l5GXwqgvSYeZ+QGECjeFGHve3tVKz2kmMn8w0=
+			MrKDBjGlCkwczG59OSHFJUY9fZZLpQUmAVl8o4tevyg=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

@@ -614,6 +614,19 @@ public struct TextColorToken {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidAppear(_ animated: Swift.Bool)
   @objc deinit
 }
+extension DyteUiKit.MeetingViewController : DyteiOSCore.DyteLiveStreamEventsListener {
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onJoinRequestAccepted(peer: DyteiOSCore.LiveStreamStagePeer)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onJoinRequestRejected(peer: DyteiOSCore.LiveStreamStagePeer)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamEnded()
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamEnding()
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamErrored()
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamStarted()
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamStarting()
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamStateUpdate(data: DyteiOSCore.DyteLivestreamData)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onStageCountUpdated(count: Swift.Int32)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onStageRequestsUpdated(requests: [DyteiOSCore.LiveStreamStageRequestPeer])
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onViewerCountUpdated(count: Swift.Int32)
+}
 @objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class SetupViewController : UIKit.UIViewController {
   @_Concurrency.MainActor(unsafe) public init(meetingInfo: DyteiOSCore.DyteMeetingInfo, mobileClient: DyteiOSCore.DyteMobileClient, baseUrl: Swift.String? = nil, completion: @escaping () -> Swift.Void)
   @_Concurrency.MainActor(unsafe) public init(meetingInfo: DyteiOSCore.DyteMeetingInfoV2, mobileClient: DyteiOSCore.DyteMobileClient, baseUrl: Swift.String? = nil, completion: @escaping () -> Swift.Void)

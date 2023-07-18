@@ -22648,6 +22648,325 @@
               "Override"
             ],
             "init_kind": "Designated"
+          },
+          {
+            "kind": "Function",
+            "name": "onJoinRequestAccepted",
+            "printedName": "onJoinRequestAccepted(peer:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "LiveStreamStagePeer",
+                "printedName": "DyteiOSCore.LiveStreamStagePeer",
+                "usr": "c:objc(cs)DOSCLiveStreamStagePeer"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@DyteUiKit@objc(cs)MeetingViewController(im)onJoinRequestAcceptedPeer:",
+            "mangledName": "$s9DyteUiKit21MeetingViewControllerC21onJoinRequestAccepted4peerySo23DOSCLiveStreamStagePeerC_tF",
+            "moduleName": "DyteUiKit",
+            "objc_name": "onJoinRequestAcceptedPeer:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onJoinRequestRejected",
+            "printedName": "onJoinRequestRejected(peer:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "LiveStreamStagePeer",
+                "printedName": "DyteiOSCore.LiveStreamStagePeer",
+                "usr": "c:objc(cs)DOSCLiveStreamStagePeer"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@DyteUiKit@objc(cs)MeetingViewController(im)onJoinRequestRejectedPeer:",
+            "mangledName": "$s9DyteUiKit21MeetingViewControllerC21onJoinRequestRejected4peerySo23DOSCLiveStreamStagePeerC_tF",
+            "moduleName": "DyteUiKit",
+            "objc_name": "onJoinRequestRejectedPeer:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onLiveStreamEnded",
+            "printedName": "onLiveStreamEnded()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@DyteUiKit@objc(cs)MeetingViewController(im)onLiveStreamEnded",
+            "mangledName": "$s9DyteUiKit21MeetingViewControllerC17onLiveStreamEndedyyF",
+            "moduleName": "DyteUiKit",
+            "objc_name": "onLiveStreamEnded",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onLiveStreamEnding",
+            "printedName": "onLiveStreamEnding()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@DyteUiKit@objc(cs)MeetingViewController(im)onLiveStreamEnding",
+            "mangledName": "$s9DyteUiKit21MeetingViewControllerC18onLiveStreamEndingyyF",
+            "moduleName": "DyteUiKit",
+            "objc_name": "onLiveStreamEnding",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onLiveStreamErrored",
+            "printedName": "onLiveStreamErrored()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@DyteUiKit@objc(cs)MeetingViewController(im)onLiveStreamErrored",
+            "mangledName": "$s9DyteUiKit21MeetingViewControllerC19onLiveStreamErroredyyF",
+            "moduleName": "DyteUiKit",
+            "objc_name": "onLiveStreamErrored",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onLiveStreamStarted",
+            "printedName": "onLiveStreamStarted()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@DyteUiKit@objc(cs)MeetingViewController(im)onLiveStreamStarted",
+            "mangledName": "$s9DyteUiKit21MeetingViewControllerC19onLiveStreamStartedyyF",
+            "moduleName": "DyteUiKit",
+            "objc_name": "onLiveStreamStarted",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onLiveStreamStarting",
+            "printedName": "onLiveStreamStarting()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@DyteUiKit@objc(cs)MeetingViewController(im)onLiveStreamStarting",
+            "mangledName": "$s9DyteUiKit21MeetingViewControllerC20onLiveStreamStartingyyF",
+            "moduleName": "DyteUiKit",
+            "objc_name": "onLiveStreamStarting",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onLiveStreamStateUpdate",
+            "printedName": "onLiveStreamStateUpdate(data:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "DyteLivestreamData",
+                "printedName": "DyteiOSCore.DyteLivestreamData",
+                "usr": "c:objc(cs)DOSCDyteLivestreamData"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@DyteUiKit@objc(cs)MeetingViewController(im)onLiveStreamStateUpdateData:",
+            "mangledName": "$s9DyteUiKit21MeetingViewControllerC23onLiveStreamStateUpdate4dataySo22DOSCDyteLivestreamDataC_tF",
+            "moduleName": "DyteUiKit",
+            "objc_name": "onLiveStreamStateUpdateData:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onStageCountUpdated",
+            "printedName": "onStageCountUpdated(count:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int32",
+                "printedName": "Swift.Int32",
+                "usr": "s:s5Int32V"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@DyteUiKit@objc(cs)MeetingViewController(im)onStageCountUpdatedCount:",
+            "mangledName": "$s9DyteUiKit21MeetingViewControllerC19onStageCountUpdated5countys5Int32V_tF",
+            "moduleName": "DyteUiKit",
+            "objc_name": "onStageCountUpdatedCount:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onStageRequestsUpdated",
+            "printedName": "onStageRequestsUpdated(requests:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[DyteiOSCore.LiveStreamStageRequestPeer]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "LiveStreamStageRequestPeer",
+                    "printedName": "DyteiOSCore.LiveStreamStageRequestPeer",
+                    "usr": "c:objc(cs)DOSCLiveStreamStageRequestPeer"
+                  }
+                ],
+                "usr": "s:Sa"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@DyteUiKit@objc(cs)MeetingViewController(im)onStageRequestsUpdatedRequests:",
+            "mangledName": "$s9DyteUiKit21MeetingViewControllerC22onStageRequestsUpdated8requestsySaySo014DOSCLiveStreamH11RequestPeerCG_tF",
+            "moduleName": "DyteUiKit",
+            "objc_name": "onStageRequestsUpdatedRequests:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onViewerCountUpdated",
+            "printedName": "onViewerCountUpdated(count:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int32",
+                "printedName": "Swift.Int32",
+                "usr": "s:s5Int32V"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@DyteUiKit@objc(cs)MeetingViewController(im)onViewerCountUpdatedCount:",
+            "mangledName": "$s9DyteUiKit21MeetingViewControllerC20onViewerCountUpdated5countys5Int32V_tF",
+            "moduleName": "DyteUiKit",
+            "objc_name": "onViewerCountUpdatedCount:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
           }
         ],
         "declKind": "Class",
@@ -39432,196 +39751,196 @@
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "BooleanLiteral",
-      "offset": 1990,
+      "offset": 1978,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "IntegerLiteral",
-      "offset": 2181,
+      "offset": 2169,
       "length": 2,
       "value": "12"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "IntegerLiteral",
-      "offset": 2440,
+      "offset": 2428,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "IntegerLiteral",
-      "offset": 2489,
+      "offset": 2477,
       "length": 2,
       "value": "16"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "StringLiteral",
-      "offset": 2791,
+      "offset": 2779,
       "length": 39,
       "value": "\"init(coder:) has not been implemented\""
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "Array",
-      "offset": 3189,
+      "offset": 3177,
       "length": 2,
       "value": "[]"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "IntegerLiteral",
-      "offset": 3218,
+      "offset": 3206,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "IntegerLiteral",
-      "offset": 4620,
+      "offset": 4608,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "IntegerLiteral",
-      "offset": 4650,
+      "offset": 4638,
       "length": 1,
       "value": "1"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "StringLiteral",
-      "offset": 5004,
+      "offset": 4992,
       "length": 6,
       "value": "\"www.\""
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "StringLiteral",
-      "offset": 5031,
+      "offset": 5019,
       "length": 9,
       "value": "\"http:\/\/\""
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "StringLiteral",
-      "offset": 5061,
+      "offset": 5049,
       "length": 10,
       "value": "\"https:\/\/\""
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "StringLiteral",
-      "offset": 5111,
+      "offset": 5099,
       "length": 9,
       "value": "\"http:\/\/\""
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "StringLiteral",
-      "offset": 5170,
+      "offset": 5158,
       "length": 9,
       "value": "\"http:\/\/\""
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "StringLiteral",
-      "offset": 5200,
+      "offset": 5188,
       "length": 10,
       "value": "\"https:\/\/\""
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "StringLiteral",
-      "offset": 5229,
+      "offset": 5217,
       "length": 3,
       "value": "\".\""
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "StringLiteral",
-      "offset": 5272,
+      "offset": 5260,
       "length": 13,
       "value": "\"http:\/\/www.\""
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "BooleanLiteral",
-      "offset": 5748,
+      "offset": 5736,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "BooleanLiteral",
-      "offset": 5794,
+      "offset": 5782,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "IntegerLiteral",
-      "offset": 5898,
+      "offset": 5886,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "BooleanLiteral",
-      "offset": 6368,
+      "offset": 6356,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "BooleanLiteral",
-      "offset": 6538,
+      "offset": 6526,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "BooleanLiteral",
-      "offset": 6752,
+      "offset": 6740,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "BooleanLiteral",
-      "offset": 7094,
+      "offset": 7082,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "BooleanLiteral",
-      "offset": 7313,
+      "offset": 7301,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "StringLiteral",
-      "offset": 7479,
+      "offset": 7467,
       "length": 30,
       "value": "\"Error! Message type unknown!\""
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "IntegerLiteral",
-      "offset": 8126,
+      "offset": 8114,
       "length": 3,
       "value": "200"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/Prebuilt\/MessageCell.swift",
       "kind": "IntegerLiteral",
-      "offset": 8219,
+      "offset": 8207,
       "length": 3,
       "value": "200"
     },
@@ -42043,280 +42362,378 @@
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 22924,
+      "offset": 22607,
       "length": 1,
       "value": "1"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 23809,
+      "offset": 23296,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 23816,
+      "offset": 23303,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
-      "kind": "IntegerLiteral",
-      "offset": 24284,
-      "length": 1,
-      "value": "1"
-    },
-    {
-      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 26190,
+      "offset": 24613,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 26262,
+      "offset": 24685,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 26368,
+      "offset": 24791,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 26385,
+      "offset": 24808,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 26429,
+      "offset": 24852,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 26447,
+      "offset": 24870,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 26669,
+      "offset": 25092,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 26789,
+      "offset": 25212,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 26807,
+      "offset": 25230,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 26880,
+      "offset": 25303,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 26922,
+      "offset": 25345,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 26939,
+      "offset": 25362,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 27420,
+      "offset": 25843,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 27553,
+      "offset": 25976,
       "length": 1,
       "value": "1"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 27675,
+      "offset": 26098,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 27808,
+      "offset": 26231,
       "length": 1,
       "value": "1"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 27980,
+      "offset": 26403,
       "length": 2,
       "value": "-1"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 28037,
+      "offset": 26460,
       "length": 1,
       "value": "1"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 28319,
+      "offset": 26742,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "StringLiteral",
-      "offset": 28407,
+      "offset": 26830,
       "length": 38,
       "value": "\"Debug DyteUIKit | refreshMeetingGrid\""
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
-      "kind": "IntegerLiteral",
-      "offset": 28527,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "StringLiteral",
-      "offset": 28816,
+      "offset": 27046,
       "length": 39,
       "value": "\"Debug DyteUIKIt | refreshing Finished\""
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 28943,
+      "offset": 27173,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 29025,
+      "offset": 27255,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 29111,
+      "offset": 27341,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 29258,
+      "offset": 27488,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 29276,
+      "offset": 27506,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 29321,
+      "offset": 27551,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 29338,
+      "offset": 27568,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 29538,
+      "offset": 27768,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 29960,
+      "offset": 28190,
       "length": 2,
       "value": "-1"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 30017,
+      "offset": 28247,
       "length": 1,
       "value": "1"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 30908,
+      "offset": 29138,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 30988,
+      "offset": 29218,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 31523,
+      "offset": 29753,
       "length": 1,
       "value": "1"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 32662,
+      "offset": 30154,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
+      "kind": "BooleanLiteral",
+      "offset": 30192,
+      "length": 4,
+      "value": "true"
+    },
+    {
+      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
+      "kind": "StringLiteral",
+      "offset": 30211,
+      "length": 33,
+      "value": "\"player state: onLiveStreamEnded\""
+    },
+    {
+      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
+      "kind": "BooleanLiteral",
+      "offset": 30329,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
+      "kind": "BooleanLiteral",
+      "offset": 30365,
+      "length": 4,
+      "value": "true"
+    },
+    {
+      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
+      "kind": "StringLiteral",
+      "offset": 30409,
+      "length": 22,
+      "value": "\"Ending Livestream...\""
+    },
+    {
+      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
+      "kind": "BooleanLiteral",
+      "offset": 30584,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
+      "kind": "BooleanLiteral",
+      "offset": 30622,
+      "length": 4,
+      "value": "true"
+    },
+    {
+      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
+      "kind": "StringLiteral",
+      "offset": 30641,
+      "length": 35,
+      "value": "\"player state: onLiveStreamErrored\""
+    },
+    {
+      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
+      "kind": "BooleanLiteral",
+      "offset": 30830,
+      "length": 4,
+      "value": "true"
+    },
+    {
+      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
+      "kind": "StringLiteral",
+      "offset": 31002,
+      "length": 24,
+      "value": "\"Starting Livestream...\""
+    },
+    {
+      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
+      "kind": "StringLiteral",
+      "offset": 31120,
+      "length": 68,
+      "value": "\"player state: onLiveStreamStateUpdate stage  \""
+    },
+    {
+      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
+      "kind": "StringLiteral",
+      "offset": 31187,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
+      "kind": "BooleanLiteral",
+      "offset": 31625,
+      "length": 4,
+      "value": "true"
+    },
+    {
+      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
+      "kind": "StringLiteral",
+      "offset": 31820,
+      "length": 51,
+      "value": "\"player state: onViewerCountUpdated count \""
+    },
+    {
+      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
+      "kind": "StringLiteral",
+      "offset": 31870,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/LivestreamViewController.swift",
+      "kind": "BooleanLiteral",
+      "offset": 32204,
       "length": 5,
       "value": "false"
     },
@@ -46892,6 +47309,13 @@
       "value": "false"
     },
     {
+      "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/Meeting\/MeetingViewController.swift",
+      "kind": "BooleanLiteral",
+      "offset": 20885,
+      "length": 4,
+      "value": "true"
+    },
+    {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Screens\/Setup\/SetupViewController.swift",
       "kind": "StringLiteral",
       "offset": 691,
@@ -48980,231 +49404,231 @@
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 2704,
+      "offset": 2705,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "IntegerLiteral",
-      "offset": 3384,
+      "offset": 3385,
       "length": 2,
       "value": "84"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "IntegerLiteral",
-      "offset": 3436,
+      "offset": 3437,
       "length": 2,
       "value": "68"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "IntegerLiteral",
-      "offset": 3487,
+      "offset": 3488,
       "length": 2,
       "value": "46"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "IntegerLiteral",
-      "offset": 3632,
+      "offset": 3633,
       "length": 2,
       "value": "40"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "IntegerLiteral",
-      "offset": 3684,
+      "offset": 3685,
       "length": 2,
       "value": "32"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "IntegerLiteral",
-      "offset": 3735,
+      "offset": 3736,
       "length": 2,
       "value": "24"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "FloatLiteral",
-      "offset": 3891,
+      "offset": 3892,
       "length": 4,
       "value": "48.0"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "StringLiteral",
-      "offset": 4939,
+      "offset": 4940,
       "length": 39,
       "value": "\"init(coder:) has not been implemented\""
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 5019,
+      "offset": 5020,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 5562,
+      "offset": 5563,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 6046,
+      "offset": 6047,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 6358,
+      "offset": 6359,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 6776,
+      "offset": 6777,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 6813,
+      "offset": 6814,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 7850,
+      "offset": 7851,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "StringLiteral",
-      "offset": 7873,
+      "offset": 7874,
       "length": 89,
       "value": "\"We are going to use default button except all above defined cases and split button case\""
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 8018,
+      "offset": 8019,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 8222,
+      "offset": 8223,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "StringLiteral",
-      "offset": 8640,
+      "offset": 8641,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "StringLiteral",
-      "offset": 9475,
+      "offset": 9476,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "StringLiteral",
-      "offset": 2637,
+      "offset": 2638,
       "length": 10,
       "value": "\"DyteUiKit.DyteButton\""
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "FloatLiteral",
-      "offset": 12862,
+      "offset": 12863,
       "length": 3,
       "value": "0.0"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "FloatLiteral",
-      "offset": 12899,
+      "offset": 12900,
       "length": 3,
       "value": "0.0"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 14878,
+      "offset": 14879,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 15017,
+      "offset": 15018,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 15424,
+      "offset": 15425,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 15476,
+      "offset": 15477,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 15516,
+      "offset": 15517,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 15630,
+      "offset": 15631,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 15771,
+      "offset": 15772,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 15830,
+      "offset": 15831,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/shaunak\/Documents\/GitHub\/ios-ui-kit\/DyteUiKit\/DyteUiKit\/Atoms\/DyteButton.swift",
       "kind": "BooleanLiteral",
-      "offset": 15857,
+      "offset": 15858,
       "length": 5,
       "value": "false"
     },
