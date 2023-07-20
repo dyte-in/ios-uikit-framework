@@ -260,7 +260,6 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #if __has_warning("-Watimport-in-framework-header")
 #pragma clang diagnostic ignored "-Watimport-in-framework-header"
 #endif
-@import AmazonIVSPlayer;
 @import CoreFoundation;
 @import DyteiOSCore;
 @import Foundation;
@@ -596,46 +595,6 @@ SWIFT_CLASS("_TtC9DyteUiKit13DyteVideoView")
 @end
 
 
-SWIFT_CLASS("_TtC9DyteUiKit24LivestreamViewController")
-@interface LivestreamViewController : UIViewController
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
-- (void)viewSafeAreaInsetsDidChange;
-- (void)viewDidLoad;
-- (void)viewDidDisappear:(BOOL)animated;
-- (void)viewWillAppear:(BOOL)animated;
-- (void)viewDidAppear:(BOOL)animated;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
-@end
-
-@class IVSPlayer;
-
-@interface LivestreamViewController (SWIFT_EXTENSION(DyteUiKit)) <IVSPlayerDelegate>
-- (void)player:(IVSPlayer * _Nonnull)player didChangeState:(IVSPlayerState)state;
-@end
-
-
-
-@class DOSCLiveStreamStagePeer;
-@class DOSCDyteLivestreamData;
-@class DOSCLiveStreamStageRequestPeer;
-
-@interface LivestreamViewController (SWIFT_EXTENSION(DyteUiKit)) <DOSCDyteLiveStreamEventsListener>
-- (void)onJoinRequestAcceptedPeer:(DOSCLiveStreamStagePeer * _Nonnull)peer;
-- (void)onJoinRequestRejectedPeer:(DOSCLiveStreamStagePeer * _Nonnull)peer;
-- (void)onLiveStreamEnded;
-- (void)onLiveStreamEnding;
-- (void)onLiveStreamErrored;
-- (void)onLiveStreamStarted;
-- (void)onLiveStreamStarting;
-- (void)onLiveStreamStateUpdateData:(DOSCDyteLivestreamData * _Nonnull)data;
-- (void)onStageCountUpdatedCount:(int32_t)count;
-- (void)onStageRequestsUpdatedRequests:(NSArray<DOSCLiveStreamStageRequestPeer *> * _Nonnull)requests;
-- (void)onViewerCountUpdatedCount:(int32_t)count;
-@end
-
-
-
-
 SWIFT_CLASS("_TtC9DyteUiKit21MeetingViewController")
 @interface MeetingViewController : UIViewController
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
@@ -646,21 +605,6 @@ SWIFT_CLASS("_TtC9DyteUiKit21MeetingViewController")
 @end
 
 
-
-
-@interface MeetingViewController (SWIFT_EXTENSION(DyteUiKit)) <DOSCDyteLiveStreamEventsListener>
-- (void)onJoinRequestAcceptedPeer:(DOSCLiveStreamStagePeer * _Nonnull)peer;
-- (void)onJoinRequestRejectedPeer:(DOSCLiveStreamStagePeer * _Nonnull)peer;
-- (void)onLiveStreamEnded;
-- (void)onLiveStreamEnding;
-- (void)onLiveStreamErrored;
-- (void)onLiveStreamStarted;
-- (void)onLiveStreamStarting;
-- (void)onLiveStreamStateUpdateData:(DOSCDyteLivestreamData * _Nonnull)data;
-- (void)onStageCountUpdatedCount:(int32_t)count;
-- (void)onStageRequestsUpdatedRequests:(NSArray<DOSCLiveStreamStageRequestPeer *> * _Nonnull)requests;
-- (void)onViewerCountUpdatedCount:(int32_t)count;
-@end
 
 
 
