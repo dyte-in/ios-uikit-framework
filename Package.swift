@@ -8,7 +8,8 @@ let package = Package(
         .library(name: "DyteUiKit", targets: ["DyteUiKit","DyteiOSCore", "WebRTC", "DyteiOSSocketIO", "Starscream"]),
     ],
     targets: [
-        .target(name: "DyteUiKit",path: "DyteUiKit/"),
+        .target(name: "DyteUiKit",
+                path: "DyteUiKit/",resources: [.process("DyteUiKit/")]),
         .binaryTarget(
             name: "WebRTC",
             url: "https://github.com/jitsi/webrtc/releases/download/v111.0.2/WebRTC.xcframework.zip",
