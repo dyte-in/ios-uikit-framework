@@ -13,7 +13,6 @@ public class ImageProvider {
         if #available(iOS 13.0, *) {
             let bundle = Bundle(for: BaseView.self)
             let image = UIImage(named: named, in: bundle, with: nil)
-            print(")))))))))))) Bundle \(bundle) \(image)")
             return image
         } else {
             // Fallback on earlier versions
