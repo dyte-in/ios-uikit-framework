@@ -1,0 +1,9 @@
+Pods/Target[[:space:]]Support[[:space:]]Files filter=lfs diff=lfs merge=lfs -text
+Pods/DyteiOSSocketIO filter=lfs diff=lfs merge=lfs -text
+Pods/Local[[:space:]]Podspecs filter=lfs diff=lfs merge=lfs -text
+Pods/Manifest.lock filter=lfs diff=lfs merge=lfs -text
+Pods/Pods.xcodeproj filter=lfs diff=lfs merge=lfs -text
+Pods/Starscream filter=lfs diff=lfs merge=lfs -text
+Pods/DyteiOSCore filter=lfs diff=lfs merge=lfs -text
+Pods/Headers filter=lfs diff=lfs merge=lfs -text
+Pods/JitsiWebRTC filter=lfs diff=lfs merge=lfs -text

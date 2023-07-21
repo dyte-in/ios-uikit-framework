@@ -20,9 +20,14 @@ Pod::Spec.new do |s|
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
 
   s.ios.deployment_target  = '13.0'
-  s.vendored_frameworks = "DyteUiKit.xcframework"
+  s.source_files = "DyteUiKit/DyteUiKit/**/*"
   s.platform = :ios, '13.0'
   s.swift_version = "5.0"
   s.dependency 'DyteiOSCore' , '~> 0.6.7'
-  s.dependency 'AmazonIVSPlayer' , '~> 1.19.0'
+  s.platforms = {
+    "ios": "13.0"
+  }
+  s.resource_bundles = {
+    'DyteUiKit' => ['DyteUiKit/**']
+  }
 end
