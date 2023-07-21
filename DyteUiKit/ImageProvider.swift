@@ -11,7 +11,10 @@ public class ImageProvider {
     // for any image located in bundle where this class has built
     public static func image(named: String) -> UIImage? {
         if #available(iOS 13.0, *) {
-            return UIImage(named: named, in: Bundle(for: self), with: nil)
+            let bundle = Bundle(for: self)
+            let image = UIImage(named: named, in: bundle, with: nil)
+            print(")))))))))))) Bundle \(bundle) \(image)")
+            return image
         } else {
             // Fallback on earlier versions
             let frameworkBundle =  Bundle(for: ImageProvider.self)
