@@ -24,8 +24,8 @@ Pod::Spec.new do |s|
   s.platform = :ios, '13.0'
   s.swift_version = "5.0"
   s.ios.frameworks = ['UIKit', 'AVFAudio']
-  s.resource_bundles = {
-    'DyteUiKit' => ['**/**']
+  s.resource_bundle = {
+    'DyteUiKit' => ['Resources/*']
   }
   s.dependency 'DyteiOSCore' , '~> 0.6.7'
   s.module_name = 'DyteUiKit'
