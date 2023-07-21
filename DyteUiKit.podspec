@@ -20,11 +20,13 @@ Pod::Spec.new do |s|
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
 
   s.ios.deployment_target  = '13.0'
-  s.source_files = 'DyteUiKit/**/*'
+  s.source_files = 'DyteUiKit/**/**'
   s.platform = :ios, '13.0'
   s.swift_version = "5.0"
   s.ios.frameworks = ['UIKit', 'AVFAudio']
-
+  s.resource_bundles = {
+    'DyteUiKit' => ['**/**']
+  }
   s.dependency 'DyteiOSCore' , '~> 0.6.7'
   s.module_name = 'DyteUiKit'
 
