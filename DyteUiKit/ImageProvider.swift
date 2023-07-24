@@ -16,7 +16,7 @@ public class ImageProvider {
             return image
         } else {
             // Fallback on earlier versions
-            let frameworkBundle =  Bundle(for: ImageProvider.self)
+            let frameworkBundle =  Bundle.module
             let imagePath = frameworkBundle.path(forResource: named, ofType: "png")
             return  UIImage(contentsOfFile: imagePath!)
         }

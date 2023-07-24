@@ -21,7 +21,7 @@ class DyteNotification {
         }
         
         do {
-            let frameworkBundle =  Bundle(for: DyteNotification.self)
+            let frameworkBundle =  Bundle.module
             guard let url = frameworkBundle.url(forResource: resource, withExtension: "mp3") else {return}
             
             let audioData = try Data(contentsOf: url)
