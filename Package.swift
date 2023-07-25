@@ -9,7 +9,9 @@ let package = Package(
     ],
     targets: [
         .target(name: "DyteUiKit",
-                path: "DyteUiKit/"),
+                path: "DyteUiKit/",
+                resources: [.process("DyteUiKit/Resources/notification_join.mp3"),
+                            .process("DyteUiKit/Resources/notification_message.mp3")]),
         .binaryTarget(
             name: "WebRTC",
             url: "https://github.com/jitsi/webrtc/releases/download/v111.0.2/WebRTC.xcframework.zip",
