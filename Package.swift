@@ -11,7 +11,6 @@ let package = Package(
         .target(name: "DyteUiKit",
                 path: "DyteUiKit/",
                 resources: [.process("DyteUiKit/Resources/notification_join.mp3"),
-                            .copy("DyteUiKit/Resources/Media.xcassets"),
                             .process("DyteUiKit/Resources/notification_message.mp3")]),
         .binaryTarget(
             name: "WebRTC",
