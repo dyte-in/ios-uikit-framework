@@ -6,7 +6,7 @@
 	<dict>
 		<key>Assets.car</key>
 		<data>
-		ngeo0k1GnMq/eyyS4geyFJSxzAU=
+		8Hd7KW2UlWylDa9pfhiBlGIOxhA=
 		</data>
 		<key>Frameworks/AmazonIVSPlayer.framework/AmazonIVSPlayer</key>
 		<data>
@@ -22,15 +22,15 @@
 		</data>
 		<key>Frameworks/DyteiOSCore.framework/DyteiOSCore</key>
 		<data>
-		Z88fKQnl23YRBRMy8m4GeJRXGD0=
+		8Cm8mn4vtT5wABZKBW1I0KuS0kc=
 		</data>
 		<key>Frameworks/DyteiOSCore.framework/Info.plist</key>
 		<data>
-		zQbhDSdycNvPAeE/3Va3ytO4Jko=
+		MODj3mjVsB0w/D0U2qAoSbXs2+k=
 		</data>
 		<key>Frameworks/DyteiOSCore.framework/_CodeSignature/CodeResources</key>
 		<data>
-		1DxV4Kq2Cy++smcsEVtZDJVx3e4=
+		uwHBiox941ncQAKKeqFJECC+OlM=
 		</data>
 		<key>Frameworks/DyteiOSSocketIO.framework/DyteiOSSocketIO</key>
 		<data>
@@ -58,19 +58,19 @@
 		</data>
 		<key>Frameworks/WebRTC.framework/Info.plist</key>
 		<data>
-		MeQE29wKFpMdKPnM4qHJUIkaqa8=
+		0Ko8IaNLSq8n6JtPUQrkw1dn4cQ=
 		</data>
 		<key>Frameworks/WebRTC.framework/WebRTC</key>
 		<data>
-		y+53xuLM9K5avAvLdxDWDSYTZ4M=
+		FYUfgBOAouq0xy/JPBCVQYyJneo=
 		</data>
 		<key>Frameworks/WebRTC.framework/_CodeSignature/CodeResources</key>
 		<data>
-		hgY10FlSCiJRNCRJc+39VcesAJg=
+		NEVmMlrjxOIe5s7ZUfxE/mSSjnE=
 		</data>
 		<key>Headers/DyteUiKit-Swift.h</key>
 		<data>
-		co1qKN9/I8OO0fmfXgybPqCTmxs=
+		0Bbd95kYYp4/o9yYhMNHOgYQwsU=
 		</data>
 		<key>Headers/DyteUiKit.h</key>
 		<data>
@@ -78,59 +78,59 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		lfAgR+SwmzEtSAHrHUjjs+MCI24=
+		T/XG7p7m33ahM2KWu1RzWccXSME=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		4sL4QuU34iFt0xgr06tnx7zajtI=
+		3xrGH4FUtVOmdCHPfz6TK1IxykE=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		xQPOoe1oiUPI9klBDA7HNaxPl9U=
+		ZxbTPyZsAFiqxO4Q+2U6UwvIKy8=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		gL12bJP0hPol0W1ZgIWZrZYSExg=
+		dKR+xrG/3YkfIGHQL/pmY8Rtu5A=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		yCEom8f20V3CVtydgP0oOR0nyHA=
+		COQXN/Cumx0MbvDuKlESByfFjvM=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		9wKCuo11d1RCMTzZIQ6LCBlLLhA=
+		TffsRqZMf2oH26Je8aDYWqc92EU=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		yCEom8f20V3CVtydgP0oOR0nyHA=
+		COQXN/Cumx0MbvDuKlESByfFjvM=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		79cIlc4WM0zqienwaU+iugNntKQ=
+		52S1DwwFILViaQhGqrhOscFcH0I=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		gL12bJP0hPol0W1ZgIWZrZYSExg=
+		dKR+xrG/3YkfIGHQL/pmY8Rtu5A=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		pTIidlgNe8lQcthVCz3PHICEkGo=
+		7SjAgAhc//0hZad6pub0gv7Cm8Y=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		Ayv2OKlfqhylwslkk3SNYhmdP5s=
+		mefSzObWBiqF2fHRQkFI3+PA/FU=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		pTIidlgNe8lQcthVCz3PHICEkGo=
+		7SjAgAhc//0hZad6pub0gv7Cm8Y=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		C/PW6xkSDQok+VzTLbQ8SATqL/8=
+		Ozwx69bJ3ljYNkiCo/1Hkdw8Syk=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
-		LShievD9cGJxId04ipNx+Kk2/Q0=
+		kcE5sSrcp4qV5O99hC2aKduTI/4=
 		</data>
 		<key>TokenConfiguration.plist</key>
 		<data>
@@ -151,7 +151,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			iwWZF1PbWOTkBTWvUUwMeYDdO25cnqKST99qp5n4K5A=
+			p4271Ow21jcpCFUpPlcC55JoDbr3M2UrCVknkZK1XEc=
 			</data>
 		</dict>
 		<key>Frameworks/AmazonIVSPlayer.framework/AmazonIVSPlayer</key>
@@ -179,21 +179,21 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			al18xzKLsg20CpcWLNvfcrZRbS4kiZKKRZwyqIBpdF4=
+			yI7czDp5094IxGNlnzZbzMq9759ahpFYE5qGnHm32Xk=
 			</data>
 		</dict>
 		<key>Frameworks/DyteiOSCore.framework/Info.plist</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			uwdUE9Sgr+FUBomMK1Ns+FFXPGb8ArgdlkM4bjvmX90=
+			0ENiIOEpVPFegBGwJ1KSHWAf74AW3j/skLqHmhUkejU=
 			</data>
 		</dict>
 		<key>Frameworks/DyteiOSCore.framework/_CodeSignature/CodeResources</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			cNLEPhqwelMbgEWXUzkNPKmKJsWddBGrC4FdORMHS/Q=
+			Y9s/Sz1Y+4GPqnCae5L4tYGaxUtuoGOEWXFHWw7sHUc=
 			</data>
 		</dict>
 		<key>Frameworks/DyteiOSSocketIO.framework/DyteiOSSocketIO</key>
@@ -242,28 +242,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			xP9Y360CjpJn9OCcbc1d1WDL8ZJ5R97jhYKbJ2eAZCE=
+			MRQdWc+qjaJ1+HBpVVd+tUlarb3mhiSFmTAG1t2Hk5A=
 			</data>
 		</dict>
 		<key>Frameworks/WebRTC.framework/WebRTC</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			OPZXRKU/hq2PToKmnxu92m8n+dcKRYiA5V0gitreFGI=
+			zoAlIPLAWWEKiuAOZpeNIMrkRXYY9Jym6vxK4ODNG1E=
 			</data>
 		</dict>
 		<key>Frameworks/WebRTC.framework/_CodeSignature/CodeResources</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			h77GYYogDHif8IFLcNtlP2s114evr0xJbW1N+ZxAgCc=
+			DAj7HkLQ9tlH1vpE5qP6rY/A44ggFhDv2+8CY/Rx8Jg=
 			</data>
 		</dict>
 		<key>Headers/DyteUiKit-Swift.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			+lRVQF/0gBg7UsFL66nSQdYYep+KwMDeFybjvFK680Q=
+			sBQ/h1tjS+WHk6bR4uec+CkkcDUdmYZueJfBn0SCoqg=
 			</data>
 		</dict>
 		<key>Headers/DyteUiKit.h</key>
@@ -277,91 +277,91 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			e2UBGAyqjHTOPxk2sDtbvCILA3IJfdWX7xJ1cG5EkdY=
+			FfUcLfVPWJ0iO9DSgwPcCpNwkzo+O58lrFU+R412kHs=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			TdKM0O74rBv5rZ3MTV6rsSsaPOnE44jfiVErGkLyomM=
+			mvpx7X3CJdN4/Wlh2tCesrXciseaELTkImd+k/3x5JU=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			dk4YbYVsYt3Y7346C8Tea/CNbMnO1P6vdK/XTtmzDNU=
+			qi6AThrrLC2NVl2FtW53SadTF9YkUEdhBCwA73qK30Q=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			GzC293ysYqwyOuxNqGb0Po9+6qxwNsdFEn9UZfe2wi0=
+			2HUYW/Rjn/RHVRd9HQYdR6UwsOeQwXImsZH2wzVesmY=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			aFbh4R9A+NHvBYZobJqIAjVU8ppB/P0iYR7jcHC0fuE=
+			1dUWhi/6m3l2MbWAwDVGC3+h//QD10zolDXhazV3MJw=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			GzC293ysYqwyOuxNqGb0Po9+6qxwNsdFEn9UZfe2wi0=
+			2HUYW/Rjn/RHVRd9HQYdR6UwsOeQwXImsZH2wzVesmY=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			X2GXN+PKeNmerJ5FCAG1+QhVieqq9RIxYRrpYTlDzCA=
+			Dxu+zGYMCP3rT6GYlNh1EciNqYOim3kJeB6/Ea9CN5w=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			dk4YbYVsYt3Y7346C8Tea/CNbMnO1P6vdK/XTtmzDNU=
+			qi6AThrrLC2NVl2FtW53SadTF9YkUEdhBCwA73qK30Q=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			+qVB8Go3Rh+rjG21Q/3XTZNRMksAGyRH2W3jYSWAVnk=
+			uDo4OVnV5OoR8ltZYG+Q3503YvpBXMft9IFLPkxHI6s=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			s/fx22P7v+aXzTxZO5j/3BXHBhVSYO2d88zVLRqgw+k=
+			kNHwAeXDKNylHdepDwkZhYJEM6sleH7O4+3CKXDumpA=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			+qVB8Go3Rh+rjG21Q/3XTZNRMksAGyRH2W3jYSWAVnk=
+			uDo4OVnV5OoR8ltZYG+Q3503YvpBXMft9IFLPkxHI6s=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			MrKDBjGlCkwczG59OSHFJUY9fZZLpQUmAVl8o4tevyg=
+			W9fCpCH5NgyRrwLsU122T/mUjo0Nnv8Gz+v1dP0xPhQ=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			HLt+a16hAaqNTPubaoUF5jCxl3zMu3hZLwq/QudXQKU=
+			N6M6KkayP6eGb3zRwkB7Cmy0+ztw7BkaODcS1dXDMPc=
 			</data>
 		</dict>
 		<key>TokenConfiguration.plist</key>

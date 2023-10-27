@@ -1,7 +1,7 @@
 framework module DyteUiKit {
   umbrella header "DyteUiKit.h"
-
   export *
+
   module * { export * }
 }
 

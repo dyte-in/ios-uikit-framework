@@ -1,20 +1,48 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.8.1 (swiftlang-5.8.0.124.5 clang-1403.0.22.11.100)
+// swift-compiler-version: Apple Swift version 5.9 (swiftlang-5.9.0.128.108 clang-1500.0.40.1)
 // swift-module-flags: -target arm64-apple-ios13.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name DyteUiKit
 // swift-module-flags-ignorable: -enable-bare-slash-regex
 import AVFAudio
+import AVFoundation
 import AmazonIVSPlayer
+import DeveloperToolsSupport
 @_exported import DyteUiKit
 import DyteiOSCore
 import Foundation
 import MobileCoreServices
 import QuickLook
 import Swift
+import SwiftUI
 import UIKit
 import UniformTypeIdentifiers
 import WebKit
 import _Concurrency
 import _StringProcessing
+import _SwiftConcurrencyShims
+@objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class LivestreamViewController : UIKit.UIViewController {
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewSafeAreaInsetsDidChange()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidLoad()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidDisappear(_ animated: Swift.Bool)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewWillAppear(_ animated: Swift.Bool)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidAppear(_ animated: Swift.Bool)
+  @objc deinit
+}
+extension DyteUiKit.LivestreamViewController : AmazonIVSPlayer.IVSPlayer.Delegate {
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func player(_ player: AmazonIVSPlayer.IVSPlayer, didChangeState state: AmazonIVSPlayer.IVSPlayer.State)
+}
+extension DyteUiKit.LivestreamViewController : DyteiOSCore.DyteLiveStreamEventsListener {
+  @_Concurrency.MainActor(unsafe) public func onJoinRequestAccepted(peer: DyteiOSCore.LiveStreamStagePeer)
+  @_Concurrency.MainActor(unsafe) public func onJoinRequestRejected(peer: DyteiOSCore.LiveStreamStagePeer)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamEnded()
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamEnding()
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamErrored()
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamStarted()
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamStarting()
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamStateUpdate(data: DyteiOSCore.DyteLivestreamData)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onStageCountUpdated(count: Swift.Int32)
+  @_Concurrency.MainActor(unsafe) public func onStageRequestsUpdated(requests: [DyteiOSCore.LiveStreamStageRequestPeer])
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onViewerCountUpdated(count: Swift.Int32)
+}
 @_hasMissingDesignatedInitializers public class ImageProvider {
   public static func image(named: Swift.String) -> UIKit.UIImage?
   @objc deinit
@@ -22,10 +50,20 @@ import _StringProcessing
 @_hasMissingDesignatedInitializers public class FileDownloader {
   @objc deinit
 }
+@objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class WebinarAlertView : UIKit.UIView {
+  @_Concurrency.MainActor(unsafe) public init(meetingClient: DyteiOSCore.DyteMobileClient, participant: DyteiOSCore.DyteJoinedMeetingParticipant)
+  @_Concurrency.MainActor(unsafe) public func loadSelfVideoView()
+  @objc deinit
+}
 @objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class DyteParticipantCountView : DyteUiKit.DyteText {
   @objc deinit
 }
 extension DyteUiKit.DyteParticipantCountView : DyteiOSCore.DyteParticipantEventsListener {
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onUpdate(participants: DyteiOSCore.DyteRoomParticipants)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onScreenShareEnded(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onScreenShareStarted(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onScreenShareEnded(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onScreenShareStarted(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onActiveParticipantsChanged(active: [DyteiOSCore.DyteJoinedMeetingParticipant])
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onActiveSpeakerChanged(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onAudioUpdate(audioEnabled: Swift.Bool, participant: DyteiOSCore.DyteMeetingParticipant)
@@ -34,10 +72,7 @@ extension DyteUiKit.DyteParticipantCountView : DyteiOSCore.DyteParticipantEvents
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onParticipantLeave(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onParticipantPinned(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onParticipantUnpinned(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onScreenShareEnded(participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onScreenShareStarted(participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onScreenSharesUpdated()
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onUpdate(participants: DyteiOSCore.DyteRoomParticipants)
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onVideoUpdate(videoEnabled: Swift.Bool, participant: DyteiOSCore.DyteMeetingParticipant)
 }
 @_hasMissingDesignatedInitializers public class DyteLeaveDialog {
@@ -93,9 +128,9 @@ public class DyteControlBarButtonAppearanceModel : DyteUiKit.DyteControlBarButto
   public var selectedStateTintColor: DyteUiKit.TextColorToken.Background.Shade
   public var normalStateTintColor: DyteUiKit.TextColorToken.Background.Shade
   public var acitivityInidicatorColor: DyteUiKit.TextColorToken.Background.Shade
-  public var desingLibrary: any DyteUiKit.DesignTokens
+  public var desingLibrary: any DyteUiKit.DyteDesignTokens
   public var cornerRadius: DyteUiKit.BorderRadiusToken.RadiusType
-  required public init(designLibrary: any DyteUiKit.DesignTokens = DesignLibrary.shared)
+  required public init(designLibrary: any DyteUiKit.DyteDesignTokens = DesignLibrary.shared)
   @objc deinit
 }
 @objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) open class DyteControlBarButton : UIKit.UIButton {
@@ -144,8 +179,8 @@ public protocol DyteTextAppearance : DyteUiKit.BaseAppearance {
 public class DyteTextAppearanceModel : DyteUiKit.DyteTextAppearance {
   public var textColor: DyteUiKit.TextColorToken.Background.Shade
   public var font: UIKit.UIFont
-  public var desingLibrary: any DyteUiKit.DesignTokens
-  required public init(designLibrary: any DyteUiKit.DesignTokens = DesignLibrary.shared)
+  public var desingLibrary: any DyteUiKit.DyteDesignTokens
+  required public init(designLibrary: any DyteUiKit.DyteDesignTokens = DesignLibrary.shared)
   @objc deinit
 }
 @objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class DyteText : UIKit.UILabel {
@@ -153,8 +188,8 @@ public class DyteTextAppearanceModel : DyteUiKit.DyteTextAppearance {
   @objc deinit
 }
 public protocol BaseAppearance {
-  var desingLibrary: any DyteUiKit.DesignTokens { get }
-  init(designLibrary: any DyteUiKit.DesignTokens)
+  var desingLibrary: any DyteUiKit.DyteDesignTokens { get }
+  init(designLibrary: any DyteUiKit.DyteDesignTokens)
 }
 public protocol DyteNameTagAppearance : DyteUiKit.BaseAppearance {
   var backGroundColor: DyteUiKit.BackgroundColorToken.Shade { get set }
@@ -173,8 +208,8 @@ public class DyteNameTagAppearanceModel : DyteUiKit.DyteNameTagAppearance {
   public var titleFont: UIKit.UIFont
   public var subTitleFont: UIKit.UIFont
   public var paddings: UIKit.UIEdgeInsets
-  public var desingLibrary: any DyteUiKit.DesignTokens
-  required public init(designLibrary: any DyteUiKit.DesignTokens = DesignLibrary.shared)
+  public var desingLibrary: any DyteUiKit.DyteDesignTokens
+  required public init(designLibrary: any DyteUiKit.DyteDesignTokens = DesignLibrary.shared)
   @objc deinit
 }
 @objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class DyteNameTag : DyteUiKit.BaseAtomView {
@@ -187,34 +222,13 @@ public class DyteNameTagAppearanceModel : DyteUiKit.DyteNameTagAppearance {
 extension DyteUiKit.DyteNameTag {
   @_Concurrency.MainActor(unsafe) public func applyDesign(appearance: any DyteUiKit.DyteNameTagAppearance)
 }
-@objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class LivestreamViewController : UIKit.UIViewController {
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewSafeAreaInsetsDidChange()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidLoad()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidDisappear(_ animated: Swift.Bool)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewWillAppear(_ animated: Swift.Bool)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidAppear(_ animated: Swift.Bool)
-  @objc deinit
-}
-extension DyteUiKit.LivestreamViewController : AmazonIVSPlayer.IVSPlayer.Delegate {
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func player(_ player: AmazonIVSPlayer.IVSPlayer, didChangeState state: AmazonIVSPlayer.IVSPlayer.State)
-}
-extension DyteUiKit.LivestreamViewController : DyteiOSCore.DyteLiveStreamEventsListener {
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onJoinRequestAccepted(peer: DyteiOSCore.LiveStreamStagePeer)
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onJoinRequestRejected(peer: DyteiOSCore.LiveStreamStagePeer)
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamEnded()
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamEnding()
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamErrored()
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamStarted()
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamStarting()
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamStateUpdate(data: DyteiOSCore.DyteLivestreamData)
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onStageCountUpdated(count: Swift.Int32)
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onStageRequestsUpdated(requests: [DyteiOSCore.LiveStreamStageRequestPeer])
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onViewerCountUpdated(count: Swift.Int32)
-}
 public protocol ConfigureView {
   associatedtype Model
   var model: Self.Model { get }
   func configure(model: Self.Model)
+}
+extension UIKit.UITableView {
+  @_Concurrency.MainActor(unsafe) public func register<T>(_ cell: T.Type) where T : UIKit.UITableViewCell
 }
 @objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class DyteAvatarView : UIKit.UIView {
   @_Concurrency.MainActor(unsafe) public init(participant: DyteiOSCore.DyteMeetingParticipant)
@@ -302,10 +316,13 @@ public struct BrandColorToken {
   @_Concurrency.MainActor(unsafe) public func setClicks(nextButton: @escaping (DyteUiKit.DyteControlBarButton) -> Swift.Void, previousButton: @escaping (DyteUiKit.DyteControlBarButton) -> Swift.Void)
   @objc deinit
 }
-@objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) open class DyteMeetingControlBar : DyteUiKit.DyteControlBar {
-  @_Concurrency.MainActor(unsafe) final public let moreButton: DyteUiKit.DyteMoreButtonControlBar
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) open class DyteMeetingControlBar : DyteUiKit.DyteControlBar {
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
   @objc deinit
+}
+@objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) open class DyteWebinarControlBar : DyteUiKit.DyteControlBar {
+  @objc deinit
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
 }
 @objc @_Concurrency.MainActor(unsafe) open class DyteJoinButton : DyteUiKit.DyteButton {
   @_Concurrency.MainActor(unsafe) public init(meeting: DyteiOSCore.DyteMobileClient, onClick: ((DyteUiKit.DyteJoinButton, Swift.Bool) -> Swift.Void)? = nil, appearance: any DyteUiKit.DyteButtonAppearance = AppTheme.shared.buttonAppearance)
@@ -324,12 +341,12 @@ public protocol DyteControlBarAppearance : DyteUiKit.BaseAppearance {
   var backgroundColor: DyteUiKit.BackgroundColorToken.Shade { get set }
 }
 public class DyteControlBarAppearanceModel : DyteUiKit.DyteControlBarAppearance {
-  public var desingLibrary: any DyteUiKit.DesignTokens
-  required public init(designLibrary: any DyteUiKit.DesignTokens = DesignLibrary.shared)
+  public var desingLibrary: any DyteUiKit.DyteDesignTokens
+  required public init(designLibrary: any DyteUiKit.DyteDesignTokens = DesignLibrary.shared)
   public var backgroundColor: DyteUiKit.BackgroundColorToken.Shade
   @objc deinit
 }
-@objc @_Concurrency.MainActor(unsafe) open class DyteControlBar : UIKit.UIView {
+@objc @_Concurrency.MainActor(unsafe) open class DyteTabbarBar : UIKit.UIView {
   @_Concurrency.MainActor(unsafe) weak public var delegate: (any DyteUiKit.DyteTabBarDelegate)?
   @_Concurrency.MainActor(unsafe) final public let stackView: UIKit.UIStackView
   @objc @_Concurrency.MainActor(unsafe) public static var height: CoreFoundation.CGFloat {
@@ -347,6 +364,15 @@ public class DyteControlBarAppearanceModel : DyteUiKit.DyteControlBarAppearance 
   @_Concurrency.MainActor(unsafe) public func setButtons(_ buttons: [DyteUiKit.DyteControlBarButton])
   @_Concurrency.MainActor(unsafe) public func selectButton(at index: Swift.Int)
   @_Concurrency.MainActor(unsafe) public func getButton(at index: Swift.Int) -> DyteUiKit.DyteControlBarButton?
+  @objc deinit
+}
+@objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) open class DyteControlBar : DyteUiKit.DyteTabbarBar {
+  @_Concurrency.MainActor(unsafe) final public let moreButton: DyteUiKit.DyteMoreButtonControlBar
+  @_Concurrency.MainActor(unsafe) public var endCallButton: DyteUiKit.DyteEndMeetingControlBarButton {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) override public func setButtons(_ buttons: [DyteUiKit.DyteControlBarButton])
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
   @objc deinit
 }
 @objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class DyteTextField : DyteUiKit.BaseAtomView {
@@ -394,7 +420,8 @@ extension UIKit.UIColor {
   public func lighter(by percentage: CoreFoundation.CGFloat = 12.0) -> Self?
   public func darker(by percentage: CoreFoundation.CGFloat = 12.0) -> UIKit.UIColor?
 }
-@objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class CreatePollsViewController : UIKit.UIViewController {
+@objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class CreatePollsViewController : UIKit.UIViewController, DyteUiKit.KeyboardObservable {
+  @_Concurrency.MainActor(unsafe) public var keyboardObserver: DyteUiKit.KeyboardObserver?
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidLoad()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func touchesBegan(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
   @objc deinit
@@ -403,13 +430,13 @@ extension DyteUiKit.CreatePollsViewController : DyteiOSCore.DytePollEventsListen
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onNewPoll(poll: DyteiOSCore.DytePollMessage)
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onPollUpdates(pollMessages: [DyteiOSCore.DytePollMessage])
 }
-public protocol DesignTokens {
+public protocol DyteDesignTokens {
   var color: DyteUiKit.ColorTokens { get }
   var space: DyteUiKit.SpaceToken { get }
   var borderSize: DyteUiKit.BorderWidthToken { get }
   var borderRadius: DyteUiKit.BorderRadiusToken { get }
 }
-@_hasMissingDesignatedInitializers public class DesignLibrary : DyteUiKit.DesignTokens {
+@_hasMissingDesignatedInitializers public class DesignLibrary : DyteUiKit.DyteDesignTokens {
   public var color: DyteUiKit.ColorTokens
   public var space: DyteUiKit.SpaceToken
   public var borderSize: DyteUiKit.BorderWidthToken
@@ -451,8 +478,8 @@ public protocol AppThemeProtocol {
   var meetingTitleAppearance: any DyteUiKit.DyteTextAppearance { get }
   var participantCountAppearance: any DyteUiKit.DyteTextAppearance { get }
   var recordingViewAppearance: any DyteUiKit.DyteRecordingViewAppearance { get }
-  var designLibrary: any DyteUiKit.DesignTokens { get }
-  init(designToken: any DyteUiKit.DesignTokens)
+  var designLibrary: any DyteUiKit.DyteDesignTokens { get }
+  init(designToken: any DyteUiKit.DyteDesignTokens)
 }
 @_hasMissingDesignatedInitializers public class AppTheme {
   public static let shared: DyteUiKit.AppTheme
@@ -492,6 +519,9 @@ public struct SpaceToken {
   public let space8: CoreFoundation.CGFloat
   public let space9: CoreFoundation.CGFloat
 }
+@_hasMissingDesignatedInitializers public class KeyboardObserver {
+  @objc deinit
+}
 @objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class DyteMeetingTitle : DyteUiKit.DyteText {
   @objc deinit
 }
@@ -507,10 +537,15 @@ public enum MenuType {
   case particpants(notificationMessage: Swift.String)
   case recordingStart
   case recordingStop
+  case muteAllAudio
+  case muteAllVideo
   case muteAudio
   case muteVideo
   case pin
   case unPin
+  case allowToJoinStage
+  case denyToJoinStage
+  case removeFromStage
   case kick
   case files
   case images
@@ -535,13 +570,13 @@ public protocol ScreenShareTabButtonDesignDependency : DyteUiKit.BaseAppearance 
   var acitivityInidicatorColor: DyteUiKit.TextColorToken.Background.Shade { get }
 }
 public class ScreenShareTabButtonDesignDependencyModel : DyteUiKit.ScreenShareTabButtonDesignDependency {
-  public var desingLibrary: any DyteUiKit.DesignTokens
+  public var desingLibrary: any DyteUiKit.DyteDesignTokens
   public var selectedStateBackGroundColor: DyteUiKit.TextColorToken.Brand.Shade
   public var normalStateBackGroundColor: DyteUiKit.TextColorToken.Background.Shade
   public var cornerRadius: DyteUiKit.BorderRadiusToken.RadiusType
   public var titleColor: DyteUiKit.TextColorToken.Background.Shade
   public var acitivityInidicatorColor: DyteUiKit.TextColorToken.Background.Shade
-  required public init(designLibrary: any DyteUiKit.DesignTokens = DesignLibrary.shared)
+  required public init(designLibrary: any DyteUiKit.DyteDesignTokens = DesignLibrary.shared)
   @objc deinit
 }
 @objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class ScreenShareTabButton : UIKit.UIButton {
@@ -555,6 +590,10 @@ extension DyteUiKit.ScreenShareTabButton {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func touchesBegan(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func touchesEnded(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func touchesCancelled(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class WebinarViewController : DyteUiKit.MeetingViewController {
+  @_Concurrency.MainActor(unsafe) override public func refreshMeetingGrid()
+  @objc deinit
 }
 public struct TextColorToken {
   public struct Background {
@@ -612,11 +651,12 @@ public struct TextColorToken {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewSafeAreaInsetsDidChange()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidLoad()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidAppear(_ animated: Swift.Bool)
+  @_Concurrency.MainActor(unsafe) public func refreshMeetingGrid()
   @objc deinit
 }
 extension DyteUiKit.MeetingViewController : DyteiOSCore.DyteLiveStreamEventsListener {
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onJoinRequestAccepted(peer: DyteiOSCore.LiveStreamStagePeer)
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onJoinRequestRejected(peer: DyteiOSCore.LiveStreamStagePeer)
+  @_Concurrency.MainActor(unsafe) public func onJoinRequestAccepted(peer: DyteiOSCore.LiveStreamStagePeer)
+  @_Concurrency.MainActor(unsafe) public func onJoinRequestRejected(peer: DyteiOSCore.LiveStreamStagePeer)
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamEnded()
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamEnding()
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamErrored()
@@ -624,10 +664,21 @@ extension DyteUiKit.MeetingViewController : DyteiOSCore.DyteLiveStreamEventsList
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamStarting()
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamStateUpdate(data: DyteiOSCore.DyteLivestreamData)
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onStageCountUpdated(count: Swift.Int32)
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onStageRequestsUpdated(requests: [DyteiOSCore.LiveStreamStageRequestPeer])
+  @_Concurrency.MainActor(unsafe) public func onStageRequestsUpdated(requests: [DyteiOSCore.LiveStreamStageRequestPeer])
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onViewerCountUpdated(count: Swift.Int32)
 }
-@objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class SetupViewController : UIKit.UIViewController {
+@objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class MicToggleButton : DyteUiKit.DyteButton {
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) public func clean()
+  @objc deinit
+}
+@objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class VideoToggleButton : DyteUiKit.DyteButton {
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) public func clean()
+  @objc deinit
+}
+@objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class SetupViewController : UIKit.UIViewController, DyteUiKit.KeyboardObservable {
+  @_Concurrency.MainActor(unsafe) public var keyboardObserver: DyteUiKit.KeyboardObserver?
   @_Concurrency.MainActor(unsafe) public init(meetingInfo: DyteiOSCore.DyteMeetingInfo, mobileClient: DyteiOSCore.DyteMobileClient, baseUrl: Swift.String? = nil, completion: @escaping () -> Swift.Void)
   @_Concurrency.MainActor(unsafe) public init(meetingInfo: DyteiOSCore.DyteMeetingInfoV2, mobileClient: DyteiOSCore.DyteMobileClient, baseUrl: Swift.String? = nil, completion: @escaping () -> Swift.Void)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidLoad()
@@ -707,8 +758,8 @@ public class DyteRecordingViewAppearanceModel : DyteUiKit.DyteRecordingViewAppea
   public var textColor: DyteUiKit.StatusColor.Shade
   public var font: UIKit.UIFont
   public var imageBackGroundColor: DyteUiKit.StatusColor.Shade
-  public var desingLibrary: any DyteUiKit.DesignTokens
-  required public init(designLibrary: any DyteUiKit.DesignTokens)
+  public var desingLibrary: any DyteUiKit.DyteDesignTokens
+  required public init(designLibrary: any DyteUiKit.DyteDesignTokens)
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) open class BaseTableViewCell : UIKit.UITableViewCell {
@@ -730,10 +781,10 @@ public protocol DyteButtonAppearance : DyteUiKit.BaseAppearance {
   var acitivityInidicatorColor: DyteUiKit.TextColorToken.Background.Shade { get set }
 }
 public class DyteButtonAppearanceModel : DyteUiKit.DyteButtonAppearance {
-  public var desingLibrary: any DyteUiKit.DesignTokens
+  public var desingLibrary: any DyteUiKit.DyteDesignTokens
   public var selectedStateTintColor: DyteUiKit.TextColorToken.Background.Shade
   public var normalStateTintColor: DyteUiKit.TextColorToken.Background.Shade
-  required public init(designLibrary: any DyteUiKit.DesignTokens = DesignLibrary.shared)
+  required public init(designLibrary: any DyteUiKit.DyteDesignTokens = DesignLibrary.shared)
   public var style: DyteUiKit.DyteButton.Style
   public var state: DyteUiKit.DyteButton.States
   public var backgroundColor: DyteUiKit.BrandColorToken.Shade
@@ -789,21 +840,24 @@ public class DyteButtonAppearanceModel : DyteUiKit.DyteButtonAppearance {
   @objc deinit
 }
 @_hasMissingDesignatedInitializers final public class MeetingViewModel {
+  final public func clearChatNotification()
   @objc deinit
 }
 extension DyteUiKit.MeetingViewModel : DyteiOSCore.DyteParticipantEventsListener {
+  @objc final public func onScreenShareEnded(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
+  @objc final public func onScreenShareStarted(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
+  @objc final public func onUpdate(participants: DyteiOSCore.DyteRoomParticipants)
+  @objc final public func onScreenShareEnded(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
+  @objc final public func onScreenShareStarted(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @objc final public func onParticipantLeave(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
-  @objc final public func onScreenShareEnded(participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
   @objc final public func onActiveParticipantsChanged(active: [DyteiOSCore.DyteJoinedMeetingParticipant])
   @objc final public func onActiveSpeakerChanged(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @objc final public func onNoActiveSpeaker()
+  @objc final public func onAudioUpdate(audioEnabled: Swift.Bool, participant: DyteiOSCore.DyteMeetingParticipant)
   @objc final public func onParticipantJoin(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @objc final public func onParticipantPinned(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @objc final public func onParticipantUnpinned(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @objc final public func onScreenSharesUpdated()
-  @objc final public func onAudioUpdate(audioEnabled: Swift.Bool, participant: DyteiOSCore.DyteMeetingParticipant)
-  @objc final public func onScreenShareStarted(participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
-  @objc final public func onUpdate(participants: DyteiOSCore.DyteRoomParticipants)
   @objc final public func onVideoUpdate(videoEnabled: Swift.Bool, participant: DyteiOSCore.DyteMeetingParticipant)
 }
 extension DyteUiKit.MeetingViewModel : DyteiOSCore.DyteChatEventsListener {
@@ -816,7 +870,8 @@ extension DyteUiKit.MeetingViewModel : DyteiOSCore.DytePluginEventsListener {
   @objc final public func onPluginFileRequest(plugin: DyteiOSCore.DytePlugin)
   @objc final public func onPluginMessage(message: [Swift.String : DyteiOSCore.Kotlinx_serialization_jsonJsonElement])
 }
-@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class SearchViewController : UIKit.UIViewController {
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class SearchViewController : UIKit.UIViewController, DyteUiKit.KeyboardObservable {
+  @_Concurrency.MainActor(unsafe) public var keyboardObserver: DyteUiKit.KeyboardObserver?
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidLoad()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
@@ -841,6 +896,20 @@ public class DyteUiKit {
   @objc deinit
 }
 public protocol ReusableObject : AnyObject {
+}
+extension DyteUiKit.ReusableObject {
+  public static var reuseIdentifier: Swift.String {
+    get
+  }
+}
+public protocol KeyboardObservable : AnyObject {
+  var keyboardObserver: DyteUiKit.KeyboardObserver? { get set }
+  func startKeyboardObserving(onShow: @escaping (_ keyboardFrame: CoreFoundation.CGRect) -> Swift.Void, onHide: @escaping () -> Swift.Void)
+  func stopKeyboardObserving()
+}
+extension DyteUiKit.KeyboardObservable {
+  public func startKeyboardObserving(onShow: @escaping (_ keyboardFrame: CoreFoundation.CGRect) -> Swift.Void, onHide: @escaping () -> Swift.Void)
+  public func stopKeyboardObserving()
 }
 public struct DyteImage {
   public var image: UIKit.UIImage?
@@ -890,13 +959,12 @@ extension DyteUiKit.DyteVideoView : DyteiOSCore.DyteParticipantUpdateListener {
 @_hasMissingDesignatedInitializers public class ParticipantViewControllerModel {
   public var mobileClient: DyteiOSCore.DyteMobileClient
   public var waitlistEventListner: DyteUiKit.DyteWaitListParticipantUpdateEventListner
-  public var participantEventListner: DyteUiKit.ParticipantEventListner
   public func load(completion: @escaping (Swift.Bool) -> Swift.Void)
   @objc deinit
 }
 @_hasMissingDesignatedInitializers public class LiveParticipantViewControllerModel : DyteiOSCore.DyteLiveStreamEventsListener {
-  @objc public func onJoinRequestAccepted(peer: DyteiOSCore.LiveStreamStagePeer)
-  @objc public func onJoinRequestRejected(peer: DyteiOSCore.LiveStreamStagePeer)
+  public func onJoinRequestAccepted(peer: DyteiOSCore.LiveStreamStagePeer)
+  public func onJoinRequestRejected(peer: DyteiOSCore.LiveStreamStagePeer)
   @objc public func onLiveStreamEnded()
   @objc public func onLiveStreamEnding()
   @objc public func onLiveStreamErrored()
@@ -904,9 +972,12 @@ extension DyteUiKit.DyteVideoView : DyteiOSCore.DyteParticipantUpdateListener {
   @objc public func onLiveStreamStarting()
   @objc public func onLiveStreamStateUpdate(data: DyteiOSCore.DyteLivestreamData)
   @objc public func onStageCountUpdated(count: Swift.Int32)
-  @objc public func onStageRequestsUpdated(requests: [DyteiOSCore.LiveStreamStageRequestPeer])
+  public func onStageRequestsUpdated(requests: [DyteiOSCore.LiveStreamStageRequestPeer])
   @objc public func onViewerCountUpdated(count: Swift.Int32)
-  public var participantEventListner: DyteUiKit.ParticipantEventListner
+  public func load(completion: @escaping (Swift.Bool) -> Swift.Void)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class ParticipantWebinarViewControllerModel {
   public func load(completion: @escaping (Swift.Bool) -> Swift.Void)
   @objc deinit
 }
@@ -1019,31 +1090,45 @@ extension DyteUiKit.DyteWaitListParticipantUpdateEventListner : DyteiOSCore.Dyte
   @objc dynamic public func onWaitListParticipantClosed(participant: DyteiOSCore.DyteWaitlistedParticipant)
   @objc dynamic public func onWaitListParticipantJoined(participant: DyteiOSCore.DyteWaitlistedParticipant)
 }
-@_hasMissingDesignatedInitializers public class ParticipantEventListner : DyteiOSCore.DyteParticipantEventsListener {
-  public func clean()
-  public func acceptWaitingRequest(participant: DyteiOSCore.DyteWaitlistedParticipant)
-  public func rejectWaitingRequest(participant: DyteiOSCore.DyteWaitlistedParticipant)
-  @objc public func onParticipantJoin(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
+@_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class DyteDropdown<Model> : UIKit.UIView where Model : DyteUiKit.PickerCellModel {
+  @_Concurrency.MainActor(unsafe) public init(rightImage: DyteUiKit.DyteImage, heading: Swift.String, options: [Model], selectedIndex: Swift.UInt = 0, onClick: @escaping (DyteUiKit.DyteDropdown<Model>) -> Swift.Void)
   @objc deinit
 }
-extension DyteUiKit.ParticipantEventListner {
+@_hasMissingDesignatedInitializers public class WebinarParticipantViewControllerModel {
+  public func load(completion: @escaping (Swift.Bool) -> Swift.Void)
+  @objc deinit
+}
+extension DyteUiKit.WebinarParticipantViewControllerModel : DyteiOSCore.DyteParticipantEventsListener {
+  @objc dynamic public func onScreenShareEnded(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
+  @objc dynamic public func onScreenShareStarted(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
+  @objc dynamic public func onScreenShareEnded(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
+  @objc dynamic public func onScreenShareStarted(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
+  @objc dynamic public func onUpdate(participants: DyteiOSCore.DyteRoomParticipants)
   @objc dynamic public func onActiveParticipantsChanged(active: [DyteiOSCore.DyteJoinedMeetingParticipant])
   @objc dynamic public func onActiveSpeakerChanged(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @objc dynamic public func onAudioUpdate(audioEnabled: Swift.Bool, participant: DyteiOSCore.DyteMeetingParticipant)
   @objc dynamic public func onNoActiveSpeaker()
+  @objc dynamic public func onParticipantJoin(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @objc dynamic public func onParticipantLeave(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @objc dynamic public func onParticipantPinned(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @objc dynamic public func onParticipantUnpinned(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
-  @objc dynamic public func onScreenShareEnded(participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
-  @objc dynamic public func onScreenShareStarted(participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
   @objc dynamic public func onScreenSharesUpdated()
-  @objc dynamic public func onUpdate(participants: DyteiOSCore.DyteRoomParticipants)
   @objc dynamic public func onVideoUpdate(videoEnabled: Swift.Bool, participant: DyteiOSCore.DyteMeetingParticipant)
-  public func onWaitListParticipantAccepted(participant: DyteiOSCore.DyteWaitlistedParticipant)
 }
-@_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class DyteDropdown<Model> : UIKit.UIView where Model : DyteUiKit.PickerCellModel {
-  @_Concurrency.MainActor(unsafe) public init(rightImage: DyteUiKit.DyteImage, heading: Swift.String, options: [Model], selectedIndex: Swift.UInt = 0, onClick: @escaping (DyteUiKit.DyteDropdown<Model>) -> Swift.Void)
-  @objc deinit
+extension DyteUiKit.WebinarParticipantViewControllerModel : DyteiOSCore.DyteStageEventListener {
+  @objc dynamic public func onParticipantStartedPresenting(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
+  @objc dynamic public func onParticipantStoppedPresenting(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
+  @objc dynamic public func onStageStatusUpdated(stageStatus: DyteiOSCore.StageStatus)
+  @objc dynamic public func onParticipantRemovedFromStage(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
+  @objc dynamic public func onAddedToStage()
+  @objc dynamic public func onPresentRequestAccepted(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
+  @objc dynamic public func onPresentRequestAdded(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
+  @objc dynamic public func onPresentRequestClosed(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
+  @objc dynamic public func onPresentRequestReceived()
+  @objc dynamic public func onPresentRequestRejected(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
+  @objc dynamic public func onPresentRequestWithdrawn(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
+  @objc dynamic public func onRemovedFromStage()
+  @objc dynamic public func onStageRequestsUpdated(accessRequests: [DyteiOSCore.DyteJoinedMeetingParticipant])
 }
 @objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) open class DyteEndMeetingControlBarButton : DyteUiKit.DyteControlBarButton {
   @_Concurrency.MainActor(unsafe) public var shouldShowAlertOnClick: Swift.Bool
