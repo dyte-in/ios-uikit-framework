@@ -10,8 +10,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "DyteUiKit",
-            url: "https://github.com/dyte-in/ios-uikit-framework/archive/refs/tags/0.3.7.zip",
-            checksum: "9cdbb28727edac494252a6f5938fce1363255698588793157c5a3bd788388baa"
+            url: "https://github.com/dyte-in/ios-uikit-framework/archive/refs/tags/0.4.0.zip",
+            checksum: "7646afc5e107e20b187f1f509d2d39cf1a27090edc252a7ad0250d0a8cde24cf"
         ),
         .binaryTarget(
             name: "WebRTC",
