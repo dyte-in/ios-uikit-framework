@@ -539,15 +539,14 @@ SWIFT_CLASS("_TtC9DyteUiKit24DyteParticipantCountView")
 @interface DyteParticipantCountView : DyteText
 @end
 
+@class DOSCDyteParticipant;
 @class DOSCDyteRoomParticipants;
-@class DOSCDyteScreenShareMeetingParticipant;
 @class DOSCDyteJoinedMeetingParticipant;
 @class DOSCDyteMeetingParticipant;
 
 @interface DyteParticipantCountView (SWIFT_EXTENSION(DyteUiKit)) <DOSCDyteParticipantEventsListener>
+- (void)onAllParticipantsUpdatedAllParticipants:(NSArray<DOSCDyteParticipant *> * _Nonnull)allParticipants;
 - (void)onUpdateParticipants:(DOSCDyteRoomParticipants * _Nonnull)participants;
-- (void)onScreenShareEndedParticipant_:(DOSCDyteScreenShareMeetingParticipant * _Nonnull)participant;
-- (void)onScreenShareStartedParticipant_:(DOSCDyteScreenShareMeetingParticipant * _Nonnull)participant;
 - (void)onScreenShareEndedParticipant:(DOSCDyteJoinedMeetingParticipant * _Nonnull)participant;
 - (void)onScreenShareStartedParticipant:(DOSCDyteJoinedMeetingParticipant * _Nonnull)participant;
 - (void)onActiveParticipantsChangedActive:(NSArray<DOSCDyteJoinedMeetingParticipant *> * _Nonnull)active;
@@ -646,7 +645,6 @@ SWIFT_CLASS("_TtC9DyteUiKit24LivestreamViewController")
 @end
 
 
-
 @class DOSCDyteLivestreamData;
 
 @interface LivestreamViewController (SWIFT_EXTENSION(DyteUiKit)) <DOSCDyteLiveStreamEventsListener>
@@ -659,6 +657,7 @@ SWIFT_CLASS("_TtC9DyteUiKit24LivestreamViewController")
 - (void)onStageCountUpdatedCount:(int32_t)count;
 - (void)onViewerCountUpdatedCount:(int32_t)count;
 @end
+
 
 
 
@@ -1379,15 +1378,14 @@ SWIFT_CLASS("_TtC9DyteUiKit24DyteParticipantCountView")
 @interface DyteParticipantCountView : DyteText
 @end
 
+@class DOSCDyteParticipant;
 @class DOSCDyteRoomParticipants;
-@class DOSCDyteScreenShareMeetingParticipant;
 @class DOSCDyteJoinedMeetingParticipant;
 @class DOSCDyteMeetingParticipant;
 
 @interface DyteParticipantCountView (SWIFT_EXTENSION(DyteUiKit)) <DOSCDyteParticipantEventsListener>
+- (void)onAllParticipantsUpdatedAllParticipants:(NSArray<DOSCDyteParticipant *> * _Nonnull)allParticipants;
 - (void)onUpdateParticipants:(DOSCDyteRoomParticipants * _Nonnull)participants;
-- (void)onScreenShareEndedParticipant_:(DOSCDyteScreenShareMeetingParticipant * _Nonnull)participant;
-- (void)onScreenShareStartedParticipant_:(DOSCDyteScreenShareMeetingParticipant * _Nonnull)participant;
 - (void)onScreenShareEndedParticipant:(DOSCDyteJoinedMeetingParticipant * _Nonnull)participant;
 - (void)onScreenShareStartedParticipant:(DOSCDyteJoinedMeetingParticipant * _Nonnull)participant;
 - (void)onActiveParticipantsChangedActive:(NSArray<DOSCDyteJoinedMeetingParticipant *> * _Nonnull)active;
@@ -1486,7 +1484,6 @@ SWIFT_CLASS("_TtC9DyteUiKit24LivestreamViewController")
 @end
 
 
-
 @class DOSCDyteLivestreamData;
 
 @interface LivestreamViewController (SWIFT_EXTENSION(DyteUiKit)) <DOSCDyteLiveStreamEventsListener>
@@ -1499,6 +1496,7 @@ SWIFT_CLASS("_TtC9DyteUiKit24LivestreamViewController")
 - (void)onStageCountUpdatedCount:(int32_t)count;
 - (void)onViewerCountUpdatedCount:(int32_t)count;
 @end
+
 
 
 

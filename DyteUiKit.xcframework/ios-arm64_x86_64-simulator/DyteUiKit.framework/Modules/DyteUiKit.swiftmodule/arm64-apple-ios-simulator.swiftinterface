@@ -31,8 +31,6 @@ extension DyteUiKit.LivestreamViewController : AmazonIVSPlayer.IVSPlayer.Delegat
   @_Concurrency.MainActor(unsafe) @objc dynamic public func player(_ player: AmazonIVSPlayer.IVSPlayer, didChangeState state: AmazonIVSPlayer.IVSPlayer.State)
 }
 extension DyteUiKit.LivestreamViewController : DyteiOSCore.DyteLiveStreamEventsListener {
-  @_Concurrency.MainActor(unsafe) public func onJoinRequestAccepted(peer: DyteiOSCore.LiveStreamStagePeer)
-  @_Concurrency.MainActor(unsafe) public func onJoinRequestRejected(peer: DyteiOSCore.LiveStreamStagePeer)
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamEnded()
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamEnding()
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamErrored()
@@ -40,7 +38,6 @@ extension DyteUiKit.LivestreamViewController : DyteiOSCore.DyteLiveStreamEventsL
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamStarting()
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamStateUpdate(data: DyteiOSCore.DyteLivestreamData)
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onStageCountUpdated(count: Swift.Int32)
-  @_Concurrency.MainActor(unsafe) public func onStageRequestsUpdated(requests: [DyteiOSCore.LiveStreamStageRequestPeer])
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onViewerCountUpdated(count: Swift.Int32)
 }
 @_hasMissingDesignatedInitializers public class ImageProvider {
@@ -59,9 +56,10 @@ extension DyteUiKit.LivestreamViewController : DyteiOSCore.DyteLiveStreamEventsL
   @objc deinit
 }
 extension DyteUiKit.DyteParticipantCountView : DyteiOSCore.DyteParticipantEventsListener {
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func onAllParticipantsUpdated(allParticipants: [DyteiOSCore.DyteParticipant])
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onUpdate(participants: DyteiOSCore.DyteRoomParticipants)
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onScreenShareEnded(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func onScreenShareStarted(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
+  @_Concurrency.MainActor(unsafe) public func onScreenShareEnded(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
+  @_Concurrency.MainActor(unsafe) public func onScreenShareStarted(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onScreenShareEnded(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onScreenShareStarted(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onActiveParticipantsChanged(active: [DyteiOSCore.DyteJoinedMeetingParticipant])
@@ -655,8 +653,8 @@ public struct TextColorToken {
   @objc deinit
 }
 extension DyteUiKit.MeetingViewController : DyteiOSCore.DyteLiveStreamEventsListener {
-  @_Concurrency.MainActor(unsafe) public func onJoinRequestAccepted(peer: DyteiOSCore.LiveStreamStagePeer)
-  @_Concurrency.MainActor(unsafe) public func onJoinRequestRejected(peer: DyteiOSCore.LiveStreamStagePeer)
+  @_Concurrency.MainActor(unsafe) public func onJoinRequestAccepted(peer: DyteiOSCore.StagePeer)
+  @_Concurrency.MainActor(unsafe) public func onJoinRequestRejected(peer: DyteiOSCore.StagePeer)
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamEnded()
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamEnding()
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamErrored()
@@ -664,7 +662,7 @@ extension DyteUiKit.MeetingViewController : DyteiOSCore.DyteLiveStreamEventsList
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamStarting()
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onLiveStreamStateUpdate(data: DyteiOSCore.DyteLivestreamData)
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onStageCountUpdated(count: Swift.Int32)
-  @_Concurrency.MainActor(unsafe) public func onStageRequestsUpdated(requests: [DyteiOSCore.LiveStreamStageRequestPeer])
+  @_Concurrency.MainActor(unsafe) public func onStageRequestsUpdated(requests: [DyteiOSCore.StagePeer])
   @_Concurrency.MainActor(unsafe) @objc dynamic public func onViewerCountUpdated(count: Swift.Int32)
 }
 @objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class MicToggleButton : DyteUiKit.DyteButton {
@@ -844,8 +842,9 @@ public class DyteButtonAppearanceModel : DyteUiKit.DyteButtonAppearance {
   @objc deinit
 }
 extension DyteUiKit.MeetingViewModel : DyteiOSCore.DyteParticipantEventsListener {
-  @objc final public func onScreenShareEnded(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
-  @objc final public func onScreenShareStarted(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
+  @objc final public func onAllParticipantsUpdated(allParticipants: [DyteiOSCore.DyteParticipant])
+  final public func onScreenShareEnded(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
+  final public func onScreenShareStarted(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
   @objc final public func onUpdate(participants: DyteiOSCore.DyteRoomParticipants)
   @objc final public func onScreenShareEnded(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @objc final public func onScreenShareStarted(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
@@ -963,8 +962,8 @@ extension DyteUiKit.DyteVideoView : DyteiOSCore.DyteParticipantUpdateListener {
   @objc deinit
 }
 @_hasMissingDesignatedInitializers public class LiveParticipantViewControllerModel : DyteiOSCore.DyteLiveStreamEventsListener {
-  public func onJoinRequestAccepted(peer: DyteiOSCore.LiveStreamStagePeer)
-  public func onJoinRequestRejected(peer: DyteiOSCore.LiveStreamStagePeer)
+  public func onJoinRequestAccepted(peer: DyteiOSCore.StagePeer)
+  public func onJoinRequestRejected(peer: DyteiOSCore.StagePeer)
   @objc public func onLiveStreamEnded()
   @objc public func onLiveStreamEnding()
   @objc public func onLiveStreamErrored()
@@ -972,7 +971,7 @@ extension DyteUiKit.DyteVideoView : DyteiOSCore.DyteParticipantUpdateListener {
   @objc public func onLiveStreamStarting()
   @objc public func onLiveStreamStateUpdate(data: DyteiOSCore.DyteLivestreamData)
   @objc public func onStageCountUpdated(count: Swift.Int32)
-  public func onStageRequestsUpdated(requests: [DyteiOSCore.LiveStreamStageRequestPeer])
+  public func onStageRequestsUpdated(requests: [DyteiOSCore.StagePeer])
   @objc public func onViewerCountUpdated(count: Swift.Int32)
   public func load(completion: @escaping (Swift.Bool) -> Swift.Void)
   @objc deinit
@@ -1099,8 +1098,9 @@ extension DyteUiKit.DyteWaitListParticipantUpdateEventListner : DyteiOSCore.Dyte
   @objc deinit
 }
 extension DyteUiKit.WebinarParticipantViewControllerModel : DyteiOSCore.DyteParticipantEventsListener {
-  @objc dynamic public func onScreenShareEnded(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
-  @objc dynamic public func onScreenShareStarted(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
+  @objc dynamic public func onAllParticipantsUpdated(allParticipants: [DyteiOSCore.DyteParticipant])
+  public func onScreenShareEnded(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
+  public func onScreenShareStarted(participant_ participant: DyteiOSCore.DyteScreenShareMeetingParticipant)
   @objc dynamic public func onScreenShareEnded(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @objc dynamic public func onScreenShareStarted(participant: DyteiOSCore.DyteJoinedMeetingParticipant)
   @objc dynamic public func onUpdate(participants: DyteiOSCore.DyteRoomParticipants)
