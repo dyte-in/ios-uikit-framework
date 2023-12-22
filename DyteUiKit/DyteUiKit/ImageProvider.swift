@@ -10,14 +10,7 @@ import UIKit
 public class ImageProvider {
     // for any image located in bundle where this class has built
     public static func image(named: String) -> UIImage? {
-        if #available(iOS 13.0, *) {
-            return UIImage(named: named, in: Bundle(for: self), with: nil)
-        } else {
-            // Fallback on earlier versions
-            let frameworkBundle =  Bundle(for: ImageProvider.self)
-            let imagePath = frameworkBundle.path(forResource: named, ofType: "png")
-            return  UIImage(contentsOfFile: imagePath!)
-        }
+        return UIImage(named: named, in: Bundle.resources, with: nil)
     }
 }
 

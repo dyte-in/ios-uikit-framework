@@ -20,11 +20,11 @@ Pod::Spec.new do |s|
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
 
   s.ios.deployment_target  = '13.0'
-  s.source_files = 'DyteUiKit/**/**'
+  s.source_files = 'DyteUiKit/DyteUiKit/**/**'
   s.platform = :ios, '13.0'
   s.swift_version = "5.0"
   s.ios.frameworks = ['UIKit', 'AVFAudio']
-  s.resource_bundle = { 'DyteUiKit' => 'DyteUiKit/**/**/Resources/*.xcassets' }
+  s.resource_bundle = { 'DyteUiKit' => 'DyteUiKit/Resources/*' }
   s.dependency 'DyteiOSCore' , '~> 1.27.0'
   s.dependency 'AmazonIVSPlayer' , '~> 1.19.0'
   s.module_name = 'DyteUiKit'

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		4B95B9136C449F2ED35AA263 /* Pods_DyteUiKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A87EA9F5C900AC8D3A153A89 /* Pods_DyteUiKit.framework */; };
-		AA04EAA72B35A75F00EEA91F /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA04EAA62B35A75F00EEA91F /* Media.xcassets */; };
 		AAF1D4EC2B35A5AA006C18DA /* DyteUiKit.h in Headers */ = {isa = PBXBuildFile; fileRef = AAF1D4EB2B35A5AA006C18DA /* DyteUiKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AAF1D56C2B35A635006C18DA /* KeyboardObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF1D4F22B35A635006C18DA /* KeyboardObserver.swift */; };
 		AAF1D56D2B35A635006C18DA /* DyteNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF1D4F32B35A635006C18DA /* DyteNotification.swift */; };
@@ -37,8 +36,6 @@
 		AAF1D5842B35A635006C18DA /* DyteTopbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF1D50D2B35A635006C18DA /* DyteTopbar.swift */; };
 		AAF1D5852B35A635006C18DA /* DyteTabbarBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF1D50E2B35A635006C18DA /* DyteTabbarBar.swift */; };
 		AAF1D5862B35A635006C18DA /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF1D5102B35A635006C18DA /* BaseTableViewCell.swift */; };
-		AAF1D5882B35A635006C18DA /* notification_message.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = AAF1D5132B35A635006C18DA /* notification_message.mp3 */; };
-		AAF1D5892B35A635006C18DA /* notification_join.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = AAF1D5142B35A635006C18DA /* notification_join.mp3 */; };
 		AAF1D58A2B35A635006C18DA /* ParticipantTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF1D5172B35A635006C18DA /* ParticipantTableViewCell.swift */; };
 		AAF1D58B2B35A635006C18DA /* WebinarViewersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF1D5192B35A635006C18DA /* WebinarViewersTableViewCell.swift */; };
 		AAF1D58C2B35A635006C18DA /* WebinarParticipantViewControllerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF1D51A2B35A635006C18DA /* WebinarParticipantViewControllerModel.swift */; };
@@ -97,11 +94,13 @@
 		AAF1D5C22B35A635006C18DA /* DyteImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF1D5642B35A635006C18DA /* DyteImage.swift */; };
 		AAF1D5C32B35A635006C18DA /* DyteParticipantEventListner.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF1D5652B35A635006C18DA /* DyteParticipantEventListner.swift */; };
 		AAF1D5C42B35A635006C18DA /* DyteVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF1D5662B35A635006C18DA /* DyteVideoView.swift */; };
-		AAF1D5C52B35A635006C18DA /* TokenConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = AAF1D5672B35A635006C18DA /* TokenConfiguration.plist */; };
 		AAF1D5C62B35A635006C18DA /* ImageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF1D5682B35A635006C18DA /* ImageProvider.swift */; };
 		AAF1D5C72B35A635006C18DA /* UIView+AutoLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF1D5692B35A635006C18DA /* UIView+AutoLayout.swift */; };
 		AAF1D5C82B35A635006C18DA /* UIUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF1D56A2B35A635006C18DA /* UIUtility.swift */; };
 		AAF1D5C92B35A635006C18DA /* UIColor+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF1D56B2B35A635006C18DA /* UIColor+Helper.swift */; };
+		BD5698812B35D60E004F475F /* Assests.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD56987E2B35D60E004F475F /* Assests.xcassets */; };
+		BD5698822B35D60E004F475F /* notification_message.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BD56987F2B35D60E004F475F /* notification_message.mp3 */; };
+		BD5698832B35D60E004F475F /* notification_join.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BD5698802B35D60E004F475F /* notification_join.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -110,7 +109,6 @@
 		A87EA9F5C900AC8D3A153A89 /* Pods_DyteUiKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DyteUiKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA04EA9F2B35A6EB00EEA91F /* AmazonIVSPlayer.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AmazonIVSPlayer.xcframework; path = Pods/AmazonIVSPlayer/AmazonIVSPlayer.xcframework; sourceTree = "<group>"; };
 		AA04EAA32B35A6F900EEA91F /* DyteiOSCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = DyteiOSCore.xcframework; path = Pods/DyteiOSCore/DyteiOSCore.xcframework; sourceTree = "<group>"; };
-		AA04EAA62B35A75F00EEA91F /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		AAF1D4E82B35A5AA006C18DA /* DyteUiKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DyteUiKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AAF1D4EB2B35A5AA006C18DA /* DyteUiKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DyteUiKit.h; sourceTree = "<group>"; };
 		AAF1D4F22B35A635006C18DA /* KeyboardObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardObserver.swift; sourceTree = "<group>"; };
@@ -140,8 +138,6 @@
 		AAF1D50D2B35A635006C18DA /* DyteTopbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DyteTopbar.swift; sourceTree = "<group>"; };
 		AAF1D50E2B35A635006C18DA /* DyteTabbarBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DyteTabbarBar.swift; sourceTree = "<group>"; };
 		AAF1D5102B35A635006C18DA /* BaseTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
-		AAF1D5132B35A635006C18DA /* notification_message.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = notification_message.mp3; sourceTree = "<group>"; };
-		AAF1D5142B35A635006C18DA /* notification_join.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = notification_join.mp3; sourceTree = "<group>"; };
 		AAF1D5172B35A635006C18DA /* ParticipantTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParticipantTableViewCell.swift; sourceTree = "<group>"; };
 		AAF1D5192B35A635006C18DA /* WebinarViewersTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebinarViewersTableViewCell.swift; sourceTree = "<group>"; };
 		AAF1D51A2B35A635006C18DA /* WebinarParticipantViewControllerModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebinarParticipantViewControllerModel.swift; sourceTree = "<group>"; };
@@ -200,11 +196,13 @@
 		AAF1D5642B35A635006C18DA /* DyteImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DyteImage.swift; sourceTree = "<group>"; };
 		AAF1D5652B35A635006C18DA /* DyteParticipantEventListner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DyteParticipantEventListner.swift; sourceTree = "<group>"; };
 		AAF1D5662B35A635006C18DA /* DyteVideoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DyteVideoView.swift; sourceTree = "<group>"; };
-		AAF1D5672B35A635006C18DA /* TokenConfiguration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TokenConfiguration.plist; sourceTree = "<group>"; };
 		AAF1D5682B35A635006C18DA /* ImageProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageProvider.swift; sourceTree = "<group>"; };
 		AAF1D5692B35A635006C18DA /* UIView+AutoLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+AutoLayout.swift"; sourceTree = "<group>"; };
 		AAF1D56A2B35A635006C18DA /* UIUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIUtility.swift; sourceTree = "<group>"; };
 		AAF1D56B2B35A635006C18DA /* UIColor+Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Helper.swift"; sourceTree = "<group>"; };
+		BD56987E2B35D60E004F475F /* Assests.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assests.xcassets; sourceTree = "<group>"; };
+		BD56987F2B35D60E004F475F /* notification_message.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = notification_message.mp3; sourceTree = "<group>"; };
+		BD5698802B35D60E004F475F /* notification_join.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = notification_join.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -231,6 +229,7 @@
 		AAF1D4DE2B35A5AA006C18DA = {
 			isa = PBXGroup;
 			children = (
+				BD56987D2B35D60E004F475F /* Resources */,
 				AAF1D4EA2B35A5AA006C18DA /* DyteUiKit */,
 				AAF1D4E92B35A5AA006C18DA /* Products */,
 				5634494864944B71E3AC9690 /* Pods */,
@@ -256,7 +255,6 @@
 				AAF1D4F62B35A635006C18DA /* DyteUiKit.swift */,
 				AAF1D5682B35A635006C18DA /* ImageProvider.swift */,
 				AAF1D4F22B35A635006C18DA /* KeyboardObserver.swift */,
-				AAF1D5672B35A635006C18DA /* TokenConfiguration.plist */,
 				AAF1D56B2B35A635006C18DA /* UIColor+Helper.swift */,
 				AAF1D56A2B35A635006C18DA /* UIUtility.swift */,
 				AAF1D5692B35A635006C18DA /* UIView+AutoLayout.swift */,
@@ -271,7 +269,6 @@
 			children = (
 				AAF1D4F92B35A635006C18DA /* Atoms */,
 				AAF1D50F2B35A635006C18DA /* BaseClasses */,
-				AAF1D5112B35A635006C18DA /* Resources */,
 				AAF1D5152B35A635006C18DA /* Screens */,
 				AAF1D53E2B35A635006C18DA /* BaseProtocol */,
 				AAF1D5412B35A635006C18DA /* Tokens */,
@@ -321,16 +318,6 @@
 				AAF1D5102B35A635006C18DA /* BaseTableViewCell.swift */,
 			);
 			path = BaseClasses;
-			sourceTree = "<group>";
-		};
-		AAF1D5112B35A635006C18DA /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				AA04EAA62B35A75F00EEA91F /* Media.xcassets */,
-				AAF1D5132B35A635006C18DA /* notification_message.mp3 */,
-				AAF1D5142B35A635006C18DA /* notification_join.mp3 */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		AAF1D5152B35A635006C18DA /* Screens */ = {
@@ -539,6 +526,16 @@
 			path = StandAloneComponent;
 			sourceTree = "<group>";
 		};
+		BD56987D2B35D60E004F475F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BD56987E2B35D60E004F475F /* Assests.xcassets */,
+				BD56987F2B35D60E004F475F /* notification_message.mp3 */,
+				BD5698802B35D60E004F475F /* notification_join.mp3 */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		D307A6CF966887E11C208B23 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -620,10 +617,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA04EAA72B35A75F00EEA91F /* Media.xcassets in Resources */,
-				AAF1D5882B35A635006C18DA /* notification_message.mp3 in Resources */,
-				AAF1D5892B35A635006C18DA /* notification_join.mp3 in Resources */,
-				AAF1D5C52B35A635006C18DA /* TokenConfiguration.plist in Resources */,
+				BD5698822B35D60E004F475F /* notification_message.mp3 in Resources */,
+				BD5698812B35D60E004F475F /* Assests.xcassets in Resources */,
+				BD5698832B35D60E004F475F /* notification_join.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -759,6 +755,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -825,6 +822,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -883,6 +881,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A204974123737633A6273751 /* Pods-DyteUiKit.debug.xcconfig */;
 			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -917,6 +916,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4A95B262600FF6FD5677240D /* Pods-DyteUiKit.release.xcconfig */;
 			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;

@@ -233,3 +233,16 @@ extension UISearchBar {
         UIBarButtonItem.appearance().setTitleTextAttributes(cancelButtonAttributes , for: .normal)
     }
 }
+
+extension Bundle {
+    static let resources: Bundle = {
+//        let bundle = Bundle(for: BundleToken.self)
+        #if SWIFT_PACKAGE
+            return Bundle.module
+        #else
+             let bundle = Bundle(for:ImageProvider.self)
+             let bundlePath = bundle.path(forResource: "DyteUiKit", ofType: "bundle")
+             return Bundle(path:bundlePath!)!
+        #endif
+    }()
+}
