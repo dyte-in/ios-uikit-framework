@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'DyteUiKit'
-  s.version          = '0.4.4'
+  s.version          = '0.4.5'
   s.summary          = 'Customise UI of your Dyte meetings'
 
   s.description      = "Customise UI of your Dyte meetings. You can use this prebuilt meeting flow or you can customise it on individual component level"
