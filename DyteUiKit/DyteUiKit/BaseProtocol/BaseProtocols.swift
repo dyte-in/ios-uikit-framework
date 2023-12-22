@@ -13,8 +13,9 @@ protocol Searchable {
 
 
 public protocol ReusableObject: AnyObject {}
+
 extension ReusableObject {
-  static var reuseIdentifier: String {
+    public static var reuseIdentifier: String {
         return String(describing: self)
     }
 }
@@ -42,20 +43,21 @@ extension SetTopbar where Self:UIViewController {
 }
 
 
-protocol KeyboardObservable: AnyObject {
+public protocol KeyboardObservable: AnyObject {
     var keyboardObserver: KeyboardObserver? { get set }
     func startKeyboardObserving(onShow: @escaping (_ keyboardFrame: CGRect) -> Void,
                                 onHide: @escaping () -> Void)
     func stopKeyboardObserving()
 }
+
 extension KeyboardObservable {
-    func startKeyboardObserving(onShow: @escaping (_ keyboardFrame: CGRect) -> Void,
+    public func startKeyboardObserving(onShow: @escaping (_ keyboardFrame: CGRect) -> Void,
                                 onHide: @escaping () -> Void) {
         keyboardObserver = KeyboardObserver(onShow: onShow, onHide: onHide)
     }
     
     
-    func stopKeyboardObserving() {
+    public  func stopKeyboardObserving() {
         keyboardObserver?.stopObserving()
         keyboardObserver = nil
     }

@@ -59,4 +59,20 @@ struct UIUTility {
         }
         topController.present(alertController, animated: true, completion: nil)
     }
+    
+    static func displayAlert(alertTitle: String, message: String, actions: [UIAlertAction]) {
+
+        let alertController = UIAlertController(title: alertTitle, message: message, preferredStyle: .alert)
+        for action in actions {
+            alertController.addAction(action)
+        }
+
+        guard var topController = UIApplication.shared.windows.first?.rootViewController else {
+            fatalError("keyWindow has no rootViewController")
+        }
+        while let presentedViewController = topController.presentedViewController {
+            topController = presentedViewController
+        }
+        topController.present(alertController, animated: true, completion: nil)
+    }
 }

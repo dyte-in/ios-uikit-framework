@@ -26,7 +26,16 @@ open class  DyteAudioButtonControlBar: DyteControlBarButton {
             guard let self = self else {return}
             self.isSelected = !enabled
         }
-       
+    }
+    
+    public override var isSelected: Bool {
+        didSet {
+            if isSelected == true {
+                self.accessibilityIdentifier = "Mic_ControlBarButton_Selected"
+            }else {
+                self.accessibilityIdentifier = "Mic_ControlBarButton_UnSelected"
+            }
+        }
     }
     
     required public init?(coder: NSCoder) {
@@ -35,6 +44,7 @@ open class  DyteAudioButtonControlBar: DyteControlBarButton {
     
     @objc open func onClick(button: DyteAudioButtonControlBar) {
         button.showActivityIndicator()
+        self.accessibilityIdentifier = "ControlBar_Audio_"
         self.dyteSelfListner.toggleLocalAudio(completion: { enableAudio in
             button.hideActivityIndicator()
             button.isSelected = !enableAudio

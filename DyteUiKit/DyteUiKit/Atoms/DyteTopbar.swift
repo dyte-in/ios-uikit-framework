@@ -21,6 +21,7 @@ open class DyteNavigationBar:UIView {
     
     public let leftButton: DyteControlBarButton = {
         let button = DyteControlBarButton(image: DyteImage(image: ImageProvider.image(named: "icon_cross")),  appearance: AppTheme.shared.controlBarButtonAppearance)
+        button.accessibilityIdentifier = "Cross_Button"
         return button
     }()
     

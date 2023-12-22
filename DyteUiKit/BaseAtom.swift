@@ -31,10 +31,11 @@ public class BaseImageView: UIImageView {
             completion?(self.image ?? image)
         }else {
             if let url = image?.url {
-               if let image = ImageUtil.shared.obtainImageWithPath(url: url, completionHandler: { image in
+              let result = ImageUtil.shared.obtainImageWithPath(url: url, completionHandler: { image, url in
                     self.image = image.withRenderingMode(image.renderingMode)
                    completion?(self.image ?? image)
-               }) {
+               })
+                if let image = result.0 {
                    self.image = image.withRenderingMode(image.renderingMode)
                    completion?(self.image ?? image)
                }

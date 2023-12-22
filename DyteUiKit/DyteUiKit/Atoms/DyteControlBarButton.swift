@@ -20,10 +20,10 @@ public class DyteControlBarButtonAppearanceModel: DyteControlBarButtonAppearance
     public var selectedStateTintColor: TextColorToken.Background.Shade
     public var normalStateTintColor: TextColorToken.Background.Shade
     public var acitivityInidicatorColor: TextColorToken.Background.Shade
-    public var desingLibrary: DesignTokens
+    public var desingLibrary: DyteDesignTokens
     public var cornerRadius : BorderRadiusToken.RadiusType = .rounded
 
-    public required init(designLibrary: DesignTokens = DesignLibrary.shared) {
+    public required init(designLibrary: DyteDesignTokens = DesignLibrary.shared) {
         self.desingLibrary = designLibrary
         selectedStateTintColor = designLibrary.color.textColor.onBackground.shade1000
         normalStateTintColor = designLibrary.color.textColor.onBackground.shade1000
@@ -43,6 +43,7 @@ open class DyteControlBarButton: UIButton {
     private var btnImageView: UIImageView?
     private var btnTitle: DyteText?
     private var baseActivityIndicatorView: BaseIndicatorView?
+    private var previousTitle: String?
 
     public var notificationBadge = UIView ()
     let appearance: DyteControlBarButtonAppearance
@@ -80,7 +81,6 @@ open class DyteControlBarButton: UIButton {
                 if let title = self.selectedTitle {
                     self.btnTitle?.setTextWhenInsideStackView(text: title)
                 }
-                
             }else {
                 self.btnImageView?.image = self.normalImage.image
                 self.btnImageView?.tintColor = self.normalStateTintColor
@@ -96,6 +96,15 @@ open class DyteControlBarButton: UIButton {
     func setSelected(image: DyteImage? = nil, title: String? = nil) {
         self.selectedImage = DyteImage.init(image: image?.image?.withRenderingMode(.alwaysTemplate), url: image?.url)
         self.selectedTitle = title
+        self.isSelected = true
+    }
+    
+    func setDefault(image: DyteImage? = nil, title: String? = nil) {
+        self.normalImage = DyteImage.init(image: image?.image?.withRenderingMode(.alwaysTemplate), url: image?.url)
+        if let title = title {
+            self.normalTitle = title
+        }
+        self.isSelected = false
     }
     
     func createButton() {
@@ -134,6 +143,10 @@ open class DyteControlBarButton: UIButton {
         stackView.addArrangedSubviews(imageView,title)
         return (stackView: stackView ,title: title,imageView: imageView)
     }
+    
+    func clean() {
+        
+    }
 }
 
 extension DyteControlBarButton {
@@ -155,14 +168,26 @@ extension DyteControlBarButton {
 
 extension DyteControlBarButton {
       
-      func showActivityIndicator() {
+    func showActivityIndicator(title: String = "") {
+         self.previousTitle = self.btnTitle?.text
           if self.baseActivityIndicatorView == nil {
               let baseIndicatorView = BaseIndicatorView.createIndicatorView()
-              self.addSubview(baseIndicatorView)
-              baseIndicatorView.set(.fillSuperView(self))
-              baseIndicatorView.isHidden = true
               self.baseActivityIndicatorView = baseIndicatorView
           }
+        self.baseActivityIndicatorView?.removeFromSuperview()
+        if title.count >= 0 {
+            if let baseActivityIndicatorView = self.baseActivityIndicatorView, let btnImageView = self.btnImageView {
+                btnImageView.addSubview(baseActivityIndicatorView)
+                baseActivityIndicatorView.set(.fillSuperView(btnImageView))
+                baseActivityIndicatorView.isHidden = true
+            }
+        }else {
+            if let baseActivityIndicatorView = self.baseActivityIndicatorView {
+                self.addSubview(baseActivityIndicatorView)
+                baseActivityIndicatorView.set(.fillSuperView(self))
+                baseActivityIndicatorView.isHidden = true
+            }
+        }
           if self.baseActivityIndicatorView?.isHidden == true {
               self.baseActivityIndicatorView?.indicatorView.color = self.appearance.acitivityInidicatorColor
               self.baseActivityIndicatorView?.indicatorView.startAnimating()
@@ -170,15 +195,16 @@ extension DyteControlBarButton {
               self.bringSubviewToFront(self.baseActivityIndicatorView!)
               self.baseActivityIndicatorView?.isHidden = false
               self.isUserInteractionEnabled = false
+              self.btnTitle?.setTextWhenInsideStackView(text: title)
           }
       }
       
       func hideActivityIndicator() {
+          self.btnTitle?.setTextWhenInsideStackView(text: self.previousTitle)
           if self.baseActivityIndicatorView?.isHidden == false {
               self.baseActivityIndicatorView?.indicatorView.stopAnimating()
               self.baseActivityIndicatorView?.isHidden = true
               self.isUserInteractionEnabled = true
-
           }
       }
 }

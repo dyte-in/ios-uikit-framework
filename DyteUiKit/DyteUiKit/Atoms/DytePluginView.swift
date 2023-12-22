@@ -12,7 +12,10 @@ import WebKit
 public class ActiveListView: UIView {
     
     private let scrollView : UIScrollView = {return UIScrollView()}()
-    private var buttons = [ScreenShareTabButton]()
+    private let fixButtonBaseView : UIView = {return UIView()}()
+    
+    internal var buttons = [ScreenShareTabButton]()
+    internal var fixButtons = [ScreenShareTabButton]()
     let tokenSpace = DesignLibrary.shared.space
     let tokenColor = DesignLibrary.shared.color
     private var stackView: UIStackView!
@@ -27,17 +30,58 @@ public class ActiveListView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    public func setButtons(buttons: [ScreenShareTabButton]) {
+    public func scrollToVisible(button: ScreenShareTabButton) {
+        var buttonFrame = stackView.convert(button.frame, to: self.scrollView.coordinateSpace)
+        var maxX = buttonFrame.maxX
+        var startX = buttonFrame.origin.x
+        var currentWidowFrame = CGRect(x: scrollView.contentOffset.x, y: scrollView.contentOffset.y, width: scrollView.bounds.width, height: scrollView.bounds.height)
+        if startX >= currentWidowFrame.origin.x && maxX <= currentWidowFrame.maxX {
+            // If button is already in visible rect then no need to do anything
+        } else {
+            if startX < currentWidowFrame.origin.x {
+                self.scrollView.setContentOffset(CGPoint(x: startX, y: 0), animated: true)
+            }else if maxX > currentWidowFrame.maxX {
+                var pages = Int(maxX / scrollView.bounds.width)
+                self.scrollView.setContentOffset(CGPoint(x: maxX - (scrollView.bounds.width * CGFloat(pages)), y: 0), animated: true)
+            }
+        }
+    }
+    public func setButtons(fixButtons: [ScreenShareTabButton], buttons: [ScreenShareTabButton]) {
         if stackView == nil {
             stackView = UIUTility.createStackView(axis: .horizontal, spacing: tokenSpace.space2)
             scrollView.addSubview(stackView)
+            scrollView.addSubview(fixButtonBaseView)
+            fixButtonBaseView.set(.leading(scrollView, tokenSpace.space3),
+                                  .sameTopBottom(self, tokenSpace.space2))
             stackView.set(.trailing(scrollView, tokenSpace.space3),
-                          .leading(scrollView, tokenSpace.space3),
+                          .after(fixButtonBaseView, tokenSpace.space3),
                           .sameTopBottom(self, tokenSpace.space2))
         }
+        for button in self.fixButtons {
+            button.removeFromSuperview()
+        }
+        var index = 0
+        var pre: ScreenShareTabButton! = nil
+        for (index,button) in fixButtons.enumerated() {
+            fixButtonBaseView.addSubview(button)
+            button.set(.sameTopBottom(fixButtonBaseView))
+            if index == 0 {
+                button.set(.leading(fixButtonBaseView))
+            }
+            if index == (fixButtons.count - 1) {
+                if pre != nil {
+                    button.set(.after(pre!,tokenSpace.space3))
+                }
+                button.set(.trailing(fixButtonBaseView))
+            } else {
+                if pre != nil {
+                    button.set(.after(pre!,tokenSpace.space3))
+                }
+            }
+            pre = button
+        }
+        self.fixButtons = fixButtons
         for button in self.buttons {
-
             button.removeFromSuperview()
         }
         
@@ -51,7 +95,7 @@ public class ActiveListView: UIView {
 
 class ActiveSpeakerPinView: UIView {
     let spaceToken = DesignLibrary.shared.space
-
+    
     private lazy var pinView : UIView = {
         let baseView = UIView()
         let imageView = UIUTility.createImageView(image: DyteImage(image:ImageProvider.image(named: "icon_pin")))
@@ -60,7 +104,7 @@ class ActiveSpeakerPinView: UIView {
         return baseView
     }()
     private(set) var videoView: DyteVideoView!
-   
+    
     func pinView(show: Bool) {
         let heightWidth:CGFloat = 30
         if pinView.superview == nil {
@@ -86,13 +130,13 @@ class ActiveSpeakerPinView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-   private func createSubview() {
-       let videoView = DyteVideoView(participant: self.participant)
+    private func createSubview() {
+        let videoView = DyteVideoView(participant: self.participant)
         self.addSubview(videoView)
         videoView.set(.fillSuperView(self))
         self.videoView = videoView
         self.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handler)))
-
+        
     }
     
     @objc func handler(gesture: UIPanGestureRecognizer) {
@@ -128,17 +172,25 @@ public class PluginView: UIView {
     
     public  let activeListView = ActiveListView()
     public  let pluginVideoView: DyteParticipantTileView
-    private var clickAction:((ScreenShareTabButton)-> Void)?
+    private var clickAction:((ScreenShareTabButton, Bool)-> Void)?
     private let stackView = UIUTility.createStackView(axis: .vertical, spacing: 0)
     private let activeSpeakerView: ActiveSpeakerPinView
     let backgroundColorValue = DesignLibrary.shared.color.background.video
     let borderRadiusType: BorderRadiusToken.RadiusType = AppTheme.shared.cornerRadiusTypePeerView ?? .rounded
     let spaceToken = DesignLibrary.shared.space
+    let syncButton: SyncScreenShareTabButton?
     
     init(videoPeerViewModel: VideoPeerViewModel) {
         pluginVideoView = DyteParticipantTileView(viewModel: videoPeerViewModel)
         pluginVideoView.nameTag.isHidden = true
         activeSpeakerView = ActiveSpeakerPinView(participant: videoPeerViewModel.participant)
+        if videoPeerViewModel.mobileClient.localUser.permissions.miscellaneous.canSpotLight {
+            syncButton = SyncScreenShareTabButton(image: nil, title: "Sync on")
+            syncButton?.setSelected(title: "Sync off")
+            syncButton?.isSelected = false
+        }else {
+            syncButton = nil
+        }
         super.init(frame: .zero)
         self.addSubview(stackView)
         stackView.set(.fillSuperView(self))
@@ -146,7 +198,7 @@ public class PluginView: UIView {
         stackView.addArrangedSubviews(activeListView,pluginBaseView)
         pluginBaseView.addSubview(pluginVideoView)
         pluginVideoView.set(.fillSuperView(pluginBaseView))
-
+        
         self.addSubview(activeSpeakerView)
         activeSpeakerView.layer.masksToBounds = true
         activeSpeakerView.backgroundColor = backgroundColorValue
@@ -157,10 +209,16 @@ public class PluginView: UIView {
                               .equateAttribute(.height, toView: self, toAttribute: .height, withRelation: .equal, multiplier: 0.4))
         
         activeSpeakerView.isHidden = true
-
+        
+        self.syncButton?.addTarget(self, action: #selector(syncButtonClick(button:)), for: .touchUpInside)
     }
     
-    public func setButtons(buttons: [ScreenShareTabButton],  selectedIndex: Int?, clickAction:@escaping(ScreenShareTabButton)->Void)  {
+    @objc func syncButtonClick(button: SyncScreenShareTabButton) {
+        button.isSelected = !button.isSelected
+    }
+    
+    public func setButtons(buttons: [ScreenShareTabButton],  selectedIndex: Int?, clickAction:@escaping(ScreenShareTabButton, Bool)->Void)  {
+        
         if let index = selectedIndex , index < buttons.count {
             buttons[index].isSelected = true
         }
@@ -169,15 +227,25 @@ public class PluginView: UIView {
             button.addTarget(self, action: #selector(clickButton(button:)), for: .touchUpInside)
         }
         self.clickAction = clickAction
-        activeListView.setButtons(buttons: buttons)
+        var fixButtons = [ScreenShareTabButton]()
+        if let syncButton = self.syncButton {
+            fixButtons.append(syncButton)
+        }
+        activeListView.setButtons(fixButtons: fixButtons, buttons: buttons)
     }
     
     public func showAndHideActiveButtonListView(buttons: [ScreenShareTabButton]) {
         activeListView.isHidden = buttons.count > 1 ? false : true
     }
     
-   @objc func clickButton(button: ScreenShareTabButton) {
-       self.clickAction?(button)
+    @objc func clickButton(button: ScreenShareTabButton) {
+        self.activeListView.scrollToVisible(button: button)
+        self.clickAction?(button, true)
+    }
+    
+    func selectForAutoSync(button: ScreenShareTabButton) {
+        self.activeListView.scrollToVisible(button: button)
+        self.clickAction?(button, false)
     }
     
     private var webView: UIView?

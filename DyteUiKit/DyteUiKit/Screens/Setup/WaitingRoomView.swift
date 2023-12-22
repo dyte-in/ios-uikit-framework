@@ -37,22 +37,28 @@ class WaitingRoomView: UIView {
     }
     
     func createSubviews() {
-        let baseStackView = UIUTility.createStackView(axis: .vertical, spacing: tokenSpace.space3)
-        let buttonBaseView = UIUTility.wrapped(view: button)
-        button.set(.centerX(buttonBaseView),
-                   .leading(buttonBaseView, tokenSpace.space2, .greaterThanOrEqual),
-                   .sameTopBottom(buttonBaseView))
+        let baseView = UIView()
         if automaticClose {
-            baseStackView.addArrangedSubviews(titleLabel)
+            baseView.addSubview(titleLabel)
+            titleLabel.set(.sameLeadingTrailing(baseView),
+                           .sameTopBottom(baseView))
             Timer.scheduledTimer(withTimeInterval: TimeInterval(automaticCloseTime), repeats: false) { timer in
                 self.onComplete()
             }
         }else {
-            baseStackView.addArrangedSubviews(titleLabel,buttonBaseView)
+            let buttonBaseView = UIUTility.wrapped(view: button)
+            button.set(.centerX(buttonBaseView),
+                       .leading(buttonBaseView, tokenSpace.space2, .greaterThanOrEqual),
+                       .sameTopBottom(buttonBaseView))
+            baseView.addSubViews(titleLabel,buttonBaseView)
+            titleLabel.set(.sameLeadingTrailing(baseView),
+                           .top(baseView))
+            buttonBaseView.set(.sameLeadingTrailing(baseView), .below(titleLabel),
+                               .bottom(baseView))
         }
         
-        self.addSubview(baseStackView)
-        baseStackView.set(.centerView(self),
+        self.addSubview(baseView)
+        baseView.set(.centerView(self),
                           .leading(self, tokenSpace.space4, .greaterThanOrEqual),
                           .top(self, tokenSpace.space4, .greaterThanOrEqual))
         self.button.addTarget(self, action: #selector(clickBottom(button:)), for: .touchUpInside)
@@ -77,5 +83,9 @@ class WaitingRoomView: UIView {
             self.button.isHidden = false
 
         }
+    }
+    
+    func show(message: String) {
+        self.titleLabel.text = message
     }
 }

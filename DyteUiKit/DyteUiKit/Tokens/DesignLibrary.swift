@@ -8,14 +8,14 @@
 import UIKit
 
 
-public protocol DesignTokens {
+public protocol DyteDesignTokens {
     var color: ColorTokens {get}
     var space: SpaceToken {get}
     var borderSize: BorderWidthToken {get}
     var borderRadius: BorderRadiusToken {get}
 }
 
-public class DesignLibrary: DesignTokens {
+public class DesignLibrary: DyteDesignTokens {
     
     public var color: ColorTokens
     public var space: SpaceToken = SpaceToken()
@@ -119,13 +119,13 @@ public protocol AppThemeProtocol {
     var meetingTitleAppearance: DyteTextAppearance {get}
     var participantCountAppearance: DyteTextAppearance {get}
     var recordingViewAppearance:DyteRecordingViewAppearance {get}
-    var designLibrary: DesignTokens {get}
-    init(designToken: DesignTokens)
+    var designLibrary: DyteDesignTokens {get}
+    init(designToken: DyteDesignTokens)
 }
 
 class AppThemeConfigurator: AppThemeProtocol {
       
-    var designLibrary: DesignTokens
+    var designLibrary: DyteDesignTokens
     
     var controlBarButtonAppearance: DyteControlBarButtonAppearance {
         let model = DyteControlBarButtonAppearanceModel(designLibrary: self.designLibrary)
@@ -167,11 +167,11 @@ class AppThemeConfigurator: AppThemeProtocol {
         return DyteRecordingViewAppearanceModel(designLibrary: self.designLibrary)
     }
     
-    required init(designToken: DesignTokens) {
+    required init(designToken: DyteDesignTokens) {
         self.designLibrary = designToken
     }
 
-    private let cornerRadiusType: BorderRadiusToken.RadiusType = .sharp
+    private let cornerRadiusType: BorderRadiusToken.RadiusType = .rounded
     private let borderSizeWidthType: BorderWidthToken.Width = .fat
     
     var cornerRadiusTypeButton: BorderRadiusToken.RadiusType? {
@@ -268,7 +268,7 @@ public class AppTheme {
     public var participantCountAppearance: DyteTextAppearance
     public var recordingViewAppearance: DyteRecordingViewAppearance
 
-    init(designTokens: DesignTokens) {
+    init(designTokens: DyteDesignTokens) {
         let configurator = AppThemeConfigurator(designToken: designTokens)
         cornerRadiusTypePaginationView = configurator.cornerRadiusTypePaginationView
         cornerRadiusTypePeerView = configurator.cornerRadiusTypePeerView

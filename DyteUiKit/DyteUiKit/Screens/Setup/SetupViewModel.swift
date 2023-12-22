@@ -72,11 +72,6 @@ final class SetupViewModel {
         }
     }
 
-    
-    func joinMeeting(completion:@escaping (_ success: Bool) -> Void) {
-        self.dyteSelfListner.joinMeeting(completion: completion)
-    }
-    
     func removeListner() {
         dyteSelfListner.clean()
     }

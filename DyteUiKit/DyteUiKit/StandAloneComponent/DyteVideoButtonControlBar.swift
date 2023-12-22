@@ -27,6 +27,16 @@ open class  DyteVideoButtonControlBar: DyteControlBarButton {
        
     }
     
+    public override var isSelected: Bool {
+        didSet {
+            if isSelected == true {
+                self.accessibilityIdentifier = "Video_ControlBarButton_Selected"
+            }else {
+                self.accessibilityIdentifier = "Video_ControlBarButton_UnSelected"
+            }
+        }
+    }
+    
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

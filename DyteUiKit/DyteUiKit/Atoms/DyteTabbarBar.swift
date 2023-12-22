@@ -1,12 +1,12 @@
 //
-//  DyteTabBar.swift
+//  DyteControlBar.swift
 //  DyteUiKit
 //
 //  Created by sudhir kumar on 29/12/22.
 //
 
 import UIKit
-
+import DyteiOSCore
 public protocol DyteTabBarDelegate: AnyObject {
     func didTap(button: DyteControlBarButton, atIndex index:NSInteger)
     func getTabBarHeight() -> CGFloat
@@ -17,9 +17,9 @@ public protocol DyteControlBarAppearance: BaseAppearance {
 }
 
 public class DyteControlBarAppearanceModel : DyteControlBarAppearance {
-    public var desingLibrary: DesignTokens
+    public var desingLibrary: DyteDesignTokens
 
-    public required init(designLibrary: DesignTokens = DesignLibrary.shared) {
+    public required init(designLibrary: DyteDesignTokens = DesignLibrary.shared) {
         self.desingLibrary = designLibrary
         backgroundColor = desingLibrary.color.background.shade700
     }
@@ -27,7 +27,7 @@ public class DyteControlBarAppearanceModel : DyteControlBarAppearance {
     public var backgroundColor: BackgroundColorToken.Shade
 }
 
-open class DyteControlBar: UIView {
+open class DyteTabbarBar: UIView {
     
     private struct Constants {
         static let tabBarAnimationDuration: Double = 1.5
@@ -75,7 +75,7 @@ open class DyteControlBar: UIView {
        if let constraint = self.heightConstraint {
            self.removeConstraint(constraint)
        }
-        let height = DyteControlBar.baseHeight + (self.safeAreaInsets.bottom == 0 ? DyteControlBar.defaultBottomAdjustForNonNotch : self.safeAreaInsets.bottom)
+        let height = DyteTabbarBar.baseHeight + (self.safeAreaInsets.bottom == 0 ? DyteTabbarBar.defaultBottomAdjustForNonNotch : self.safeAreaInsets.bottom)
        self.heightConstraint = self.heightAnchor.constraint(equalToConstant: delegate?.getTabBarHeight() ?? height)
        self.heightConstraint?.isActive = true
     }
@@ -127,6 +127,7 @@ open class DyteControlBar: UIView {
     
     public func setButtons(_ buttons: [DyteControlBarButton]) {
         for button in self.buttons {
+            button.clean()
             button.superview?.removeFromSuperview()
         }
         self.buttons.removeAll()
@@ -160,4 +161,50 @@ open class DyteControlBar: UIView {
     }
 }
 
+
+open class DyteControlBar: DyteTabbarBar {
+    public let moreButton: DyteMoreButtonControlBar
+    public private(set) var endCallButton: DyteEndMeetingControlBarButton
+    private let presentingViewController: UIViewController
+    private let meeting: DyteMobileClient
+    private let endCallCompletion: (()->Void)?
+    init(meeting: DyteMobileClient, delegate: DyteTabBarDelegate?, presentingViewController: UIViewController, appearance: DyteControlBarAppearance = DyteControlBarAppearanceModel(), meetingViewModel: MeetingViewModel, settingViewControllerCompletion:(()->Void)? = nil, onLeaveMeetingCompletion: (()->Void)? = nil) {
+        self.meeting = meeting
+        self.presentingViewController = presentingViewController
+        let moreButton = DyteMoreButtonControlBar(mobileClient: meeting, presentingViewController: presentingViewController, meetingViewModel: meetingViewModel, settingViewControllerCompletion: settingViewControllerCompletion)
+        self.moreButton = moreButton
+        moreButton.accessibilityIdentifier = "More_ControlBarButton"
+        self.endCallCompletion = onLeaveMeetingCompletion
+        let endCallButton = DyteEndMeetingControlBarButton(meeting: meeting, alertViewController: presentingViewController) { buttons, alertButton in
+            onLeaveMeetingCompletion?()
+        }
+        endCallButton.accessibilityIdentifier = "End_ControlBarButton"
+        self.endCallButton = endCallButton
+        
+        super.init(delegate: delegate, appearance: appearance)
+        self.setButtons([DyteControlBarButton]())
+    }
+    
+    public override func setButtons(_ buttons: [DyteControlBarButton]) {
+        var buttons = buttons
+        buttons.append(moreButton)
+        self.endCallButton = getEndCallButton()
+        self.endCallButton.accessibilityIdentifier = "End_ControlBarButton"
+        buttons.append(endCallButton)
+        super.setButtons(buttons)
+    }
+    
+    private func getEndCallButton() -> DyteEndMeetingControlBarButton {
+        let endCallButton = DyteEndMeetingControlBarButton(meeting: meeting, alertViewController: presentingViewController) { buttons, alertButton in
+            self.endCallCompletion?()
+        }
+        return endCallButton
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+   
+}
 

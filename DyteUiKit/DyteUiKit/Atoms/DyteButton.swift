@@ -30,11 +30,11 @@ protocol DyteButtonApplyStates {
 }
 
 public class DyteButtonAppearanceModel : DyteButtonAppearance {
-    public var desingLibrary: DesignTokens
+    public var desingLibrary: DyteDesignTokens
     public  var selectedStateTintColor: TextColorToken.Background.Shade
     public var normalStateTintColor: TextColorToken.Background.Shade
     
-    public required init(designLibrary: DesignTokens = DesignLibrary.shared) {
+    public required init(designLibrary: DyteDesignTokens = DesignLibrary.shared) {
         self.desingLibrary = designLibrary
         backgroundColor = desingLibrary.color.brand.shade500
         titleColor = desingLibrary.color.textColor.onBackground.shade1000
@@ -49,13 +49,17 @@ public class DyteButtonAppearanceModel : DyteButtonAppearance {
     public var iconBackgroundColorToken: BackgroundColorToken.Shade
     public var acitivityInidicatorColor: TextColorToken.Background.Shade
     public var titleColor: TextColorToken.Background.Shade
-    public var cornerRadius: BorderRadiusToken.RadiusType = .sharp
+    public var cornerRadius: BorderRadiusToken.RadiusType = .rounded
     public var borderWidhtType: BorderWidthToken.Width = .thin
 }
 
 class BaseIndicatorView: UIView {
 
-    let indicatorView = UIActivityIndicatorView(style: .medium)
+    let indicatorView: UIActivityIndicatorView = {
+        let inidicator = UIActivityIndicatorView(style: .medium)
+        inidicator.hidesWhenStopped = true
+        return inidicator
+    }()
     
     static func createIndicatorView() -> BaseIndicatorView {
         let baseView = BaseIndicatorView()
@@ -63,6 +67,17 @@ class BaseIndicatorView: UIView {
         baseView.indicatorView.set(.centerView(baseView))
         return baseView
      }
+    override var isHidden: Bool {
+           get {
+               super.isHidden
+           }
+           set {
+               super.isHidden = newValue
+               if newValue == true {
+                   self.indicatorView.stopAnimating()
+               }
+           }
+       }
     
 }
 

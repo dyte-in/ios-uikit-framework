@@ -76,7 +76,8 @@ class FileMessageCell: UITableViewCell {
     private func setupViews() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(downloadButtonTapped))
         contentView.addGestureRecognizer(tap)
-        
+        contentView.backgroundColor = .clear
+        self.backgroundColor = .clear
         contentView.addSubview(nameLabel)
         nameLabel.set(.sameLeadingTrailing(contentView, tokenSpace.space3),
                       .top(contentView, tokenSpace.space2))

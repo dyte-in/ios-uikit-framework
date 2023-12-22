@@ -68,6 +68,14 @@ class DyteMeetingEventListner  {
 }
 
 extension DyteMeetingEventListner: DyteRecordingEventsListener {
+    func onMeetingRecordingPauseError(e: KotlinException) {
+        
+    }
+    
+    func onMeetingRecordingResumeError(e: KotlinException) {
+        
+    }
+    
     
     func onMeetingRecordingEnded() {
         self.recordMeetingStopCompletion?(true)
@@ -88,8 +96,32 @@ extension DyteMeetingEventListner: DyteRecordingEventsListener {
     }
 }
 
-
 extension DyteMeetingEventListner: DyteParticipantEventsListener {
+    func onAllParticipantsUpdated(allParticipants: [DyteParticipant]) {
+        
+    }
+    
+    func onUpdate(participants: DyteRoomParticipants) {
+        
+    }
+    
+    func onScreenShareEnded(participant_ participant: DyteScreenShareMeetingParticipant) {
+        
+    }
+    
+    func onScreenShareStarted(participant_ participant: DyteScreenShareMeetingParticipant) {
+        
+    }
+    
+    func onScreenShareEnded(participant: DyteJoinedMeetingParticipant) {
+        
+    }
+    
+    func onScreenShareStarted(participant: DyteJoinedMeetingParticipant) {
+        
+    }
+    
+    
     func onActiveSpeakerChanged(participant: DyteJoinedMeetingParticipant) {
         
     }
@@ -99,14 +131,6 @@ extension DyteMeetingEventListner: DyteParticipantEventsListener {
     }
     
     func onParticipantUnpinned(participant: DyteJoinedMeetingParticipant) {
-        
-    }
-    
-    func onScreenShareEnded(participant: DyteScreenShareMeetingParticipant) {
-        
-    }
-    
-    func onScreenShareStarted(participant: DyteScreenShareMeetingParticipant) {
         
     }
     
@@ -122,7 +146,7 @@ extension DyteMeetingEventListner: DyteParticipantEventsListener {
         
     }
     
-  
+
     func onParticipantJoin(participant: DyteJoinedMeetingParticipant) {
         if isDebugModeOn {
             print("Debug DyteUIKit | Delegate onParticipantJoin \(participant.audioEnabled) \(participant.name) totalCount \(self.dyteMobileClient.participants.joined) participants")
@@ -138,10 +162,6 @@ extension DyteMeetingEventListner: DyteParticipantEventsListener {
     }
     
     func onScreenSharesUpdated() {
-        
-    }
-    
-    func onUpdate(participants: DyteRoomParticipants) {
         
     }
     

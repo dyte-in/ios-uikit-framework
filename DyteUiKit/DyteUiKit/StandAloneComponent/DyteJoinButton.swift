@@ -10,10 +10,6 @@ import DyteiOSCore
 
 open class DyteJoinButton: DyteButton {
     
-    lazy var dyteSelfListner: DyteEventSelfListner = {
-        return DyteEventSelfListner(mobileClient: self.meeting)
-    }()
-    
     let completion: ((DyteJoinButton,Bool)->Void)?
     private let meeting: DyteMobileClient
     
@@ -31,11 +27,21 @@ open class DyteJoinButton: DyteButton {
     }
     
     @objc open func onClick(button: DyteJoinButton) {
-        button.showActivityIndicator()
-        self.dyteSelfListner.joinMeeting { [weak self] success in
-            guard let self = self else {return}
-            button.hideActivityIndicator()
-            self.completion?(button,success)
+        let userName = meeting.localUser.name
+        if userName.trimmingCharacters(in: .whitespaces).isEmpty || userName == "Join as XYZ" {
+            UIUTility.displayAlert(alertTitle: "Error", message: "Name Required")
+        } else {
+            button.showActivityIndicator()
+            self.meeting.joinRoom {[weak self]  in
+                   guard let self = self else {return}
+                   button.hideActivityIndicator()
+                   self.completion?(button,true)
+            } onRoomJoinFailed: {
+                [weak self]  in
+                       guard let self = self else {return}
+                       button.hideActivityIndicator()
+                       self.completion?(button,false)
+            }
         }
     }
 }

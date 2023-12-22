@@ -12,10 +12,16 @@ class SelectionProgressView: UIView {
     let borderRadiusType: BorderRadiusToken.RadiusType = AppTheme.shared.cornerRadiusTypeNameTextField ?? .rounded
 
     let spaceToken = DesignLibrary.shared.space
-    let imageView:BaseImageView = { return BaseImageView()}()
+    let imageView:BaseImageView = {
+        let imageView = BaseImageView()
+        imageView.setContentCompressionResistancePriority(.required, for: .horizontal)
+        return imageView
+        
+    }()
     let title: DyteText = {
         let label = UIUTility.createLabel(alignment: .left)
         label.numberOfLines = 0
+        label.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
         label.font = UIFont.systemFont(ofSize: 12)
         return label
     }()
@@ -58,6 +64,7 @@ class SelectionProgressView: UIView {
     func createSubView() {
         self.addSubview(imageView)
         self.addSubview(progressBaseView)
+        
         progressBaseView.addSubview(progressView)
         progressBaseView.addSubview(title)
         progressBaseView.addSubview(progressTitle)
@@ -67,8 +74,7 @@ class SelectionProgressView: UIView {
         
         imageView.set(.leading(self),
                       .top(self, 0.0 , .greaterThanOrEqual),
-                      .bottom(self, 0.0, .greaterThanOrEqual),
-                      .centerY(progressBaseView))
+                      .centerY(self))
         
         progressBaseView.set(.after(imageView,spaceToken.space2),
                   .sameTopBottom(self),
@@ -225,7 +231,7 @@ class ListProgressSelectionView: UIView {
     private func get(image: RadioTypeImage, title: String, rightTitle: String?, isSelected: Bool) -> SelectionProgressView {
         let view  = SelectionProgressView(radioImage: image, title: title) { [weak self] selectionView in
             guard let self = self else { return }
-            self.selectView(at: selectionView.index)
+            self.selectView(          at: selectionView.index)
             self.onSelectView?(selectionView.index)
         }
         view.isSelected = isSelected
@@ -266,13 +272,13 @@ class ShowPolls: UIView {
 
     let backGroundColor = DesignLibrary.shared.color.background.shade900
  
-    
     let lblTitle: DyteText = {
         let label = UIUTility.createLabel(alignment: .left)
         label.numberOfLines = 0
         label.font = UIFont.boldSystemFont(ofSize: 12)
         return label
     }()
+    
     let lblTime: DyteText = {
         let label = UIUTility.createLabel(alignment: .left)
         label.numberOfLines = 0
@@ -371,7 +377,7 @@ class ShowPolls: UIView {
 class ShowPollsViewModel {
     
     let dyteMobileClient: DyteMobileClient
-    var refreshPolls: (([PollCardModel])->Void)?
+    var refreshPolls: (([PollCardModel], Bool)->Void)?
 
     init(dyteMobileClient: DyteMobileClient) {
         self.dyteMobileClient = dyteMobileClient
@@ -382,10 +388,10 @@ class ShowPollsViewModel {
         self.dyteMobileClient.localUser.permissions.polls.canCreate
     }
     
-    func refresh() {
+    func refresh(onNewCreated: Bool = false) {
         let polls =  self.dyteMobileClient.polls
         let cardModels = self.parse(polls: polls.polls)
-        self.refreshPolls?(cardModels)
+        self.refreshPolls?(cardModels, onNewCreated)
     }
     
     func parse(polls: [DytePollMessage]) -> [PollCardModel] {
@@ -422,7 +428,7 @@ class ShowPollsViewModel {
                 voteButton = DyteButton(style: .solid)
                 voteButton!.setTitle("  Vote  ", for: .normal)
             }
-            let listModel = ListProgressSelectionViewModel(title: poll.quesion, leftSubTitle: nil, rightSubTitle: nil, selectionList: model, isTouchable: showVoteButton)
+            let listModel = ListProgressSelectionViewModel(title: poll.question, leftSubTitle: nil, rightSubTitle: nil, selectionList: model, isTouchable: showVoteButton)
             result.append(PollCardModel(posterName: "Poll by \(poll.createdBy)", createdAt: nil, poll: listModel, leftButton: nil, rightButton: nil, pollMessage: poll))
         }
         return result
@@ -432,13 +438,12 @@ class ShowPollsViewModel {
 extension ShowPollsViewModel: DytePollEventsListener {
     func onNewPoll(poll: DytePollMessage) {
         notificationDelegate?.didReceiveNotification(type: .Poll)
+        refresh(onNewCreated: true)
     }
     
     func onPollUpdates(pollMessages: [DytePollMessage]) {
         refresh()
     }
-    
-    
 }
 
 public class ShowPollsViewController: UIViewController , SetTopbar {
@@ -456,7 +461,16 @@ public class ShowPollsViewController: UIViewController , SetTopbar {
     let lblNoPollExist: DyteText = {
         let label = UIUTility.createLabel(text: "No active polls! \n\n Let's start a new poll now by clicking Create Poll button below")
         label.numberOfLines = 0
+        label.accessibilityIdentifier = "Polls_EmptyScreen_Label"
+        label.isHidden = true
         return label
+    }()
+    
+    let indicatorView: BaseIndicatorView = {
+        let indicatorView = BaseIndicatorView.createIndicatorView()
+        indicatorView.indicatorView.color = .white
+        indicatorView.indicatorView.startAnimating()
+        return indicatorView
     }()
     
     public override func viewSafeAreaInsetsDidChange() {
@@ -476,12 +490,13 @@ public class ShowPollsViewController: UIViewController , SetTopbar {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.accessibilityIdentifier = "Show_Existing_Polls_Screen"
         setUpView()
     }
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.viewModel.refresh()
+        self.viewModel.refresh(onNewCreated: true)
     }
     
     func setUpView() {
@@ -489,36 +504,45 @@ public class ShowPollsViewController: UIViewController , SetTopbar {
         createSubView(on: self.view)
         self.view.backgroundColor = viewBackGroundColor
        
-        self.viewModel.refreshPolls = { [weak self] cardModels in
+        self.viewModel.refreshPolls = { [weak self] cardModels, newCreatedPoll in
             guard let self = self else {return}
-            self.reloadUI(cardModels: cardModels)
+            
+            self.reloadUI(cardModels: cardModels, newlyAddedPoll: newCreatedPoll)
         }
     }
     
-    private func reloadUI(cardModels: [PollCardModel]) {
+    private func reloadUI(cardModels: [PollCardModel], newlyAddedPoll: Bool) {
+        var previousY = scrollView.contentOffset.y
         scrollView.subviews.forEach { subView in
             subView.removeFromSuperview()
             subView.removeConstraints(subView.constraints)
         }
+        indicatorView.isHidden = true
         lblNoPollExist.isHidden = cardModels.count > 0 ? true : false
 
         if cardModels.count > 0 {
             let view = self.createShowPollResultView(pollsModel: cardModels)
+            view.accessibilityIdentifier = "Polls_View"
             scrollView.addSubview(view)
             view.set(.fillSuperView(scrollView))
             scrollView.set(.equateAttribute(.width, toView: view, toAttribute: .width, withRelation: .equal))
         }
         self.view.layoutIfNeeded()
-        if scrollView.contentSize.height > scrollView.frame.height {
-            let y = scrollView.contentSize.height - scrollView.frame.height
-            scrollView.setContentOffset(CGPoint(x: 0, y: y), animated: true)
+        if newlyAddedPoll {
+            if scrollView.contentSize.height > scrollView.frame.height {
+                let y = scrollView.contentSize.height - scrollView.frame.height
+                scrollView.setContentOffset(CGPoint(x: 0, y: y), animated: true)
+            }
+        }else {
+            scrollView.setContentOffset(CGPoint(x: 0, y: previousY), animated: false)
         }
-        
     }
     
     private func createSubView(on view: UIView) {
         view.addSubview(scrollView)
         view.addSubview(lblNoPollExist)
+        view.addSubview(indicatorView)
+        indicatorView.set(.centerView(view), .size(CGSize(width: 50, height: 50)))
         lblNoPollExist.set(.centerView(view), .leading(view, spaceToken.space5))
        
         let createButton = DyteButton(style: .solid)
@@ -530,7 +554,7 @@ public class ShowPollsViewController: UIViewController , SetTopbar {
         if self.viewModel.canShowCreateButton == false {
             createButton.set(.height(0))
         }
-        
+        createButton.accessibilityIdentifier = "Create_Polls_Button"
         createButton.addTarget(self, action: #selector(createPollClick(button:)), for: .touchUpInside)
         
         scrollView.set(.sameLeadingTrailing(view,spaceToken.space3),
@@ -561,9 +585,10 @@ public class ShowPollsViewController: UIViewController , SetTopbar {
                 guard let self = self else {return}
                 //Make it untouchable so that user can't select another options.
                 view.listSelectionView.isUserInteractionEnabled = false
-                
+                view.accessibilityIdentifier = "ListSelectionView_IS_Selected"
                 //TODO: below method should be based on completionHandler
-                self.dyteMobileClient.polls.vote(pollMessage: model.pollMessage, pollOption: model.pollMessage.options[optionIndex])            }
+                self.dyteMobileClient.polls.vote(pollMessage: model.pollMessage, pollOption: model.pollMessage.options[optionIndex])
+            }
             baseView.addSubview(view)
             view.clipsToBounds = true
             view.set(.sameLeadingTrailing(baseView))

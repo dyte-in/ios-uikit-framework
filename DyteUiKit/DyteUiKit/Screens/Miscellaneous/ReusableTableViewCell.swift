@@ -65,6 +65,11 @@ class AcceptButtonTableViewCell: ButtonTableViewCell {
         self.button.backgroundColor = tokenColor.background.shade800
     }
 }
+class AcceptButtonJoinStageRequestTableViewCell: AcceptButtonTableViewCell {
+}
+
+class AcceptButtonWaitingTableViewCell: AcceptButtonTableViewCell {
+}
 
 class RejectButtonTableViewCell: ButtonTableViewCell {
     
@@ -73,7 +78,8 @@ class RejectButtonTableViewCell: ButtonTableViewCell {
         self.button.backgroundColor = tokenColor.background.shade800
     }
 }
-
+class RejectButtonJoinStageRequestTableViewCell: RejectButtonTableViewCell {
+}
 
 class ButtonTableViewCell: BaseTableViewCell {
     

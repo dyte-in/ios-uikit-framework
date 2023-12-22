@@ -13,7 +13,7 @@ let tokenColor = DesignLibrary.shared.color
 
 let tokenSpace = DesignLibrary.shared.space
 
-class ParticipantViewController: UIViewController, SetTopbar, KeyboardObservable {
+class ParticipantViewController: BaseViewController, SetTopbar, KeyboardObservable {
     let tableView = UITableView()
     let viewModel: ParticipantViewControllerModelProtocol
     var keyboardObserver: KeyboardObserver?
@@ -28,7 +28,7 @@ class ParticipantViewController: UIViewController, SetTopbar, KeyboardObservable
     
     public init(viewModel: ParticipantViewControllerModelProtocol) {
         self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
+        super.init(dyteMobileClient: viewModel.mobileClient)
     }
     
     required init?(coder: NSCoder) {
@@ -43,10 +43,12 @@ class ParticipantViewController: UIViewController, SetTopbar, KeyboardObservable
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.accessibilityIdentifier = "GroupCall_Participant_Screen"
         self.setUpView()
         setupKeyboard()
+        setUpReconnection {} success: {}
     }
- 
+    
     func setUpView() {
         self.addTopBar(dismissAnimation: true)
         setUpTableView()
@@ -75,6 +77,7 @@ class ParticipantViewController: UIViewController, SetTopbar, KeyboardObservable
     func registerCells(tableView: UITableView) {
         tableView.register(ParticipantInCallTableViewCell.self)
         tableView.register(ParticipantWaitingTableViewCell.self)
+        tableView.register(OnStageWaitingRequestTableViewCell.self)
         tableView.register(AcceptButtonTableViewCell.self)
         tableView.register(RejectButtonTableViewCell.self)
         tableView.register(TitleTableViewCell.self)
@@ -139,6 +142,7 @@ extension ParticipantViewController: UITableViewDataSource {
                     }
                 }
             }
+            cell.moreButton.accessibilityIdentifier = "InCall_ThreeDots_Button" 
            
         } else if let cell = cell as? ParticipantWaitingTableViewCell {
             cell.buttonCrossClick = { [weak self] button in
@@ -150,19 +154,38 @@ extension ParticipantViewController: UITableViewDataSource {
                 guard let self = self else {return}
                 button.showActivityIndicator()
                 self.viewModel.waitlistEventListner.acceptWaitingRequest(participant: cell.model.participant)
+                
+            }
+        } else if let cell = cell as? OnStageWaitingRequestTableViewCell {
+            cell.buttonCrossClick = { [weak self] button in
+                guard let self = self else {return}
+                button.showActivityIndicator()
+                self.viewModel.mobileClient.stage.denyAccess(id: cell.model.participant.id)
+                button.hideActivityIndicator()
+                self.reloadScreen()
+            }
+            cell.buttonTickClick = { [weak self] button in
+                guard let self = self else {return}
+                button.showActivityIndicator()
+                self.viewModel.mobileClient.stage.grantAccess(id: cell.model.participant.id)
+                button.hideActivityIndicator()
+                self.reloadScreen()
             }
         } else if let cell = cell as? AcceptButtonTableViewCell {
+            cell.button.hideActivityIndicator()
             cell.buttonClick = { [weak self] button in
                 guard let self = self else {return}
                 button.showActivityIndicator()
                 self.viewModel.acceptAll()
+                button.hideActivityIndicator()
+
                 self.reloadScreen()
             }
         } else if let cell = cell as? RejectButtonTableViewCell {
+            cell.button.hideActivityIndicator()
             cell.buttonClick = { [weak self] button in
                 guard let self = self else {return}
-                button.showActivityIndicator()
-                self.viewModel.acceptAll()
+                self.viewModel.rejectAll()
                 self.reloadScreen()
             }
         }

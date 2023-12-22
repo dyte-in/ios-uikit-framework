@@ -10,8 +10,8 @@ import DyteiOSCore
 
 
 public protocol BaseAppearance {
-    var desingLibrary: DesignTokens {get}
-    init(designLibrary: DesignTokens)
+    var desingLibrary: DyteDesignTokens {get}
+    init(designLibrary: DyteDesignTokens)
 }
 
 public protocol DyteNameTagAppearance: BaseAppearance {
@@ -32,9 +32,9 @@ public class DyteNameTagAppearanceModel: DyteNameTagAppearance {
     public var titleFont: UIFont
     public var subTitleFont: UIFont
     public var paddings: UIEdgeInsets
-    public var desingLibrary: DesignTokens
+    public var desingLibrary: DyteDesignTokens
 
-    required public init(designLibrary: DesignTokens = DesignLibrary.shared) {
+    required public init(designLibrary: DyteDesignTokens = DesignLibrary.shared) {
         self.desingLibrary = designLibrary
         paddings = UIEdgeInsets(top: designLibrary.space.space1,
                                 left: designLibrary.space.space1,

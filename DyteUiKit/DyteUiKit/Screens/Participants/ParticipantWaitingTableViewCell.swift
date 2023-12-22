@@ -50,6 +50,30 @@ class ParticipantWaitingTableViewCell: BaseParticipantWaitingTableViewCell {
     private var viewModel: ParticipantWaitingTableViewCellModel?
 }
 
+class OnStageWaitingRequestTableViewCell: BaseParticipantWaitingTableViewCell {
+    private var viewModel: OnStageParticipantWaitingRequestTableViewCellModel?
+}
+
+
+extension OnStageWaitingRequestTableViewCell: ConfigureView {
+    var model: OnStageParticipantWaitingRequestTableViewCellModel {
+        if let model =  viewModel {
+            return model
+        }
+        fatalError("Before calling this , Please set model first using 'func configure(model: TitleTableViewCellModel)'")
+    }
+    
+    func configure(model: OnStageParticipantWaitingRequestTableViewCellModel) {
+        viewModel = model
+        widthConstraint.constant = 0.0
+        self.profileImageView.setImage(image: model.image) {[unowned self] _ in
+            self.widthConstraint.constant = profileImageWidth
+        }
+        self.nameLabel.text = model.title
+        self.cellSeparatorBottom.isHidden = !model.showBottomSeparator
+        self.cellSeparatorTop.isHidden = !model.showTopSeparator
+    }
+}
 extension ParticipantWaitingTableViewCell: ConfigureView {
     var model: ParticipantWaitingTableViewCellModel {
         if let model =  viewModel {

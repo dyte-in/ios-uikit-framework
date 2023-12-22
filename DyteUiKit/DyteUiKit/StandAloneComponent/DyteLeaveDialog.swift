@@ -8,7 +8,13 @@
 import UIKit
 import DyteiOSCore
 
+
+
+
 public class DyteLeaveDialog {
+    static let onEndMeetingForAllButtonPress: Notification.Name = Notification.Name("onEndMeetingForAllButtonPress")
+    
+
     public  enum DyteLeaveDialogAlertButtonType {
         case willLeaveMeeting
         case didLeaveMeeting
@@ -50,6 +56,7 @@ public class DyteLeaveDialog {
         if self.meeting.localUser.permissions.host.canKickParticipant {
             alert.addAction(UIAlertAction(title: "End Meeting for all", style: .default, handler: { action in
                 self.onClick?(.willEndMeetingForAll)
+                NotificationCenter.default.post(name: Self.onEndMeetingForAllButtonPress, object: nil)
                 self.dyteSelfListner.leaveMeeting(kickAll: true, completion: { success in
                     self.onClick?(.didEndMeetingForAll)
                 })
@@ -59,6 +66,7 @@ public class DyteLeaveDialog {
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { action in
             self.onClick?(.cancel)
         }))
+        alert.view.accessibilityIdentifier = "Leave_Meeting_Alert"
         presentingController.present(alert, animated: true, completion: nil)
     }
 

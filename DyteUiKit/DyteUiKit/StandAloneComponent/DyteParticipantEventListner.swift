@@ -51,6 +51,7 @@ class DyteParticipantUpdateEventListner  {
         try?self.participant.unpin()
     }
     
+    
     public func clean() {
         self.participant.removeParticipantUpdateListener(participantUpdateListener: self)
     }
@@ -138,16 +139,14 @@ public class DyteWaitListParticipantUpdateEventListner  {
 
 extension DyteWaitListParticipantUpdateEventListner: DyteWaitlistEventsListener {
     public func onWaitListParticipantAccepted(participant: DyteWaitlistedParticipant) {
-        
-    }
-    
-    func onWaitListParticipantAccepted(participant: DyteMeetingParticipant) {
         if isDebugModeOn {
             print("Debug DyteUIKit | onWaitListParticipantAccepted \(participant.name)")
         }
-        self.participantRequestAcceptedCompletion?(participant)
+        DispatchQueue.main.async {
+            self.participantRequestAcceptedCompletion?(participant)
+        }
     }
-
+    
     public func onWaitListParticipantRejected(participant: DyteWaitlistedParticipant) {
         if isDebugModeOn {
             print("Debug DyteUIKit | onWaitListParticipantRejected \(participant.name) \(participant.id) self \(participant.id)")
@@ -171,127 +170,5 @@ extension DyteWaitListParticipantUpdateEventListner: DyteWaitlistEventsListener 
 
     }
  
-    
-}
-
-public class ParticipantEventListner: DyteParticipantEventsListener  {
-    
-    var participantJoinedCompletion:((DyteMeetingParticipant)->Void)?
-    var participantRemovedCompletion:((DyteMeetingParticipant)->Void)?
-    var participantRequestAcceptedCompletion:((DyteMeetingParticipant)->Void)?
-    var participantRequestRejectCompletion:((DyteMeetingParticipant)->Void)?
-    
-    let mobileClient: DyteMobileClient
-    
-    init(mobileClient: DyteMobileClient) {
-        self.mobileClient = mobileClient
-        self.mobileClient.addParticipantEventsListener(participantEventsListener: self)
-    }
-    private let isDebugModeOn = DyteUiKit.isDebugModeOn
-    
-    public func clean() {
-        removeRegisterListner()
-    }
-    public func acceptWaitingRequest(participant: DyteWaitlistedParticipant) {
-        try?participant.acceptWaitListedRequest()
-    }
-    
-    public func rejectWaitingRequest(participant: DyteWaitlistedParticipant) {
-        try?participant.rejectWaitListedRequest()
-    }
-    
-    public func onParticipantJoin(participant: DyteJoinedMeetingParticipant) {
-        
-    }
-    
-    private func removeRegisterListner() {
-        self.mobileClient.removeParticipantEventsListener(participantEventsListener: self)
-    }
-    
-    deinit{
-        print("DyteParticipantEventListner deallocing")
-    }
-}
-
-extension ParticipantEventListner {
-    public func onActiveParticipantsChanged(active: [DyteJoinedMeetingParticipant]) {
-        
-    }
-    
-    public func onActiveSpeakerChanged(participant: DyteJoinedMeetingParticipant) {
-        
-    }
-    
-    public func onAudioUpdate(audioEnabled: Bool, participant: DyteMeetingParticipant) {
-        
-    }
-    
-    public func onNoActiveSpeaker() {
-        
-    }
-    
-    public func onParticipantLeave(participant: DyteJoinedMeetingParticipant) {
-        
-    }
-    
-    public func onParticipantPinned(participant: DyteJoinedMeetingParticipant) {
-        
-    }
-    
-    public func onParticipantUnpinned(participant: DyteJoinedMeetingParticipant) {
-        
-    }
-    
-    public func onScreenShareEnded(participant: DyteScreenShareMeetingParticipant) {
-        
-    }
-    
-    public func onScreenShareStarted(participant: DyteScreenShareMeetingParticipant) {
-        
-    }
-    
-    public func onScreenSharesUpdated() {
-        
-    }
-    
-    public func onUpdate(participants: DyteRoomParticipants) {
-        if let participant = participants.joined.first {
-            if isDebugModeOn {
-                print("Debug DyteUIKit | onWaitListParticipantClosed \(participant)")
-            }
-            self.participantRemovedCompletion?(participant)
-        }
-    }
-    
-    public func onVideoUpdate(videoEnabled: Bool, participant: DyteMeetingParticipant) {
-        
-    }
-    
-    public func onWaitListParticipantAccepted(participant: DyteWaitlistedParticipant) {
-        
-    }
-    
-    func onWaitListParticipantAccepted(participant: DyteMeetingParticipant) {
-        if isDebugModeOn {
-            print("Debug DyteUIKit | onWaitListParticipantAccepted \(participant.name)")
-        }
-        self.participantRequestAcceptedCompletion?(participant)
-    }
-
-    func onWaitListParticipantRejected(participant: DyteMeetingParticipant) {
-        if isDebugModeOn {
-            print("Debug DyteUIKit | onWaitListParticipantRejected \(participant.name) \(participant.id) self \(participant.id)")
-        }
-        self.participantRequestRejectCompletion?(participant)
-    }
-
-    func onWaitListParticipantJoined(participant: DyteMeetingParticipant) {
-        if isDebugModeOn {
-            print("Debug DyteUIKit | onWaitListParticipantJoined \(participant.name)")
-        }
-        self.participantJoinedCompletion?(participant)
-
-    }
-
     
 }

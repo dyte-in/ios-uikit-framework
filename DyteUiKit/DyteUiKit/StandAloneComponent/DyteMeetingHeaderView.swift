@@ -74,7 +74,6 @@ open class DyteMeetingHeaderView: UIView {
  
         let cameraSwitchButton = DyteSwitchCameraButtonControlBar(mobileClient: self.meeting)
         cameraSwitchButton.backgroundColor = self.backgroundColor
-        cameraSwitchButton.isHidden = !meeting.localUser.permissions.media.canPublishVideo
         nextPreviouStackView.addArrangedSubviews(nextPreviousButtonView, cameraSwitchButton)
        
         self.nextPreviousButtonView.previousButton.addTarget(self, action: #selector(clickPrevious(button:)), for: .touchUpInside)

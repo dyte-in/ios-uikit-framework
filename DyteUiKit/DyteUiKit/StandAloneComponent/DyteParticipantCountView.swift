@@ -36,6 +36,30 @@ public class DyteParticipantCountView: DyteText {
 }
 
 extension DyteParticipantCountView: DyteParticipantEventsListener {
+    public func onAllParticipantsUpdated(allParticipants: [DyteParticipant]) {
+        
+    }
+    
+    public func onUpdate(participants: DyteRoomParticipants) {
+        
+    }
+    
+    public func onScreenShareEnded(participant_ participant: DyteScreenShareMeetingParticipant) {
+        
+    }
+    
+    public func onScreenShareStarted(participant_ participant: DyteScreenShareMeetingParticipant) {
+        
+    }
+    
+    public func onScreenShareEnded(participant: DyteJoinedMeetingParticipant) {
+        
+    }
+    
+    public func onScreenShareStarted(participant: DyteJoinedMeetingParticipant) {
+        
+    }
+    
     public func onActiveParticipantsChanged(active: [DyteJoinedMeetingParticipant]) {
         
     }
@@ -68,19 +92,7 @@ extension DyteParticipantCountView: DyteParticipantEventsListener {
         
     }
     
-    public func onScreenShareEnded(participant: DyteScreenShareMeetingParticipant) {
-        
-    }
-    
-    public func onScreenShareStarted(participant: DyteScreenShareMeetingParticipant) {
-        
-    }
-    
     public func onScreenSharesUpdated() {
-        
-    }
-    
-    public func onUpdate(participants: DyteRoomParticipants) {
         
     }
     

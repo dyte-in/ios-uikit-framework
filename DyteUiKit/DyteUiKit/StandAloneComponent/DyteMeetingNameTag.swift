@@ -36,9 +36,11 @@ public class DyteMeetingNameTag: DyteNameTag {
     
     private func setAudio(isEnabled: Bool) {
          if isEnabled {
+             self.imageView.accessibilityIdentifier = "NameTag_Mic_Enabled"
              self.imageView.image = ImageProvider.image(named: "icon_mic_enabled")?.withRenderingMode(.alwaysTemplate)
              self.imageView.tintColor = appearance.desingLibrary.color.textColor.onBackground.shade1000
          }else {
+             self.imageView.accessibilityIdentifier = "NameTag_Mic_Disabled"
              self.imageView.image = ImageProvider.image(named: "icon_mic_disabled")?.withRenderingMode(.alwaysTemplate)
              self.imageView.tintColor = appearance.desingLibrary.color.status.danger
          }

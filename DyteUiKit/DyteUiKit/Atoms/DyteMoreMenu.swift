@@ -17,14 +17,89 @@ public enum MenuType {
     case particpants(notificationMessage:String)
     case recordingStart
     case recordingStop
+    case muteAllAudio
+    case muteAllVideo
     case muteAudio
     case muteVideo
     case pin
     case unPin
+    case allowToJoinStage
+    case denyToJoinStage
+    case removeFromStage
     case kick
     case files
     case images
     case cancel
+}
+
+extension MenuType {
+    func getAccessIndentifier() -> String {
+        switch self {
+        case .shareMeetingUrl:
+            return "MoreMenu_Option_ShareMeetingUrl"
+            
+        case .poll(notificationMessage: _):
+            return "MoreMenu_Option_Poll"
+
+        case .chat(notificationMessage: _):
+            return "MoreMenu_Option_Chat"
+
+        case .plugins:
+            return "MoreMenu_Option_Plugins"
+
+        case .settings:
+            return "MoreMenu_Option_Settings"
+
+        case .particpants(notificationMessage: _):
+            return "MoreMenu_Option_Participants"
+
+        case .recordingStart:
+            return "MoreMenu_Option_StartRecording"
+
+        case .recordingStop:
+            return "MoreMenu_Option_StopRecording"
+
+        case .muteAllAudio:
+            return "MoreMenu_Option_MuteAllAudio"
+
+        case .muteAllVideo:
+            return "MoreMenu_Option_MuteAllVideo"
+
+        case .muteAudio:
+            return "MoreMenu_Option_MuteAudio"
+
+        case .muteVideo:
+            return "MoreMenu_Option_MuteVideo"
+
+        case .pin:
+            return "MoreMenu_Option_Pin"
+
+        case .unPin:
+            return "MoreMenu_Option_UnPin"
+
+        case .allowToJoinStage:
+            return "MoreMenu_Option_AllowToJoinStage"
+
+        case .denyToJoinStage:
+            return "MoreMenu_Option_DenyToJoinStage"
+
+        case .removeFromStage:
+            return "MoreMenu_Option_RemoveFromStage"
+
+        case .kick:
+            return "MoreMenu_Option_Kick"
+
+        case .files:
+            return "MoreMenu_Option_Files"
+
+        case .images:
+            return "MoreMenu_Option_Images"
+
+        case .cancel:
+            return "MoreMenu_Option_Cancel"
+
+        }
+    }
 }
 
 
@@ -79,6 +154,7 @@ class BottomSheet: UIView {
     let backgroundColorValue = DesignLibrary.shared.color.background.shade800
     let backgroundColorValueForLineSeparator = DesignLibrary.shared.color.background.shade700
     let tokenSpace = DesignLibrary.shared.space
+    var options = [UIView]()
     public var onHide: ((BottomSheet)->Void)?
     private let title: String?
     
@@ -99,12 +175,15 @@ class BottomSheet: UIView {
             baseStackView.addArrangedSubview(self.getTitleView(title: title))
         }
         
+        var views = [UIView]()
         for model in features {
             let button = getMenuButton(title: model.title, systemImage: model.image, unreadCount: model.unreadCount)
             button.button.addTarget(self, action: #selector(buttonTapped(button:)), for: .touchUpInside)
             button.button.model = model
             baseStackView.addArrangedSubview(button.baseView)
+            views.append(button.baseView)
         }
+        self.options = views
         self.tag = selfTag
     }
     
@@ -254,15 +333,27 @@ public class DyteMoreMenu: UIView {
         for feature in features {
             switch feature {
             case.files:
-                model.append(BottomSheetModel(type: .files, image: DyteImage(image: ImageProvider.image(named: "icon_attach")), title: "File", onTap: { [weak self] bottomSheet in
+                model.append(BottomSheetModel(type: feature, image: DyteImage(image: ImageProvider.image(named: "icon_attach")), title: "File", onTap: { [weak self] bottomSheet in
                     guard let self = self else { return }
                     onSelect(feature)
                     self.hideSheet()
                 }))
                 
             case.images:
-                model.append(BottomSheetModel(type: .images, image: DyteImage(image: ImageProvider.image(named: "icon_image")), title: "Image", onTap: { [weak self] bottomSheet in
+                model.append(BottomSheetModel(type: feature, image: DyteImage(image: ImageProvider.image(named: "icon_image")), title: "Image", onTap: { [weak self] bottomSheet in
                     guard let self = self else { return }
+                    onSelect(feature)
+                    self.hideSheet()
+                }))
+            case.muteAllAudio:
+                model.append(BottomSheetModel(type: feature, image: DyteImage(image: ImageProvider.image(named: "icon_mic_disabled")), title: "Mute All Audio", onTap: { [weak self] bottomSheet in
+                    guard let self = self else {return}
+                    onSelect(feature)
+                    self.hideSheet()
+                }))
+            case.muteAllVideo:
+                model.append(BottomSheetModel(type: feature, image: DyteImage(image: ImageProvider.image(named: "icon_video_disabled")), title: "Mute All Video", onTap: { [weak self] bottomSheet in
+                    guard let self = self else {return}
                     onSelect(feature)
                     self.hideSheet()
                 }))
@@ -296,6 +387,24 @@ public class DyteMoreMenu: UIView {
                     onSelect(feature)
                     self.hideSheet()
                 }))
+            case .allowToJoinStage:
+                model.append(BottomSheetModel(type: feature, image: DyteImage(image: ImageProvider.image(named: "icon_stage_join")), title: "Allow to join Stage", onTap: { [weak self] bottomSheet in
+                    guard let self = self else {return}
+                    onSelect(feature)
+                    self.hideSheet()
+                }))
+            case .denyToJoinStage:
+                model.append(BottomSheetModel(type: feature, image: DyteImage(image: ImageProvider.image(named: "icon_stage_join")), title: "Revoke to join Stage", onTap: { [weak self] bottomSheet in
+                    guard let self = self else {return}
+                    onSelect(feature)
+                    self.hideSheet()
+                }))
+            case .removeFromStage:
+                model.append(BottomSheetModel(type: feature, image: DyteImage(image: ImageProvider.image(named: "icon_stage_leave")), title: "Remove from Stage", onTap: { [weak self] bottomSheet in
+                    guard let self = self else {return}
+                    onSelect(feature)
+                    self.hideSheet()
+                }))
             case .muteVideo:
                 model.append(BottomSheetModel(type: feature, image: DyteImage(image: ImageProvider.image(named: "icon_video_disabled")), title: "Turn off video", onTap: { [weak self] bottomSheet in
                     guard let self = self else {return}
@@ -309,7 +418,7 @@ public class DyteMoreMenu: UIView {
                     self.hideSheet()
                 }))
             case .chat(let notificationMessage):
-                model.append(BottomSheetModel(unreadCount: notificationMessage,type: feature, image: DyteImage(image: ImageProvider.image(named: "icon_chat")), title: "Chat", onTap: { [weak self] bottomSheet in
+                model.append(BottomSheetModel(unreadCount: notificationMessage, type: feature, image: DyteImage(image: ImageProvider.image(named: "icon_chat")), title: "Chat", onTap: { [weak self] bottomSheet in
                     guard let self = self else {return}
                     onSelect(feature)
                     self.hideSheet()
@@ -354,6 +463,11 @@ public class DyteMoreMenu: UIView {
             }
         }
         bottomSheet = BottomSheet(title: title, features: model)
+        for i in 0..<features.count {
+            let menu = features[i]
+            //Setting accessIdentifier for Maestro Testing
+            bottomSheet.options[i].accessibilityIdentifier = menu.getAccessIndentifier()
+        }
         bottomSheet.onHide = {[weak self] bottomSheet in
             guard let self = self else {return}
             self.hideSheet()

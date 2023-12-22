@@ -265,7 +265,7 @@ typealias TableViewCell = UITableViewCell & ConfigureView & ReusableObject
 
 extension UITableView {
     
-    func register<T: UITableViewCell>(_ cell: T.Type) where T: ReusableObject {
+   public func register<T: UITableViewCell>(_ cell: T.Type) where T: ReusableObject {
        self.register(cell.self, forCellReuseIdentifier: cell.reuseIdentifier)
     }
 }

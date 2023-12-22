@@ -14,11 +14,11 @@ protocol DytePeerViewDesignDependency: BaseAppearance {
 }
 
 class DytePeerViewViewModel: DytePeerViewDesignDependency {
-    public var desingLibrary: DesignTokens
+    public var desingLibrary: DyteDesignTokens
     var backgroundColor: BackgroundColorToken.Shade
     var cornerRadius: BorderRadiusToken.RadiusType = .rounded
     
-    required public init(designLibrary: DesignTokens = DesignLibrary.shared) {
+    required public init(designLibrary: DyteDesignTokens = DesignLibrary.shared) {
         self.desingLibrary = designLibrary
         backgroundColor = designLibrary.color.background.video
     }

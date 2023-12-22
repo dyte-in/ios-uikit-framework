@@ -17,6 +17,9 @@ class PluginViewController: UIViewController {
     
     init(polls: [DytePlugin]) {
         self.plugins = polls
+        if polls.count > 0 {
+            pluginTableView.accessibilityIdentifier = "Plugins_List"
+        }
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -24,6 +27,7 @@ class PluginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        self.view.accessibilityIdentifier = "Plugins_Screen"
     }
     
     required init?(coder: NSCoder) {
@@ -80,7 +84,7 @@ extension PluginViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "PluginCell", for: indexPath) as? PluginCell
         {
-            cell.plugin = plugins[indexPath.row]
+            cell.set(plugin: plugins[indexPath.row], indexPath: indexPath)
             return cell
         }
         

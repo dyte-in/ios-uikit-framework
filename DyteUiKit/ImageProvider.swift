@@ -11,12 +11,10 @@ public class ImageProvider {
     // for any image located in bundle where this class has built
     public static func image(named: String) -> UIImage? {
         if #available(iOS 13.0, *) {
-            let bundle = Bundle.module
-            let image = UIImage(named: named, in: bundle, with: nil)
-            return image
+            return UIImage(named: named, in: Bundle(for: self), with: nil)
         } else {
             // Fallback on earlier versions
-            let frameworkBundle =  Bundle.module
+            let frameworkBundle =  Bundle(for: ImageProvider.self)
             let imagePath = frameworkBundle.path(forResource: named, ofType: "png")
             return  UIImage(contentsOfFile: imagePath!)
         }
@@ -48,7 +46,6 @@ public class FileDownloader {
 
 final class ImageUtil {
 
-    var task: URLSessionDownloadTask!
     var session = URLSession(configuration: .default)
     var cache: NSCache<NSString, UIImage>!
     static let shared = ImageUtil()
@@ -56,32 +53,33 @@ final class ImageUtil {
         session = URLSession.shared
         self.cache = NSCache()
     }
-    func obtainImageWithPath(url: URL, completionHandler: @escaping (UIImage) -> Void)-> UIImage? {
-       return self.obtainImageWithPath(imagePath: url.absoluteString, completionHandler: completionHandler)
+    func obtainImageWithPath(url: URL, completionHandler: @escaping (UIImage, URL) -> Void)-> (UIImage?,URLSessionTask?) {
+        return self.obtainImageWithPath(imagePath: url.absoluteString, completionHandler: completionHandler)
     }
-    func obtainImageWithPath(imagePath: String, completionHandler: @escaping(UIImage) -> Void) -> UIImage? {
+    
+    func obtainImageWithPath(imagePath: String, completionHandler: @escaping(UIImage, URL) -> Void) -> (UIImage?,URLSessionTask?){
         if let image = self.cache.object(forKey: imagePath as NSString) {
-            return image
+            return (image , nil)
         } else {
-            guard let placeholder = ImageProvider.image(named: "icon_image") else { return nil }
+            guard let placeholder = ImageProvider.image(named: "icon_image") else { return (nil, nil) }
             if let url = URL(string: imagePath) {
-                task = session.downloadTask(with: url, completionHandler: { (location, response, error) in
-                    if let data = try? Data(contentsOf: url) {
+                let task =  session.dataTask(with: URLRequest(url: url)) { data, response, error in
+                    if let data = data , error == nil, let url = response?.url {
                         if let img = UIImage(data: data) {
-                            self.cache.setObject(img, forKey: imagePath as NSString)
+                            self.cache.setObject(img, forKey: url.absoluteString as NSString)
                             DispatchQueue.main.async {
-                                completionHandler(img)
+                                completionHandler(img, url)
                             }
-                        } else {
-                            print(Constants.errorLoadingImage)
                         }
                     }
-                })
+                }
                 task.resume()
-                return placeholder
+
+                return (placeholder, task)
             }
+            
             print(Constants.errorLoadingImage)
-             return nil
+            return (nil , nil)
         }
     }
 }

@@ -30,7 +30,7 @@ class SettingViewController: UIViewController, SetTopbar {
         nameTagTitle = nameTag
         self.completion = completion
         self.dyteMobileClient = dyteMobileClient
-        selfPeerView = DyteParticipantTileView(viewModel: VideoPeerViewModel(mobileClient: dyteMobileClient, showScreenShareVideo: false, participant: dyteMobileClient.localUser))
+        selfPeerView = DyteParticipantTileView(viewModel: VideoPeerViewModel(mobileClient: dyteMobileClient, participant: dyteMobileClient.localUser, showSelfPreviewVideo: true))
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -86,12 +86,11 @@ class SettingViewController: UIViewController, SetTopbar {
     private  func createDropdownStackView() -> BaseStackView {
         let stackView = UIUTility.createStackView(axis: .vertical, spacing: spaceToken.space4)
         createDropDowns()
-        if dyteMobileClient.localUser.permissions.media.canPublishVideo {
+        if dyteMobileClient.localUser.permissions.media.canPublishVideo && dyteMobileClient.localUser.videoEnabled {
             stackView.addArrangedSubviews(cameraDropDown)
         }
-        if dyteMobileClient.localUser.permissions.media.audioPermission == DyteMediaPermission.allowed {
-             stackView.addArrangedSubviews(speakerDropDown)
-        }
+        
+        stackView.addArrangedSubviews(speakerDropDown)
 
         return stackView
     }

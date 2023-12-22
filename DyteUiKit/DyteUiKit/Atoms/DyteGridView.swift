@@ -30,12 +30,12 @@ class GridView<CellContainerView: UIView>: UIView {
     private let getChildView: ()->CellContainerView
     private let scrollView = UIScrollView()
     private let scrollContentView = UIView()
-    
+
     init(maxItems: UInt = 9, showingCurrently: UInt, getChildView: @escaping()->CellContainerView) {
         self.maxItems = maxItems
         self.getChildView = getChildView
         if isDebugModeOn {
-            print("Debug DyteUIKit | showingCurrently \(showingCurrently)")
+            print("Debug DyteUIKit | Creating GridView showingCurrently \(showingCurrently)")
         }
         self.currentVisibleItem = showingCurrently
         super.init(frame: .zero)
@@ -48,9 +48,7 @@ class GridView<CellContainerView: UIView>: UIView {
     
     
     func settingFrames(visibleItemCount: UInt, animation: Bool = true, completion:@escaping(Bool)->Void) {
-        if isDebugModeOn {
-            print("Debug DyteUIKit | Grid visibleItemCount \(visibleItemCount)")
-        }
+    
         currentVisibleItem = visibleItemCount
         previousAnimation = animation
         self.layoutIfNeeded()
@@ -60,9 +58,6 @@ class GridView<CellContainerView: UIView>: UIView {
     }
     
     func settingFramesForHorizontal(visibleItemCount: UInt, animation: Bool = true, completion:@escaping(Bool)->Void) {
-        if isDebugModeOn {
-            print("Debug DyteUIKit | Grid visibleItemCount \(visibleItemCount)")
-        }
         currentVisibleItem = visibleItemCount
         previousAnimation = animation
         self.frames = self.getFramesForHorizontal(itemsCount: visibleItemCount, height: self.scrollContentView.frame.height)
@@ -80,6 +75,7 @@ class GridView<CellContainerView: UIView>: UIView {
 }
 
 extension GridView {
+    
    private func getFramesForHorizontal(itemsCount: UInt, height: CGFloat) -> [CGRect] {
         var x = paddings.leading
         let interimSpacing = paddings.interimPadding * (CGFloat(itemsCount) - 1)
@@ -104,7 +100,6 @@ extension GridView {
         self.scrollView.set(.fillSuperView(self))
         self.scrollView.addSubview(self.scrollContentView)
         self.scrollContentView.set(.fillSuperView(self.scrollView), .width(0))
-        
         self.scrollContentView.set(.equateAttribute(.height, toView: self.scrollView, toAttribute: .height, withRelation: .equal))
         self.views = self.createView(baseView: self.scrollContentView)
     }
@@ -113,15 +108,17 @@ extension GridView {
         var result = [CellContainerView] ()
         for i in 0..<maxItems {
             let view = self.getChildView()
+            view.tag = Int(i)
             view.translatesAutoresizingMaskIntoConstraints = false
             baseView.addSubview(view)
             result.append(view)
             if isDebugModeOn {
-                let label = UIUTility.createLabel(text:"View No: \(i)")
+                let label = UIUTility.createLabel(text:"View No: \(i) test \(view)")
                 label.textColor = .black
                 label.layer.zPosition = 1.0
                 view.addSubview(label)
-                label.set(.centerView(view))
+                label.numberOfLines = 0
+                label.set(.centerY(view), .sameLeadingTrailing(view, 20))
             }
         }
         return result

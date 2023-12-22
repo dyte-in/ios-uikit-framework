@@ -17,7 +17,15 @@ open class  DyteSwitchCameraButtonControlBar: DyteControlBarButton {
         self.dyteSelfListner = DyteEventSelfListner(mobileClient: mobileClient)
         super.init(image: DyteImage(image: ImageProvider.image(named: "icon_flipcamera_topbar")))
         self.addTarget(self, action: #selector(onClick(button:)), for: .touchUpInside)
-        
+        if mobileClient.localUser.permissions.media.canPublishVideo {
+            self.isHidden = !mobileClient.localUser.videoEnabled
+            self.dyteSelfListner.observeSelfVideo { enabled in
+                self.isHidden = !enabled
+            }
+        }
+        else {
+            self.isHidden = false
+        }
     }
     
     required public init?(coder: NSCoder) {

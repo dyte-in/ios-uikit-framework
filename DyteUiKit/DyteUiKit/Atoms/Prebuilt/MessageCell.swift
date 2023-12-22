@@ -43,14 +43,28 @@ class MessageUtil {
 class MessageCell: UITableViewCell {
     
     // MARK: - Properties
+    var downloadButtonAction: (() -> Void)?
     var message: DyteChatMessage? {
         didSet {
             updateUI()
         }
+
     }
     
-    var messageImageView: UIImageView = {
-        let imageView = UIImageView()
+    var downloadButton: DyteButton = {
+        let button = DyteButton(style: .iconOnly(icon: DyteImage(image: ImageProvider.image(named: "icon_down_arrow"))), dyteButtonState: .active)
+        button.isUserInteractionEnabled = false
+        button.tintColor = .white
+        // Set additional button properties if needed
+        return button
+    }()
+    
+    class ImageView: UIImageView {
+        var task: URLSessionTask?
+    }
+    
+    var messageImageView: ImageView = {
+        let imageView = ImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = DesignLibrary.shared.borderRadius.getRadius(size: .one, radius: AppTheme.shared.cornerRadiusTypeImageView)
@@ -78,10 +92,17 @@ class MessageCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupView()
+        let tap = UITapGestureRecognizer(target: self, action: #selector(downloadButtonTapped))
+        contentView.addGestureRecognizer(tap)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc private func downloadButtonTapped() {
+        // Call the download button action closure
+        downloadButtonAction?()
     }
     
     private func getUrlString(message: DyteTextMessage) -> NSAttributedString? {
@@ -171,15 +192,22 @@ class MessageCell: UITableViewCell {
                     self.messageLabel.isHidden = false
                 }
             case .image:
+                if let task = self.messageImageView.task {
+                    task.cancel()
+                }
                 if let imgMsg = msg as? DyteImageMessage {
-                    if let image =  ImageUtil.shared.obtainImageWithPath(imagePath: imgMsg.link , completionHandler: { [weak self] image in
-                        
-                        self?.messageImageView.superview!.isHidden = false
-                        self?.messageImageView.image = image
-                        self?.contentView.layoutIfNeeded()
-                    }) {
+                   let result =  ImageUtil.shared.obtainImageWithPath(imagePath: imgMsg.link , completionHandler: { [weak self] image, url in
+                       self?.messageImageView.superview!.isHidden = false
+                       self?.messageImageView.image = image
+                       self?.contentView.layoutIfNeeded()
+                    })
+                    
+                    if let image = result.0 {
                         self.messageImageView.superview!.isHidden = false
                         self.messageImageView.image = image
+                        if let task = result.1 {
+                            self.messageImageView.task = task
+                        }
                     }
                 }
                 
@@ -204,6 +232,13 @@ class MessageCell: UITableViewCell {
                              .top(baseImageView),
                              .height(200),
                              .bottom(baseImageView))
+        messageImageView.addSubview(downloadButton)
+        downloadButton.backgroundColor = tokenColor.background.shade800
+        downloadButton.set(.trailing(messageImageView),
+                             .width(48),
+                             .top(messageImageView),
+                             .height(48))
+        
         stackView.addArrangedSubviews(messageLabel, baseImageView)
         contentView.addSubview(stackView)
         stackView.set(.sameLeadingTrailing(contentView, tokenSpace.space3),

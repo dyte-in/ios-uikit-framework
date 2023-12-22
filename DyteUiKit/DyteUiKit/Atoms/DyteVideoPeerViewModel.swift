@@ -16,16 +16,17 @@ public class VideoPeerViewModel {
     public  var nameInitialsUpdate: (()->Void)?
     public var nameUpdate: (()->Void)?
     public var profileImagePathUpdate: (()->Void)?
-
+    let showSelfPreviewVideo: Bool
     var participant: DyteJoinedMeetingParticipant!
     private let isDebugModeOn = DyteUiKit.isDebugModeOn
-    let showScreenShareVideo: Bool
     let mobileClient: DyteMobileClient
-    
-    init(mobileClient: DyteMobileClient, showScreenShareVideo: Bool, participant: DyteJoinedMeetingParticipant) {
+    let showScreenShareVideoView: Bool
+
+    public init(mobileClient: DyteMobileClient, participant: DyteJoinedMeetingParticipant, showSelfPreviewVideo: Bool, showScreenShareVideoView: Bool = false) {
+        self.showSelfPreviewVideo = showSelfPreviewVideo
+        self.showScreenShareVideoView = showScreenShareVideoView
         self.mobileClient = mobileClient
         self.participant = participant
-        self.showScreenShareVideo = showScreenShareVideo
         update()
     }
     

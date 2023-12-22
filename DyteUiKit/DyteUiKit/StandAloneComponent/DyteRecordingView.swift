@@ -21,9 +21,9 @@ public class DyteRecordingViewAppearanceModel: DyteRecordingViewAppearance {
     
     public var imageBackGroundColor: StatusColor.Shade
     
-    public var desingLibrary: DesignTokens
+    public var desingLibrary: DyteDesignTokens
     
-    public required init(designLibrary: DesignTokens) {
+    public required init(designLibrary: DyteDesignTokens) {
         self.desingLibrary = designLibrary
         self.font =  UIFont.boldSystemFont(ofSize: 12)
         self.textColor =  designLibrary.color.status.danger
@@ -47,6 +47,7 @@ class DyteRecordingView: UIView {
         super.init(frame: .zero)
         createSubViews()
         meeting.addRecordingEventsListener(recordingEventsListener: self)
+        self.accessibilityIdentifier = "Recording_Red_Dot"
     }
     
     deinit {
@@ -88,6 +89,14 @@ class DyteRecordingView: UIView {
 }
 
 extension  DyteRecordingView: DyteRecordingEventsListener {
+    func onMeetingRecordingPauseError(e: KotlinException) {
+        
+    }
+    
+    func onMeetingRecordingResumeError(e: KotlinException) {
+        
+    }
+    
     public  func onMeetingRecordingEnded() {
         self.meetingRecording(start: false)
     }

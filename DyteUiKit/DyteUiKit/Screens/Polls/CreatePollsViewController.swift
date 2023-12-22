@@ -516,6 +516,8 @@ class CreatePollView: UIView {
         textView.lblError.text = "Please insert valid question to be asked in poll"
         textView.lblError.textColor = DesignLibrary.shared.color.status.danger
         textView.lblError.font = UIFont.systemFont(ofSize: 12)
+        textView.lblError.accessibilityIdentifier = "CreatePoll_Title_TextView_Error_Label"
+        textView.accessibilityIdentifier = "CreatePoll_Title_TextView"
         return textView
     }()
     
@@ -542,12 +544,14 @@ class CreatePollView: UIView {
         let button = DyteButton(style: .text, size: .medium)
         button.setTitle("Cancel", for: .normal)
         button.setTitleColor(DesignLibrary.shared.color.status.danger, for: .normal)
+        button.accessibilityIdentifier = "CreatePoll_Cancel_Button"
         return button
     }()
     
     let btnPublish: DyteButton = {
         let button = DyteButton(style: .solid, size: .medium)
         button.setTitle("  Publish  ", for: .normal)
+        button.accessibilityIdentifier = "CreatePoll_Publish_Button"
         return button
     }()
     
@@ -600,7 +604,7 @@ enum Result<Value, Error: Swift.Error> {
 
 public class CreatePollsViewController: UIViewController, KeyboardObservable {
     let scrollView:UIScrollView = {return UIScrollView()}()
-    var keyboardObserver: KeyboardObserver?
+    public var keyboardObserver: KeyboardObserver?
     let dyteMobileClient: DyteMobileClient
     let completion:(Result<Bool,Error>)->Void
     let tokenSpace = DesignLibrary.shared.space
@@ -619,6 +623,7 @@ public class CreatePollsViewController: UIViewController, KeyboardObservable {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.accessibilityIdentifier = "Create_Polls_Screen"
         setUpView()
     }
     
@@ -642,28 +647,33 @@ public class CreatePollsViewController: UIViewController, KeyboardObservable {
                        .equateAttribute(.width, toView: createPollView, toAttribute: .width, withRelation: .equal))
         self.createPollView = createPollView
     }
-                                            
+             
+    var createdByMe = false
     @objc func publishButtonClick(button : DyteButton) {
         let addOptionView = self.createPollView.addOptionView
         let allOptions = addOptionView.getAllOptions()
         if  let question = self.createPollView.question, question.count > 2 {
-            self.createPollView.askQuestionTextView.lblError.isHidden = false
-            if allOptions.count >= addOptionView.minimumOptionsToBeShown, let currentPermissionSelectedIndex = self.createPollView.permissionSelectionView.getCurrentSelectedIndex() {
+            self.createPollView.askQuestionTextView.lblError.isHidden = true
+            if allOptions.count >= addOptionView.minimumOptionsToBeShown {
                 button.showActivityIndicator()
 
                 var anonymous = false
                 var hideVotes = false
-                currentPermissionSelectedIndex.forEach { index in
-                    let model = self.createPollView.permissionSelectionView.models[index]
-                    if model.permission == .anonymous {
-                        anonymous = true
-                    }
-                    else if model.permission == .hideResultBeforeVoting {
-                        hideVotes = true
+                if let currentPermissionSelectedIndex = self.createPollView.permissionSelectionView.getCurrentSelectedIndex() {
+                    currentPermissionSelectedIndex.forEach { index in
+                        let model = self.createPollView.permissionSelectionView.models[index]
+                        if model.permission == .anonymous {
+                            anonymous = true
+                        }
+                        else if model.permission == .hideResultBeforeVoting {
+                            hideVotes = true
+                        }
                     }
                 }
+                
                 self.dyteMobileClient.polls.create(question: question, options: allOptions, anonymous: anonymous, hideVotes: hideVotes)
-
+                // For now  It is  working as fire and Forget , Actually we need an event which tell us that poll created successfully or not. Or else DytePollMessage must have UserId of user who created this poll.
+                createdByMe = true
             }
         }else {
             self.createPollView.askQuestionTextView.lblError.isHidden = false
@@ -693,8 +703,11 @@ public class CreatePollsViewController: UIViewController, KeyboardObservable {
 }
 extension CreatePollsViewController: DytePollEventsListener {
     public func onNewPoll(poll: DytePollMessage) {
-        self.dyteMobileClient.removePollEventsListener(pollEventsListener: self)
-        self.completion(.success(true))
+        if createdByMe {
+            createdByMe = false
+            self.dyteMobileClient.removePollEventsListener(pollEventsListener: self)
+            self.completion(.success(true))
+        }
     }
     
     public func onPollUpdates(pollMessages: [DytePollMessage]) {

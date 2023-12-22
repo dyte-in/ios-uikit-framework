@@ -17,9 +17,9 @@ public class DyteTextAppearanceModel: DyteTextAppearance {
     
     public var font: UIFont
     
-    public var desingLibrary: DesignTokens
+    public var desingLibrary: DyteDesignTokens
     
-    public required init(designLibrary: DesignTokens = DesignLibrary.shared) {
+    public required init(designLibrary: DyteDesignTokens = DesignLibrary.shared) {
         self.desingLibrary = designLibrary
         self.textColor = designLibrary.color.textColor.onBackground.shade1000
         self.font = UIFont.systemFont(ofSize: 16)

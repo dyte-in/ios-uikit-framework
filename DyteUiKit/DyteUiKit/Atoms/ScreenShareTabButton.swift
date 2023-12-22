@@ -107,14 +107,14 @@ public protocol ScreenShareTabButtonDesignDependency: BaseAppearance {
 
 
 public class ScreenShareTabButtonDesignDependencyModel : ScreenShareTabButtonDesignDependency {
-    public var desingLibrary: DesignTokens
+    public var desingLibrary: DyteDesignTokens
     public var selectedStateBackGroundColor: TextColorToken.Brand.Shade
     public var normalStateBackGroundColor: TextColorToken.Background.Shade
     public var cornerRadius: BorderRadiusToken.RadiusType = .rounded
     public var titleColor: TextColorToken.Background.Shade
     public var acitivityInidicatorColor: TextColorToken.Background.Shade
 
-    public required init(designLibrary: DesignTokens = DesignLibrary.shared) {
+    public required init(designLibrary: DyteDesignTokens = DesignLibrary.shared) {
         self.desingLibrary = designLibrary
         selectedStateBackGroundColor = designLibrary.color.textColor.onBrand.shade500
         normalStateBackGroundColor = designLibrary.color.textColor.onBackground.shade700
@@ -128,18 +128,19 @@ public class ScreenShareTabButtonDesignDependencyModel : ScreenShareTabButtonDes
 public class ScreenShareTabButton: UIButton {
     
     private var normalImage: DyteImage?
-    private var normalTitle: String
+    fileprivate var normalTitle: String
     private var selectedImage: DyteImage?
-    private var selectedTitle: String?
+    fileprivate var selectedTitle: String?
 
     var btnImageView: BaseImageView?
-    private var btnTitle: DyteText?
+    fileprivate var btnTitle: DyteText?
     private var baseActivityIndicatorView: BaseIndicatorView?
-    private let appearance: ScreenShareTabButtonDesignDependency
+    fileprivate let appearance: ScreenShareTabButtonDesignDependency
     var index: Int = 0
-    
-    init(image: DyteImage?, title: String = "", appearance: ScreenShareTabButtonDesignDependency = ScreenShareTabButtonDesignDependencyModel()) {
+    let id: String
+    init(image: DyteImage?, title: String = "", id: String = "", appearance: ScreenShareTabButtonDesignDependency = ScreenShareTabButtonDesignDependencyModel()) {
         self.normalImage = image
+        self.id = id
         self.appearance = appearance
         self.normalTitle = title
         super.init(frame: .zero)
@@ -245,3 +246,19 @@ extension ScreenShareTabButton {
       }
 }
 
+public class SyncScreenShareTabButton: ScreenShareTabButton {
+    public override var isSelected: Bool {
+        didSet {
+            if isSelected == true {
+                if let title = self.selectedTitle {
+                    self.btnTitle?.setTextWhenInsideStackView(text: title)
+                    self.backgroundColor = DesignLibrary.shared.color.status.danger
+                }
+            }else {
+                self.btnTitle?.setTextWhenInsideStackView(text: self.normalTitle)
+                self.backgroundColor = DesignLibrary.shared.color.status.success
+
+            }
+        }
+    }
+}

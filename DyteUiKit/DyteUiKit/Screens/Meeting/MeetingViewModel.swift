@@ -6,6 +6,7 @@
 //
 
 import DyteiOSCore
+import UIKit
 
 
 protocol MeetingViewModelDelegate: AnyObject {
@@ -16,7 +17,6 @@ protocol MeetingViewModelDelegate: AnyObject {
     func pinnedChanged(participant: DyteMeetingParticipant)
     func activeSpeakerRemoved()
     func pinnedParticipantRemoved(participant: DyteMeetingParticipant)
-    func showWaitingRoom(status: WaitListStatus)
 }
 
 enum DyteNotificationType {
@@ -28,6 +28,7 @@ enum DyteNotificationType {
 
 protocol DyteNotificationDelegate: AnyObject {
     func didReceiveNotification(type: DyteNotificationType)
+    func clearChatNotification()
 }
 
 class GridCellViewModel {
@@ -82,7 +83,7 @@ class ScreenShareViewModel {
         }
     }
     
-    func refresh(participants: [DyteScreenShareMeetingParticipant]) {
+    func refresh(participants: [DyteJoinedMeetingParticipant]) {
         for participant in participants {
             if dict[participant.id] == nil {
                 arrScreenShareParticipants.append(ScreenShareModel(participant: participant))
@@ -154,7 +155,7 @@ protocol PluginsButtonModelProtocol: ParticipantsShareControl {
 }
 
 protocol ScreenSharePluginsProtocol: ParticipantsShareControl {
-    var participant: DyteScreenShareMeetingParticipant {get}
+    var participant: DyteJoinedMeetingParticipant {get}
 }
 
 
@@ -177,8 +178,8 @@ class ScreenShareModel : ScreenSharePluginsProtocol {
     let name: String
     let id: String
     let nameInitials: String
-    let participant: DyteScreenShareMeetingParticipant
-    init(participant: DyteScreenShareMeetingParticipant) {
+    let participant: DyteJoinedMeetingParticipant
+    init(participant: DyteJoinedMeetingParticipant) {
         self.participant = participant
         self.name = participant.name
         self.image = participant.picture
@@ -226,19 +227,13 @@ public final class MeetingViewModel {
         initialise()
     }
     
+    public func clearChatNotification() {
+        notificationDelegate?.clearChatNotification()
+    }
+    
     func trackOnGoingState() {
-        var isWaiting = false
-        let waitStatus = dyteMobileClient.localUser.waitListStatus
-        
-        if  waitStatus == WaitListStatus.waiting {
-            isWaiting = true
-            self.delegate?.showWaitingRoom(status:.waiting)
-        }
-        
+     
         if dyteMobileClient.recording.recordingState == .recording || dyteMobileClient.recording.recordingState == .starting {
-            if isDebugModeOn {
-                assert(isWaiting == false, "No functionality should be accessible from Sdk when user is in Waiting Room, Please report this to SDK owner")
-            }
             self.delegate?.meetingRecording(start: true)
         }else if dyteMobileClient.recording.recordingState == .stopping {
             self.delegate?.meetingRecording(start: false)
@@ -248,14 +243,27 @@ public final class MeetingViewModel {
             self.delegate?.pinnedChanged(participant: participant)
         }
         
+       
+        
         if dyteMobileClient.plugins.active.count >= 1 {
             screenShareViewModel.refresh(plugins: self.dyteMobileClient.plugins.active, selectedPlugin: nil)
             self.delegate?.refreshPluginsView()
-            if isDebugModeOn {
-                assert(isWaiting == false, "No functionality should be accessible from Sdk when user is in Waiting Room, Please report this to SDK owner")
-            }
         }
         
+        //TODO: Do this onConnectedToMeetingRoom
+      
+        
+    }
+    
+    func onReconnect() {
+        if dyteMobileClient.participants.screenShares.count > 0 {
+            self.updateScreenShareStatus()
+        }
+        if dyteMobileClient.plugins.active.count >= 1 {
+            screenShareViewModel.refresh(plugins: self.dyteMobileClient.plugins.active, selectedPlugin: nil)
+            self.delegate?.refreshPluginsView()
+        }
+        self.delegate?.refreshMeetingGrid()
     }
     
     func initialise() {
@@ -284,10 +292,17 @@ extension MeetingViewModel {
     private func updateActiveGridParticipants(pageItemCount: UInt = 0) {
         self.currentlyShowingItemOnSinglePage = pageItemCount
         self.arrGridParticipants = getParticipant(pageItemCount: pageItemCount)
+        if isDebugModeOn {
+            print("Debug DyteUIKit | Current Visible Items \(arrGridParticipants.count)")
+        }
     }
     
     private func getParticipant(pageItemCount: UInt = 0) -> [GridCellViewModel] {
         let activeParticipants = self.dyteMobileClient.participants.active
+        if isDebugModeOn {
+            print("Debug DyteUIKit | Active participant count \(activeParticipants.count)")
+        }
+        
         let rowCount = (pageItemCount == 0 || pageItemCount >= activeParticipants.count) ? UInt(activeParticipants.count) : min(UInt(activeParticipants.count), pageItemCount)
         if isDebugModeOn {
             print("Debug DyteUIKit | visibleItemCount \(pageItemCount) MTVM RowCount \(rowCount)")
@@ -311,30 +326,73 @@ extension MeetingViewModel {
 }
 
 extension MeetingViewModel: DyteParticipantEventsListener {
-    public func onParticipantLeave(participant: DyteJoinedMeetingParticipant) {
+    public func onScreenSharesUpdated() {
         
     }
     
-    public func onScreenShareEnded(participant: DyteScreenShareMeetingParticipant) {
+
+    public func onUpdate(participants: DyteRoomParticipants) {
         
+    }
+
+    public func onAllParticipantsUpdated(allParticipants: [DyteParticipant]) {
+
+    }
+    
+    public func onScreenShareEnded(participant_ participant: DyteScreenShareMeetingParticipant) {
+        if isDebugModeOn {
+            print("Debug DyteUIKit |onScreenShareEnded Participant Id \(participant.userId)")
+        }
+    }
+    
+    public func onScreenShareStarted(participant_ participant: DyteScreenShareMeetingParticipant) {
+        if isDebugModeOn {
+            print("Debug DyteUIKit | onScreenShareStarted Participant Id \(participant.userId)")
+        }
+    }
+    
+    public func onScreenShareEnded(participant: DyteJoinedMeetingParticipant) {
+        if isDebugModeOn {
+            print("Debug DyteUIKit | onScreenShareEnded Participant Id \(participant.userId)")
+        }
+        updateScreenShareStatus()
+    }
+    
+    public func onScreenShareStarted(participant: DyteJoinedMeetingParticipant) {
+        if isDebugModeOn {
+            print("Debug DyteUIKit | onScreenShareStarted Participant Id \(participant.userId)")
+        }
+        updateScreenShareStatus()
+    }
+    
+    public func onParticipantLeave(participant: DyteJoinedMeetingParticipant) {
+        if isDebugModeOn {
+            print("Debug DyteUIKit | onParticipantLeave Participant Id \(participant.userId)")
+        }
     }
     
     public func onActiveParticipantsChanged(active: [DyteJoinedMeetingParticipant]) {
+        if isDebugModeOn {
+            print("Debug DyteUIKit | onActiveParticipantsChanged")
+        }
         self.refreshActiveParticipants(pageItemCount: self.currentlyShowingItemOnSinglePage)
     }
     
     public func onActiveSpeakerChanged(participant: DyteJoinedMeetingParticipant) {
-        print("+++++ onActiveSpeakerChanged appear \(participant.name)")
         self.delegate?.activeSpeakerChanged(participant: participant)
     }
 
     public  func onNoActiveSpeaker() {
-        print("+++++ onNoActiveSpeaker ")
-
         self.delegate?.activeSpeakerRemoved()
+
+    }
+
+    public func onAudioUpdate(audioEnabled: Bool, participant: DyteMeetingParticipant) {
+
     }
     
     public func onParticipantJoin(participant: DyteJoinedMeetingParticipant) {
+
         notificationDelegate?.didReceiveNotification(type: .Joined)
         if isDebugModeOn {
             print("Debug DyteUIKit | Delegate onParticipantJoin \(participant.audioEnabled) \(participant.name) totalCount \(self.dyteMobileClient.participants.joined) participants")
@@ -342,6 +400,7 @@ extension MeetingViewModel: DyteParticipantEventsListener {
     }
     
     public func onParticipantPinned(participant: DyteJoinedMeetingParticipant) {
+
         if isDebugModeOn {
             print("Debug DyteUIKit | Pinned changed Participant Id \(participant.userId)")
         }
@@ -355,27 +414,11 @@ extension MeetingViewModel: DyteParticipantEventsListener {
         }
         self.delegate?.pinnedParticipantRemoved(participant: participant)
     }
-    
-  
-    public  func onScreenSharesUpdated() {
-        if isDebugModeOn {
-            print("Debug DyteUIKit | Delegate onScreenSharesUpdated(")
-        }
-        screenShareViewModel.refresh(participants: self.dyteMobileClient.participants.screenshares)
+
+    private func updateScreenShareStatus() {
+        screenShareViewModel.refresh(participants: self.dyteMobileClient.participants.screenShares)
         self.shouldShowShareScreen = screenShareViewModel.arrScreenShareParticipants.count > 0 ? true : false
         self.delegate?.refreshPluginsView()
-    }
-    
-    public func onAudioUpdate(audioEnabled: Bool, participant: DyteMeetingParticipant) {
-        
-    }
-    
-    public func onScreenShareStarted(participant: DyteScreenShareMeetingParticipant) {
-        
-    }
-    
-    public func onUpdate(participants: DyteRoomParticipants) {
-        
     }
     
     public func onVideoUpdate(videoEnabled: Bool, participant: DyteMeetingParticipant) {
@@ -391,7 +434,9 @@ extension MeetingViewModel: DyteChatEventsListener {
     }
     
     public func onNewChatMessage(message: DyteChatMessage) {
-        notificationDelegate?.didReceiveNotification(type: .Chat)
+        if message.userId != dyteMobileClient.localUser.userId {
+            notificationDelegate?.didReceiveNotification(type: .Chat)
+        }
     }
 }
 
@@ -422,6 +467,5 @@ extension MeetingViewModel: DytePluginEventsListener {
             print("Debug DyteUIKit | Delegate onPluginMessage(")
         }
     }
-    
     
 }

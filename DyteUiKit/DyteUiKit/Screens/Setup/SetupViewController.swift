@@ -6,11 +6,177 @@
 //
 
 import UIKit
+import AVFoundation
 import DyteiOSCore
+
+
+public class MicToggleButton: DyteButton {
+
+    lazy var dyteSelfListner: DyteEventSelfListner = {
+        return DyteEventSelfListner(mobileClient: self.meeting)
+    }()
+    
+    let completion: ((MicToggleButton)->Void)?
+    
+    private let meeting: DyteMobileClient
+    private let alertController: UIViewController
+
+    init(meeting: DyteMobileClient, alertController: UIViewController, onClick:((MicToggleButton)->Void)? = nil, appearance: DyteButtonAppearance = AppTheme.shared.buttonAppearance) {
+        self.meeting = meeting
+        self.alertController = alertController
+        self.completion = onClick
+        super.init(style: .iconOnly(icon: DyteImage(image: ImageProvider.image(named: "icon_mic_enabled"))), dyteButtonState: .active)
+        self.normalStateTintColor = DesignLibrary.shared.color.textColor.onBackground.shade1000
+        self.selectedStateTintColor = DesignLibrary.shared.color.status.danger
+        self.accessibilityIdentifier = "Mic_Toggle_Button"
+
+        self.setImage(ImageProvider.image(named: "icon_mic_disabled")?.withRenderingMode(.alwaysTemplate), for: .selected)
+        self.addTarget(self, action: #selector(clickMic(button:)), for: .touchUpInside)
+        setState()
+    }
+    
+    required public init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+   private func setState() {
+       let mediaPermission = self.meeting.localUser.permissions.media
+       self.isEnabled = mediaPermission.canPublishAudio
+       if self.getPermission() == false {
+           DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+               self.isSelected = true
+           }
+       }
+      
+       
+   }
+    
+    private func getPermission() -> Bool {
+       let state = AVCaptureDevice.authorizationStatus(for: .audio)
+        if state == .denied {
+            return false
+        }
+        return true
+    }
+       
+    @objc func clickMic(button: DyteButton) {
+        if self.getPermission() == false {
+            let alert = UIAlertController(title: "Microphone", message: "Microphone access is necessary to use this app.\n Please click settings to change the permission.", preferredStyle: .alert)
+            // Add "OK" Button to alert, pressing it will bring you to the settings app
+            alert.addAction(UIAlertAction(title: "cancel", style: .default, handler: { action in
+
+            }))
+            alert.addAction(UIAlertAction(title: "settings", style: .default, handler: { action in
+                UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+            }))
+            // Show the alert with animation
+            self.alertController.present(alert, animated: true)
+            return
+        }
+        self.showActivityIndicator()
+        self.dyteSelfListner.toggleLocalAudio(completion: { [weak self] isEnabled in
+            guard let self = self else {return}
+            button.hideActivityIndicator()
+            button.isSelected = !isEnabled
+            self.completion?(self)
+        })
+        
+    }
+    
+    public func clean() {
+        dyteSelfListner.clean()
+    }
+    
+    deinit {
+        clean()
+    }
+    
+}
+
+public class VideoToggleButton: DyteButton {
+
+    lazy var dyteSelfListner: DyteEventSelfListner = {
+        return DyteEventSelfListner(mobileClient: self.meeting)
+    }()
+    
+    let completion: ((VideoToggleButton)->Void)?
+    
+    private let meeting: DyteMobileClient
+    private let alertController: UIViewController
+    
+    init(meeting: DyteMobileClient, alertController: UIViewController, onClick:((VideoToggleButton)->Void)? = nil, appearance: DyteButtonAppearance = AppTheme.shared.buttonAppearance) {
+        self.meeting = meeting
+        self.alertController = alertController
+        self.completion = onClick
+        super.init(style: .iconOnly(icon: DyteImage(image: ImageProvider.image(named: "icon_video_enabled"))), dyteButtonState: .active)
+        self.normalStateTintColor = DesignLibrary.shared.color.textColor.onBackground.shade1000
+        self.selectedStateTintColor = DesignLibrary.shared.color.status.danger
+        self.accessibilityIdentifier = "Video_Toggle_Button"
+        self.setImage(ImageProvider.image(named: "icon_video_disabled")?.withRenderingMode(.alwaysTemplate), for: .selected)
+        self.addTarget(self, action: #selector(clickVideo(button:)), for: .touchUpInside)
+        setState()
+    }
+    
+    required public init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+   private func setState() {
+        let mediaPermission = self.meeting.localUser.permissions.media
+        self.isEnabled = mediaPermission.canPublishVideo
+       if self.getPermission() == false {
+           DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+               self.isSelected = true
+           }
+       }
+    }
+    
+    private func getPermission() -> Bool {
+       let state = AVCaptureDevice.authorizationStatus(for: .video)
+        if state == .denied {
+            return false
+        }
+        return true
+    }
+       
+    @objc func clickVideo(button: DyteButton) {
+        if self.getPermission() == false {
+            let alert = UIAlertController(title: "Camera", message: "Camera access is necessary to use this app.\n Please click settings to change the permission.", preferredStyle: .alert)
+            // Add "OK" Button to alert, pressing it will bring you to the settings app
+            alert.addAction(UIAlertAction(title: "cancel", style: .default, handler: { action in
+
+            }))
+            alert.addAction(UIAlertAction(title: "settings", style: .default, handler: { action in
+                UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+            }))
+            // Show the alert with animation
+            self.alertController.present(alert, animated: true)
+            return
+        }
+        self.showActivityIndicator()
+        self.dyteSelfListner.toggleLocalVideo(completion: { [weak self] isEnabled in
+            guard let self = self else {return}
+            button.hideActivityIndicator()
+            button.isSelected = !isEnabled
+            self.completion?(self)
+        })
+        
+    }
+    
+    public func clean() {
+        dyteSelfListner.clean()
+    }
+    
+    deinit {
+        clean()
+    }
+    
+}
 
 public class SetupViewController: UIViewController, KeyboardObservable {
     
-    var keyboardObserver: KeyboardObserver?
+    public var keyboardObserver: KeyboardObserver?
+    
     let baseView: BaseView = BaseView()
     private var selfPeerView: DyteParticipantTileView!
     let borderRadius = DesignLibrary.shared.borderRadius
@@ -18,19 +184,19 @@ public class SetupViewController: UIViewController, KeyboardObservable {
         return UIUTility.createStackView(axis: .horizontal, spacing: DesignLibrary.shared.space.space6)
     }()
     
-    let btnMic: DyteButton = {
-        let button =  DyteButton(style: .iconOnly(icon: DyteImage(image: ImageProvider.image(named: "icon_mic_enabled"))), dyteButtonState: .active)
-        button.normalStateTintColor = DesignLibrary.shared.color.textColor.onBackground.shade1000
-        button.selectedStateTintColor = DesignLibrary.shared.color.status.danger
-        button.setImage(ImageProvider.image(named: "icon_mic_disabled")?.withRenderingMode(.alwaysTemplate), for: .selected)
+   lazy var btnMic: MicToggleButton = {
+       let button = MicToggleButton(meeting: self.mobileClient, alertController: self) { [weak self] button in
+           guard let self = self else {return}
+           self.selfPeerView.nameTag.refresh()
+       }
         return button
     }()
     
-    let btnVideo: DyteButton = {
-        let button = DyteButton(style: .iconOnly(icon: DyteImage(image: ImageProvider.image(named: "icon_video_enabled"))), dyteButtonState: .active)
-        button.normalStateTintColor = DesignLibrary.shared.color.textColor.onBackground.shade1000
-        button.setImage(ImageProvider.image(named: "icon_video_disabled")?.withRenderingMode(.alwaysTemplate), for: .selected)
-        button.selectedStateTintColor = DesignLibrary.shared.color.status.danger
+   lazy var btnVideo: VideoToggleButton = {
+       let button = VideoToggleButton(meeting: self.mobileClient, alertController: self) { [weak self] button in
+           guard let self = self else {return}
+           self.loadSelfVideoView()
+       }
         return button
     }()
     
@@ -137,27 +303,28 @@ extension SetupViewController {
 }
 
 extension SetupViewController: MeetingDelegate {
-    private func setAudioVideoButtonStateAfterMeetingInitialization() {
-        btnMic.hideActivityIndicator()
-        btnVideo.hideActivityIndicator()
-        btnMic.isSelected = !self.mobileClient.localUser.audioEnabled
-        btnVideo.isSelected = !self.mobileClient.localUser.videoEnabled
-    }
-    
+   
     internal func onMeetingInitCompleted() {
         self.setupUIAfterMeetingInit()
-        let localUser = self.mobileClient.localUser
-        if localUser.permissions.media.canPublishAudio == false {
+        let mediaPermission = self.mobileClient.localUser.permissions.media
+        if mediaPermission.canPublishAudio == false {
             btnMic.isHidden = true
         }
-        if localUser.permissions.media.canPublishVideo == false {
+        
+        if mediaPermission.canPublishVideo == false {
             btnVideo.isHidden = true
         }
+        
+        if mediaPermission.canPublishAudio == false && mediaPermission.canPublishVideo == false {
+            btnSetting.isHidden = true
+        }
+        
         loadSelfVideoView()
     }
     
     func onMeetingInitFailed() {
         print("DyteUiKit | Error: Meeting Init Failed")
+        self.completion()
     }
     
 }
@@ -206,15 +373,19 @@ extension SetupViewController {
         createMeetingSetupUI()
         setupKeyboard()
         setupButtonActions()
-        textFieldBottom.addTarget(self, action: #selector(textFieldEditingDidChange), for: .editingChanged)
-        textFieldBottom.delegate = self
+        if self.viewModel.dyteMobileClient.localUser.permissions.miscellaneous.canEditDisplayName {
+            textFieldBottom.addTarget(self, action: #selector(textFieldEditingDidChange), for: .editingChanged)
+            textFieldBottom.delegate = self
+        }
+        textFieldBottom.text = self.viewModel.dyteMobileClient.localUser.name
         self.setTag(name: "")
+
         setCallBacksForViewModel()
     }
     
     private func createMeetingSetupUI() {
         activityIndicator.stopAnimating()
-        selfPeerView = DyteParticipantTileView(viewModel: VideoPeerViewModel(mobileClient: mobileClient, showScreenShareVideo: false, participant: self.mobileClient.localUser))
+        selfPeerView = DyteParticipantTileView(viewModel: VideoPeerViewModel(mobileClient: mobileClient, participant: self.mobileClient.localUser, showSelfPreviewVideo: true))
         
         baseView.addSubview(selfPeerView)
         
@@ -237,15 +408,15 @@ extension SetupViewController {
     }
     
     private func setupButtonActions() {
-        btnMic.addTarget(self, action: #selector(clickMic(button:)), for: .touchUpInside)
-        btnVideo.addTarget(self, action: #selector(clickVideo(button:)), for: .touchUpInside)
         btnSetting.addTarget(self, action: #selector(clickSetting(button:)), for: .touchUpInside)
     }
     
     @objc func textFieldEditingDidChange(_ sender: Any) {
-        if let text = textFieldBottom.text {
-            self.viewModel?.dyteMobileClient.localUser.name = text
-            self.setTag(name: text)
+        if !((textFieldBottom.text?.trimmingCharacters(in: .whitespaces).isEmpty) ?? false) {
+            if let text = textFieldBottom.text {
+                self.viewModel?.dyteMobileClient.localUser.name = text
+                self.setTag(name: text)
+            }
         }
     }
     
@@ -277,17 +448,33 @@ extension SetupViewController {
         view.addSubview(textFieldBottom)
         textFieldBottom.set(.sameLeadingTrailing(view), .top(view))
         btnBottom = addJoinButton(on: view)
+        btnBottom.accessibilityIdentifier = "Join Button"
         return view
     }
     
     private func addJoinButton(on view: UIView) -> DyteJoinButton {
         let joinButton = DyteJoinButton(meeting: self.mobileClient) { button, success in
-            let mobileClient = self.viewModel.dyteMobileClient
-            let controller = MeetingViewController(dyteMobileClient: mobileClient, completion: self.completion)
-            controller.view.backgroundColor = self.view.backgroundColor
-            controller.modalPresentationStyle = .fullScreen
-            self.present(controller, animated: true)
-            notificationDelegate?.didReceiveNotification(type: .Joined)
+            
+            if success {
+                let mobileClient = self.viewModel.dyteMobileClient
+               
+                if mobileClient.meta.meetingType == DyteMeetingType.groupCall {
+                    let controller = MeetingViewController(dyteMobileClient: mobileClient, completion: self.completion)
+                    controller.modalPresentationStyle = .fullScreen
+                    self.present(controller, animated: true)
+                    notificationDelegate?.didReceiveNotification(type: .Joined)
+                } else if mobileClient.meta.meetingType == DyteMeetingType.livestream {
+                    let controller = LivestreamViewController(dyteMobileClient: mobileClient, completion: self.completion)
+                    controller.modalPresentationStyle = .fullScreen
+                    self.present(controller, animated: true)
+                    notificationDelegate?.didReceiveNotification(type: .Joined)
+                } else if mobileClient.meta.meetingType == DyteMeetingType.webinar {
+                    let controller = WebinarViewController(dyteMobileClient: mobileClient, completion: self.completion)
+                    controller.modalPresentationStyle = .fullScreen
+                    self.present(controller, animated: true)
+                    notificationDelegate?.didReceiveNotification(type: .Joined)
+                }
+            }
         }
         
         view.addSubview(joinButton)
@@ -298,7 +485,11 @@ extension SetupViewController {
     private func showWaitingRoom(status: WaitListStatus) {
         waitingRoomView?.removeFromSuperview()
         if status != .none {
-            let waitingView = WaitingRoomView(automaticClose: false, onCompletion: {})
+            let waitingView = WaitingRoomView(automaticClose: false, onCompletion: { [weak self] in
+                guard let self = self else {return}
+                self.completion()
+            })
+            waitingView.accessibilityIdentifier = "WaitingRoom_View"
             waitingView.backgroundColor = self.view.backgroundColor
             self.view.addSubview(waitingView)
             waitingView.set(.fillSuperView(self.view))
@@ -319,28 +510,12 @@ extension SetupViewController : UITextFieldDelegate {
 
 extension SetupViewController {
     
-    @objc func clickMic(button: DyteButton) {
-        button.showActivityIndicator()
-        viewModel?.dyteSelfListner.toggleLocalAudio(completion: { [weak self] isEnabled in
-            guard let self = self else {return}
-            button.hideActivityIndicator()
-            self.selfPeerView.nameTag.refresh()
-            button.isSelected = !isEnabled
-        })
-        
-    }
-    
-    @objc func clickVideo(button: DyteButton) {
-        button.showActivityIndicator()
-        viewModel?.dyteSelfListner.toggleLocalVideo(completion: { [weak self] isEnabled  in
-            guard let self = self else {return}
-            button.hideActivityIndicator()
-            button.isSelected = !isEnabled
-            self.loadSelfVideoView()
-        })
-    }
-    
     @objc func clickSetting(button: DyteButton) {
+        if !mobileClient.localUser.videoEnabled && !mobileClient.localUser.audioEnabled {
+            self.view.showToast(toastMessage: "Microphone/Camera needs to be enabled to access settings", duration: 1)
+            return
+        }
+        
         if let mobileClient = self.viewModel?.dyteMobileClient {
             mobileClient.localUser.setDisplayName(name: textFieldBottom.text ?? "")
             let controller = SettingViewController(nameTag: textFieldBottom.text ?? "", dyteMobileClient: mobileClient)

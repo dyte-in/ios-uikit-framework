@@ -21,6 +21,7 @@ open class  DyteMoreButtonControlBar: DyteControlBarButton {
         self.presentingViewController = presentingViewController
         super.init(image: DyteImage(image: ImageProvider.image(named: "icon_more_tabbar")), title: "More")
         self.addTarget(self, action: #selector(onClick(button:)), for: .touchUpInside)
+        self.accessibilityIdentifier = "TabBar_More_Button"
     }
     
     required public init?(coder: NSCoder) {
@@ -36,6 +37,15 @@ open class  DyteMoreButtonControlBar: DyteControlBarButton {
     
     private func createMoreMenu(shown onView: UIView) {
         var menus = [MenuType]()
+        
+        if meeting.localUser.permissions.host.canMuteAudio {
+            menus.append(.muteAllAudio)
+        }
+        
+        if meeting.localUser.permissions.host.canMuteVideo {
+            menus.append(.muteAllVideo)
+        }
+        
 //        menus.append(.shareMeetingUrl)
         let recordingState = self.meeting.recording.recordingState
         let permissions = self.meeting.localUser.permissions
@@ -66,12 +76,20 @@ open class  DyteMoreButtonControlBar: DyteControlBarButton {
             message = "\(pending)"
         }
         
+        let mediaPermission = self.meeting.localUser.permissions.media
+        if mediaPermission.canPublishAudio || mediaPermission.canPublishVideo {
+            menus.append(.settings)
+        }
         
-        let chatCount = self.meeting.chat.messages.count
-        menus.append(contentsOf: [.chat(notificationMessage: chatCount > 0 ? "\(chatCount)" : ""), .settings, .particpants(notificationMessage: message), .cancel])
+        let chatPermission = self.meeting.localUser.permissions.chat
+        if chatPermission.canSendFiles || chatPermission.canSendText {
+            let chatCount = self.meeting.chat.messages.count
+            menus.append(.chat(notificationMessage: chatCount > 0 ? "\(chatCount)" : ""))
+        }
         
+        menus.append(contentsOf: [.particpants(notificationMessage: message), .cancel])
+               
         self.bottomSheet = DyteMoreMenuBottomSheet(menus: menus, meeting: self.meeting, presentingViewController: self.presentingViewController, meetingViewModel: self.viewModel)
-        
         self.bottomSheet.show()
     }
 }

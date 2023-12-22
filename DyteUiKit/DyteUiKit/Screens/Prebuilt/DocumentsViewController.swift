@@ -11,6 +11,7 @@ import QuickLook
 class DocumentsViewController: UIViewController, QLPreviewControllerDataSource, QLPreviewControllerDelegate {
     private let documentURL: URL
     private let previewController = QLPreviewController()
+    var downloadFinishAction: (() -> Void)?
     
     init(documentURL: URL) {
         self.documentURL = documentURL
@@ -38,6 +39,7 @@ class DocumentsViewController: UIViewController, QLPreviewControllerDataSource, 
         
         if !fileManager.fileExists(atPath: destinationURL.path) {
             FileDownloader.downloadFile(from: documentURL, to: destinationURL) { [weak self] success, error in
+                self?.downloadFinishAction?()
                 if success {
                     print("File downloaded successfully.")
                     DispatchQueue.main.async {
@@ -48,6 +50,7 @@ class DocumentsViewController: UIViewController, QLPreviewControllerDataSource, 
                 }
             }
         } else {
+            self.downloadFinishAction?()
             openDocument()
         }
     }

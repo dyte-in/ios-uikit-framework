@@ -32,6 +32,10 @@ public class DyteMoreMenuBottomSheet {
          moreMenu = DyteMoreMenu(features: menus, onSelect: { [weak self] menuType in
             guard let self = self else {return}
             switch menuType {
+            case.muteAllAudio:
+                self.muteAllAudio()
+            case.muteAllVideo:
+                self.muteAllVideo()
             case.shareMeetingUrl:
                 self.shareMeetingUrl()
             case .chat:
@@ -52,11 +56,11 @@ public class DyteMoreMenuBottomSheet {
                 print("Not Supported for now")
             }
         })
+         moreMenu.accessibilityIdentifier = "MoreMenu_BottomSheet"
     }
     
     func show() {
         moreMenu.show(on: self.presentingViewController.view)
-
     }
     
     private func launchPollsScreen() {
@@ -81,8 +85,20 @@ public class DyteMoreMenuBottomSheet {
         }
     }
     
+    private func muteAllAudio() {
+        meeting.participants.disableAllAudio()
+    }
+    
+    private func muteAllVideo() {
+        try?meeting.participants.disableAllVideo()
+    }
+    
     private func launchParticipantScreen() {
-        let controller = ParticipantViewController(viewModel: ParticipantViewControllerModel(mobileClient: self.meeting))
+        var controller: UIViewController  = ParticipantViewController(viewModel: ParticipantViewControllerModel(mobileClient: self.meeting))
+        if self.meeting.meta.meetingType == DyteMeetingType.webinar {
+            controller = WebinarParticipantViewController(viewModel: WebinarParticipantViewControllerModel(mobileClient: self.meeting))
+        }
+        
         controller.view.backgroundColor = self.presentingViewController.view.backgroundColor
         controller.modalPresentationStyle = .fullScreen
         self.presentingViewController.present(controller, animated: true)

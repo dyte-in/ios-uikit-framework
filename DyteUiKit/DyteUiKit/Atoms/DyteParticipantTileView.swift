@@ -1,5 +1,5 @@
 //
-//  DyteVideoPeerView.swift
+//  DyteParticipantTileView.swift
 //  DyteUiKit
 //
 //  Created by sudhir kumar on 06/01/23.
@@ -10,8 +10,13 @@ import DyteiOSCore
 
 
 public class DyteParticipantTileView: DytePeerView {
-    private lazy var videoView: DyteVideoView = {
-        let view = DyteVideoView(participant: self.viewModel.participant)
+     lazy var videoView: DyteVideoView = {
+        if self.isDebugModeOn {
+            print("Debug DyteUIKit | DyteParticipantTileView trying to create videoView through Lazy Property")
+        }
+       
+    let view = DyteVideoView(participant: self.viewModel.participant, showSelfPreview: self.viewModel.showSelfPreviewVideo, showScreenShare: self.viewModel.showScreenShareVideoView)
+        view.accessibilityIdentifier = "Dyte_Video_View"
         return view
     }()
     private let tokenColor = DesignLibrary.shared.color
@@ -40,8 +45,8 @@ public class DyteParticipantTileView: DytePeerView {
         registerUpdates()
     }
     
-    convenience init(mobileClient: DyteMobileClient, participant: DyteJoinedMeetingParticipant) {
-        self.init(viewModel: VideoPeerViewModel(mobileClient: mobileClient, showScreenShareVideo: false, participant: participant))
+    convenience init(mobileClient: DyteMobileClient, participant: DyteJoinedMeetingParticipant, isForLocalUser: Bool, showScreenShareVideoView: Bool = false) {
+        self.init(viewModel: VideoPeerViewModel(mobileClient: mobileClient, participant: participant, showSelfPreviewVideo: isForLocalUser, showScreenShareVideoView: showScreenShareVideoView))
     }
     
     func pinView(show: Bool) {
@@ -62,38 +67,41 @@ public class DyteParticipantTileView: DytePeerView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func updateView() {
+    
+    
+private func initialiseView() {
+    if self.isDebugModeOn {
+        print("Debug DyteUIKit | New DyteParticipantTileView \(self) tile is created to load a video")
+    }    
+    self.addSubview(dyteAvatarView)
+    dyteAvatarView.set(.centerView(self))
+    
+    self.addSubview(videoView)
+    videoView.set(.fillSuperView(self))
+    nameTag = DyteMeetingNameTag(meeting: self.viewModel.mobileClient, participant: self.viewModel.participant)
+    self.addSubview(nameTag)
+    nameTag.set(.leading(self, spaceToken.space3),
+                .bottom(self, spaceToken.space3),
+                .trailing(self, spaceToken.space3, .greaterThanOrEqual))
+}
+    
+   private func updateView() {
+       if self.isDebugModeOn {
+           print("Debug DyteUIKit | DyteParticipantTileView refreshVideo() is called Internally through updateView()")
+       }
+
         self.refreshVideo()
         self.pinView(show: self.viewModel.participant.isPinned)
     }
     
-    private func initialiseView() {
-        self.clipsToBounds = true
-        
-        self.addSubview(dyteAvatarView)
-        dyteAvatarView.set(.centerView(self))
-        
-        self.addSubview(videoView)
-        videoView.set(.fillSuperView(self))
-        nameTag = DyteMeetingNameTag(meeting: self.viewModel.mobileClient, participant: self.viewModel.participant)
-        self.addSubview(nameTag)
-        nameTag.set(.leading(self, spaceToken.space3),
-                    .bottom(self, spaceToken.space3),
-                    .trailing(self, spaceToken.space3, .greaterThanOrEqual))
-    }
-    
-    
-    
     public func refreshVideo() {
         if self.isDebugModeOn {
-            print("Debug DyteUIKit | renderVideoFor Dyte PeerView Video Enable \(self.viewModel.participant.videoEnabled) Update is Screen name \(self.viewModel.participant.name) shareSreen \(self.viewModel.showScreenShareVideo)")
+            print("Debug DyteUIKit | DyteParticipantTileView refreshVideo() is called, Video Enable \(self.viewModel.participant.videoEnabled) Update is Screen name \(self.viewModel.participant.name)")
         }
         self.videoView.refreshView()
-
     }
     
     private func registerUpdates() {
-        
         viewModel.nameUpdate = { [weak self]  in
             guard let self = self else {return}
             self.nameTag.refresh()
@@ -112,17 +120,21 @@ public class DyteParticipantTileView: DytePeerView {
             self.dyteAvatarView.set(participant: participant)
             self.videoView.set(participant: participant)
         }
-        
     }
     
     public override func removeFromSuperview() {
+        if self.isDebugModeOn {
+            print("Debug DyteUIKit | DyteParticipantTileView \(self) removeFromSuperview() is called")
+        }
         self.videoView.removeFromSuperview()
         super.removeFromSuperview()
     }
     
     deinit {
         self.videoView.clean()
-        print("Debug DyteUIKit | DyteVideoPeerView deinit is calling")
+        if self.isDebugModeOn {
+            print("Debug DyteUIKit | DyteParticipantTileView \(self) deinit is calling")
+        }
     }
     
 }
