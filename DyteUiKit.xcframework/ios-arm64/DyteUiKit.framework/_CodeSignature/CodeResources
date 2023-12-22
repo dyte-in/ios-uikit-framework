@@ -6,11 +6,11 @@
 	<dict>
 		<key>Assets.car</key>
 		<data>
-		7HWWeBYCbQG3xrkJHXMQODWOtYk=
+		ufsvRUmQMEPSr24jPc63gKufES4=
 		</data>
 		<key>Headers/DyteUiKit-Swift.h</key>
 		<data>
-		Zyk0BfPxsnuV+JGQyZPXgYi6mVo=
+		hSAJnzUm8WgeOXlUn7PryvR+PmM=
 		</data>
 		<key>Headers/DyteUiKit.h</key>
 		<data>
@@ -18,11 +18,11 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		1uXmD3ujGX/ELHCIlh88xKkePXU=
+		VWZGfHkQMX7FWcw57KmNPtRdnzA=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo</key>
 		<data>
-		NsCfMVkxOK6SPKFFfrmYjVqsSQ4=
+		HAac2L5Z8liDDlmcShu6npg84/8=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios.abi.json</key>
 		<data>
@@ -30,19 +30,19 @@
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios.private.swiftinterface</key>
 		<data>
-		uo0RkpjS6xIzwkCeCMYl5fDF4eo=
+		ZptzGmnSE+VBfmHlVx0Mj9BMXmc=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<data>
-		fr80+z/yNstg6WtkuWkqSJ9UJZM=
+		XEiH1pC/IoQee4j61rcEU/ivAeI=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<data>
-		uo0RkpjS6xIzwkCeCMYl5fDF4eo=
+		ZptzGmnSE+VBfmHlVx0Mj9BMXmc=
 		</data>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		w1X1gj4DFMY/u8pi/I3mlaQYWzM=
+		qdD6VpkTvLzV4gzNK0Gw7SJ6FiI=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -67,14 +67,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			YXBE7lyLU+SuF9XS50KXvPrcavOa283yAbhdSAAxAbg=
+			h6ZRPEXtuOY0Wz9O/cTOkH0l240FzydAzI3diTX5gYs=
 			</data>
 		</dict>
 		<key>Headers/DyteUiKit-Swift.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			6hwGPnn3AMsao8KKMrZA0/ticK86mQ1c2ZaU7/MIOrE=
+			xnR41U9ZW45jvp4tspi/UMHWXRti+AOgP4fMJuF46EE=
 			</data>
 		</dict>
 		<key>Headers/DyteUiKit.h</key>
@@ -88,7 +88,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			q4iK3iHCcSFtbLb/CsBZYn6T4oK05n9kWZgYvPtvyEo=
+			3rNO8aMkUduQBog5V3W4Ru9Y1i/zZS4geM7yhd7mauU=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios.abi.json</key>
@@ -102,28 +102,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			2uIwpaLbsHrsrUN39Q3RA14lgMujqzdW7ts2zB1k61o=
+			fg2L9nMZVAJybU/SotOtpPdle99W3FYkkngkzwfAVaQ=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			46Db7SHiSUnz7TyNgd6NOmMMRNuD468JU+lHe3k9t28=
+			00H0r0G3fKbR1kT37dun6nYQY777iKXABmmahmel9IM=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			2uIwpaLbsHrsrUN39Q3RA14lgMujqzdW7ts2zB1k61o=
+			fg2L9nMZVAJybU/SotOtpPdle99W3FYkkngkzwfAVaQ=
 			</data>
 		</dict>
 		<key>Modules/DyteUiKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			6koL9FYlTFHX78xlpu/vGTMXx+BvrwMJ1ed86A+JPq4=
+			aEAKPH6+5t/zBkvqGZzetjFq3XFYnjBKOnDZ1My64As=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
