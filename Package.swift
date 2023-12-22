@@ -5,12 +5,12 @@ let package = Package(
     name: "DyteUiKit",
     platforms: [.iOS(.v13)],
     products: [
-        .library(name: "DyteUiKit", targets: ["DyteUiKit", "AmazonIVSPlayer","DyteiOSCore", "WebRTC", "DyteiOSSocketIO", "Starscream"]),
+        .library(name: "DyteUiKit", targets: ["DyteUiKit", "AmazonIVSPlayer","DyteiOSCore", "WebRTC"]),
     ],
     targets: [
         .binaryTarget(
             name: "DyteUiKit",
-            url: "https://github.com/dyte-in/ios-uikit-framework/archive/refs/tags/0.4.0.zip",
+            url: "https://github.com/dyte-in/ios-uikit-framework/archive/refs/tags/0.4.2.zip",
             checksum: "7646afc5e107e20b187f1f509d2d39cf1a27090edc252a7ad0250d0a8cde24cf"
         ),
         .binaryTarget(
@@ -20,18 +20,8 @@ let package = Package(
         ),
         .binaryTarget(
             name: "DyteiOSCore",
-            url: "https://github.com/dyte-in/DyteMobileCoreiOS/archive/refs/tags/1.23.2.zip",
-            checksum: "d1e28d542fff3fd619c391ea2ed4a0a60f17eb51d723aace21bdf12af5835324"
-        ),
-        .binaryTarget(
-            name: "DyteiOSSocketIO",
-            url: "https://github.com/dyte-in/DyteiOSSocketIO/archive/refs/tags/0.1.3.zip",
-            checksum: "ca0ffe1930f5d5f472abb4966b2b814489b463399fb7aa757b2ab8bd3570048e"
-        ),
-        .binaryTarget(
-            name: "Starscream",
-            url: "https://github.com/dyte-in/DyteStarscream/archive/refs/tags/0.0.1.zip",
-            checksum: "8aa8a8078b74aa4dcb86bf27ce2b46ef51b5e5f731226cd30fbd83ac5d1e633f"
+            url: "https://dyte-assets.s3.ap-south-1.amazonaws.com/sdk/ios_core/DyteiOSCore-1.27.0-b76e4b82-5f18-4e8d-8537-b163afb9312e.xcframework.zip",
+            checksum: "3b3ebf7736472122db875935f6f08a6c8f2acde71401c697075d63248f2daa8a"
         ),
         .binaryTarget(
             name: "AmazonIVSPlayer",

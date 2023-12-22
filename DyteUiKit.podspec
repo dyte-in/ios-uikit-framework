@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'DyteUiKit'
-  s.version          = '0.4.1'
+  s.version          = '0.4.2'
   s.summary          = 'Customise UI of your Dyte meetings'
 
   s.description      = "Customise UI of your Dyte meetings. You can use this prebuilt meeting flow or you can customise it on individual component level"
@@ -23,6 +23,6 @@ Pod::Spec.new do |s|
   s.vendored_frameworks = "DyteUiKit.xcframework"
   s.platform = :ios, '13.0'
   s.swift_version = "5.0"
-  s.dependency 'DyteiOSCore' , '~> 1.23.2'
+  s.dependency 'DyteiOSCore' , '~> 1.27.0'
   s.dependency 'AmazonIVSPlayer' , '~> 1.19.0'
 end
