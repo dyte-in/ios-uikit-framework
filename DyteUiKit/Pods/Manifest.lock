@@ -1,0 +1,24 @@
+PODS:
+  - AmazonIVSPlayer (1.19.0)
+  - DyteiOSCore (1.27.0):
+    - WebRTC-SDK (= 114.5735.08)
+  - WebRTC-SDK (114.5735.08)
+
+DEPENDENCIES:
+  - AmazonIVSPlayer (= 1.19.0)
+  - DyteiOSCore (= 1.27.0)
+
+SPEC REPOS:
+  trunk:
+    - AmazonIVSPlayer
+    - DyteiOSCore
+    - WebRTC-SDK
+
+SPEC CHECKSUMS:
+  AmazonIVSPlayer: b9498771b74cd05e93c67dd3844bb4e2c453f2aa
+  DyteiOSCore: 214e4e0531bce845c489291d33b412145923d08f
+  WebRTC-SDK: c24d2a6c9f571f2ed42297cb8ffba9557093142b
+
+PODFILE CHECKSUM: 9d8dd23a3689ca9f30f38f40503211a680c61d60
+
+COCOAPODS: 1.13.0
