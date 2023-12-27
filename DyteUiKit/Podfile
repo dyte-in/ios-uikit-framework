@@ -5,6 +5,6 @@
 target 'DyteUiKit' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
-  pod 'DyteiOSCore' , '1.27.0'
+  pod 'DyteiOSCore' , '1.28.0'
   pod 'AmazonIVSPlayer' , '1.19.0'
 end

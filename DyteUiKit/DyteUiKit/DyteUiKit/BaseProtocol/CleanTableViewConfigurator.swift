@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol ConfigureView {
+protocol ConfigureView {
     associatedtype Model
     var model: Model {get}
     func configure(model: Model)
@@ -261,11 +261,12 @@ class DataSourceStandard <S:Section> {
     
 }
 
+
 typealias TableViewCell = UITableViewCell & ConfigureView & ReusableObject
 
 extension UITableView {
     
-   public func register<T: UITableViewCell>(_ cell: T.Type) where T: ReusableObject {
+    func register<T: UITableViewCell>(_ cell: T.Type) where T: ReusableObject {
        self.register(cell.self, forCellReuseIdentifier: cell.reuseIdentifier)
     }
 }

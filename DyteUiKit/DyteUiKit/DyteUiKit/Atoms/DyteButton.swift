@@ -224,22 +224,22 @@ open class DyteButton: UIButton, BaseAtom {
         var useDefaultButton = false
         var stackView: BaseStackView!
         switch style {
-        case .iconLeftLable(let icon):
+        case .iconLeftLable(_):
             let result = getLabelAndImageOnlyView(dir: .left)
             stackView = result.stackView
             titleTextAtom = result.title
             iconImageView = result.imageView
-        case .textIconLeft(let textIcon):
+        case .textIconLeft(_):
             let result = getLabelAndImageOnlyView(dir: .left)
             stackView = result.stackView
             titleTextAtom = result.title
             iconImageView = result.imageView
-        case .iconRightLable(let icon):
+        case .iconRightLable(_):
             let result = getLabelAndImageOnlyView(dir: .right)
             stackView = result.stackView
             titleTextAtom = result.title
             iconImageView = result.imageView
-        case .textIconRight(let textIcon):
+        case .textIconRight(_):
             let result = getLabelAndImageOnlyView(dir: .right)
             stackView = result.stackView
             titleTextAtom = result.title
@@ -309,13 +309,13 @@ extension DyteButton: DyteButtonApplyStyle {
         case .text:
             self.setTitleColor(self.appearance.desingLibrary.color.textColor.onBrand.shade700, for: .normal)
             break
-        case .iconLeftLable(let icon):
+        case .iconLeftLable(_):
             break
-        case .iconRightLable(let icon):
+        case .iconRightLable(_):
             break
-        case .textIconLeft(let icon):
+        case .textIconLeft(_):
             break
-        case .textIconRight(let icon):
+        case .textIconRight(_):
             break
         case .iconOnly(let icon):
             self.backgroundColor = self.appearance.iconBackgroundColorToken
@@ -335,19 +335,19 @@ extension DyteButton: DyteButtonApplyStyle {
         case .line:
             self.setButtonHeight(constant: size.height())
             self.setButtonWidth(constant: size.width())
-        case .iconLeftLable(let icon):
+        case .iconLeftLable(_):
             break
-        case .iconRightLable(let icon):
+        case .iconRightLable(_):
             break
         case .text:
             self.setButtonHeight(constant: size.height())
             self.setButtonWidth(constant: size.width())
             break
-        case .textIconLeft(let icon):
+        case .textIconLeft(_):
             break
-        case .textIconRight(let icon):
+        case .textIconRight(_):
             break
-        case .iconOnly(let icon):
+        case .iconOnly(_):
             self.setButtonWidth(constant: iconButtonSize)
             self.setButtonHeight(constant: iconButtonSize)
             break

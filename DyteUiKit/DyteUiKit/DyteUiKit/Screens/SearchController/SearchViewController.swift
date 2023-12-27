@@ -49,7 +49,7 @@ public class SearchViewController: UIViewController, KeyboardObservable {
     
     let tableView = UITableView()
     let viewModel = SearchViewControllerModel()
-    public var keyboardObserver: KeyboardObserver?
+    var keyboardObserver: KeyboardObserver?
     
     let searchBar = {
         let searchBar = UISearchBar()

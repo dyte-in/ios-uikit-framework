@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class KeyboardObserver {
+internal class KeyboardObserver {
     
     private var onShowHandler: ((_ keyboardFrame: CGRect) -> Void)?
     private var onHideHandler: (() -> Void)?

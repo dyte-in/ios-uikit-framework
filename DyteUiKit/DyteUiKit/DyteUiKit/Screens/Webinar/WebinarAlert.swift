@@ -90,7 +90,8 @@ public class WebinarAlertView: UIView {
                    .top(baseView))
         selfPeerView.clipsToBounds = true
         
-        selfPeerView.set(.aspectRatio(0.85),
+        selfPeerView.set(UIDevice.current.userInterfaceIdiom == .pad ? .aspectRatio(0.45) : .aspectRatio(0.85),
+                         .height(500,.lessThanOrEqual),
                          .below(lblTop, tokenSpace.space6),
                       .sameLeadingTrailing(baseView, tokenSpace.space6))
         

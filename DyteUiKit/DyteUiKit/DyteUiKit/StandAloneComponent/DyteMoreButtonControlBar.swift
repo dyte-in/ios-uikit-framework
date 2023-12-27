@@ -92,4 +92,8 @@ open class  DyteMoreButtonControlBar: DyteControlBarButton {
         self.bottomSheet = DyteMoreMenuBottomSheet(menus: menus, meeting: self.meeting, presentingViewController: self.presentingViewController, meetingViewModel: self.viewModel)
         self.bottomSheet.show()
     }
+    
+    func hideBottomSheet() {
+        self.bottomSheet?.hide()
+    }
 }

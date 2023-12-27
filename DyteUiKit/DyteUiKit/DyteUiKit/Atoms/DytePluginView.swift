@@ -31,17 +31,17 @@ public class ActiveListView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     public func scrollToVisible(button: ScreenShareTabButton) {
-        var buttonFrame = stackView.convert(button.frame, to: self.scrollView.coordinateSpace)
-        var maxX = buttonFrame.maxX
-        var startX = buttonFrame.origin.x
-        var currentWidowFrame = CGRect(x: scrollView.contentOffset.x, y: scrollView.contentOffset.y, width: scrollView.bounds.width, height: scrollView.bounds.height)
+        let buttonFrame = stackView.convert(button.frame, to: self.scrollView.coordinateSpace)
+        let maxX = buttonFrame.maxX
+        let startX = buttonFrame.origin.x
+        let currentWidowFrame = CGRect(x: scrollView.contentOffset.x, y: scrollView.contentOffset.y, width: scrollView.bounds.width, height: scrollView.bounds.height)
         if startX >= currentWidowFrame.origin.x && maxX <= currentWidowFrame.maxX {
             // If button is already in visible rect then no need to do anything
         } else {
             if startX < currentWidowFrame.origin.x {
                 self.scrollView.setContentOffset(CGPoint(x: startX, y: 0), animated: true)
             }else if maxX > currentWidowFrame.maxX {
-                var pages = Int(maxX / scrollView.bounds.width)
+                let pages = Int(maxX / scrollView.bounds.width)
                 self.scrollView.setContentOffset(CGPoint(x: maxX - (scrollView.bounds.width * CGFloat(pages)), y: 0), animated: true)
             }
         }

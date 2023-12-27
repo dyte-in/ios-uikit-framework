@@ -33,8 +33,8 @@ public class WebinarViewController: MeetingViewController {
         return waitingView
     }
     
-    public override func refreshMeetingGrid() {
-        super.refreshMeetingGrid()
+    public override func refreshMeetingGrid(forRotation: Bool = false) {
+        super.refreshMeetingGrid(forRotation: forRotation)
         self.waitingView?.removeFromSuperview()
         let mediaPermission = dyteMobileClient.localUser.permissions.media
         
@@ -45,9 +45,7 @@ public class WebinarViewController: MeetingViewController {
         }
     }
     
-    
     override func createBottomBar() {
-        
         let controlBar = DyteWebinarControlBar(meeting: self.dyteMobileClient, delegate: nil, presentingViewController: self, meetingViewModel: self.viewModel) { button in
             
         } settingViewControllerCompletion: {
@@ -61,13 +59,10 @@ public class WebinarViewController: MeetingViewController {
             self.onFinishedMeeting()
         }
         self.view.addSubview(controlBar)
-        controlBar.set(.sameLeadingTrailing(self.view),
-                       .bottom(self.view))
-        
         self.bottomBar = controlBar
-        
+        addBottomBarConstraint()
     }
-        
+  
     
 }
 

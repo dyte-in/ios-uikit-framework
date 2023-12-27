@@ -64,3 +64,40 @@ protocol BaseAtom: AutoLayoutable{
 protocol Molecule: AutoLayoutable {
     var atoms:[BaseAtom] {get}
 }
+
+protocol AdaptableUI {
+    var portraitConstraints: [NSLayoutConstraint] {get}
+    var landscapeConstraints: [NSLayoutConstraint] {get}
+    func applyConstraintAsPerOrientation(isLandscape:Bool, onPortait:()->Void, onLandscape:()->Void)
+}
+
+extension AdaptableUI {
+    func setContraintAsDeactive() {
+        portraitConstraints.forEach { $0.isActive = false}
+        landscapeConstraints.forEach { $0.isActive = false}
+    }
+    
+    func applyConstraintAsPerOrientation() {
+        applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
+    }
+    
+    func applyConstraintAsPerOrientation(isLandscape: Bool) {
+        applyConstraintAsPerOrientation(isLandscape: isLandscape, onPortait: {}, onLandscape: {})
+    }
+    
+    func applyConstraintAsPerOrientation(isLandscape: Bool, onPortait:()->Void = {}, onLandscape:()->Void = {}) {
+        setContraintAsDeactive()
+        if isLandscape {
+           landscapeConstraints.forEach { $0.isActive = true }
+           onLandscape()
+       } else {
+           portraitConstraints.forEach { $0.isActive = true }
+           onPortait()
+       }
+    }
+    
+    func isLandscape(size: CGSize) -> Bool {
+        return size.width > size.height
+    }
+}
+

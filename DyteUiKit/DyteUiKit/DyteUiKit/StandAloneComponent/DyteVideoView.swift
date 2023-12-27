@@ -101,7 +101,7 @@ extension DyteVideoView {
             self.isHidden = false
         } else {
             if isDebugModeOn {
-                print("Debug DyteUIKit | VideoView participant video is NIL: \(participant.getVideoView())")
+                print("Debug DyteUIKit | VideoView participant video is NIL: \(String(describing: participant.getVideoView()))")
             }
             self.isHidden = true
         }
@@ -113,7 +113,7 @@ extension DyteVideoView {
         self.addSubview(view)
         view.set(.fillSuperView(self))
         if isDebugModeOn {
-            print("Debug DyteUIKit | Rendered VideoView \(view) Parent View :\(self) superView: \(self.superview)")
+            print("Debug DyteUIKit | Rendered VideoView \(view) Parent View :\(self) superView: \(String(describing: self.superview))")
         }
         self.onRendered?()
     }

@@ -8,7 +8,7 @@
 import DyteiOSCore
 import UIKit
 
-class SettingViewController: UIViewController, SetTopbar {
+class SettingViewController: BaseViewController, SetTopbar {
     
     var topBar: DyteNavigationBar = DyteNavigationBar(title: "Settings")
     let baseView: BaseView = BaseView()
@@ -22,16 +22,15 @@ class SettingViewController: UIViewController, SetTopbar {
     private var cameraDropDown: DyteDropdown<CameraPickerCellModel>!
     private var speakerDropDown: DyteDropdown<DyteAudioPickerCellModel>!
 
-    private let dyteMobileClient: DyteMobileClient
     
     let backgroundColor = DesignLibrary.shared.color.background.shade1000
     private let completion: (()->Void)?
     init(nameTag: String, dyteMobileClient: DyteMobileClient, completion:(()->Void)? = nil) {
         nameTagTitle = nameTag
         self.completion = completion
-        self.dyteMobileClient = dyteMobileClient
         selfPeerView = DyteParticipantTileView(viewModel: VideoPeerViewModel(mobileClient: dyteMobileClient, participant: dyteMobileClient.localUser, showSelfPreviewVideo: true))
-        super.init(nibName: nil, bundle: nil)
+        super.init(dyteMobileClient: dyteMobileClient)
+        
     }
     
     public override func viewSafeAreaInsetsDidChange() {
@@ -59,23 +58,51 @@ class SettingViewController: UIViewController, SetTopbar {
         super.viewDidAppear(animated)
     }
     
+//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+//        return .portrait
+//    }
     private func setTag(name: String) {
         selfPeerView.viewModel.refreshNameTag()
         selfPeerView.viewModel.refreshInitialName()
     }
     private func createSubviews() {
         self.view.addSubview(baseView)
-        baseView.set(.sameLeadingTrailing(self.view , spaceToken.space8),
-                     .centerY(self.view),
+        baseView.set(.leading(self.view , spaceToken.space8, .greaterThanOrEqual ),
+                     .centerView(self.view),
                      .top(self.view, spaceToken.space8, .greaterThanOrEqual))
         baseView.addSubview(selfPeerView)
        
         selfPeerView.clipsToBounds = true
         
-        selfPeerView.set(.aspectRatio(0.75),
-                      .top(baseView),
+        let equalWidthConstraintPeerView =  ConstraintCreator.Constraint.equate(viewAttribute: .width, toView: self.view, toViewAttribute: .width, relation: .equal, constant: 0, multiplier: 0.7).getConstraint(for: selfPeerView)
+        let equalHeightConstraintPeerView =  ConstraintCreator.Constraint.equate(viewAttribute: .height, toView: self.view, toViewAttribute: .height, relation: .equal, constant: 0, multiplier: 0.5).getConstraint(for: selfPeerView)
+
+        
+        selfPeerView.set(.top(baseView),
                       .sameLeadingTrailing(baseView, spaceToken.space6))
        
+        portraitConstraints.append(contentsOf: [equalWidthConstraintPeerView,
+                                                equalHeightConstraintPeerView,
+                                                selfPeerView.get(.top)!,
+                                                selfPeerView.get(.leading)!,
+                                                selfPeerView.get(.trailing)!])
+        
+        let equalWidthConstraintPeerViewLandscape =  ConstraintCreator.Constraint.equate(viewAttribute: .width, toView: self.view, toViewAttribute: .width, relation: .equal, constant: 0, multiplier: 0.4).getConstraint(for: selfPeerView)
+        
+        let equalHeightConstraintPeerViewLandscape =  ConstraintCreator.Constraint.equate(viewAttribute: .height, toView: self.view, toViewAttribute: .height, relation: .equal, constant: 0, multiplier: 0.5).getConstraint(for: selfPeerView)
+
+        selfPeerView.set(.top(baseView),
+                      .sameLeadingTrailing(baseView, spaceToken.space6))
+
+        landscapeConstraints.append(contentsOf: [equalWidthConstraintPeerViewLandscape,
+                                                equalHeightConstraintPeerViewLandscape,
+                                                selfPeerView.get(.top)!,
+                                                selfPeerView.get(.leading)!,
+                                                selfPeerView.get(.trailing)!])
+
+        applyConstraintAsPerOrientation()
+
+        
         let btnStackView = createDropdownStackView()
         baseView.addSubview(btnStackView)
         btnStackView.set(.below(selfPeerView, spaceToken.space4),

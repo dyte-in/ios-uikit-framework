@@ -238,7 +238,7 @@ extension DyteEventSelfListner: DyteSelfEventsListener {
     }
     
     func onStageStatusUpdated(stageStatus: StageStatus) {
-        if let callback = self.selfObserveWebinarStageStatus {
+        if self.selfObserveWebinarStageStatus != nil {
             self.selfObserveWebinarStageStatus?(stageStatus)
         }
     }

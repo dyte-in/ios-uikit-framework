@@ -62,7 +62,13 @@ public class DyteMoreMenuBottomSheet {
     func show() {
         moreMenu.show(on: self.presentingViewController.view)
     }
-    
+
+    func hide() {
+        moreMenu.hideSheet()
+    }
+}
+
+private extension DyteMoreMenuBottomSheet {
     private func launchPollsScreen() {
         let controller = ShowPollsViewController(dyteMobileClient: self.meeting)
         self.presentingViewController.present(controller, animated: true)

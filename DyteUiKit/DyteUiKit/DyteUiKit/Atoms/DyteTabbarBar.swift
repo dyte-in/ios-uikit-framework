@@ -9,7 +9,9 @@ import UIKit
 import DyteiOSCore
 public protocol DyteTabBarDelegate: AnyObject {
     func didTap(button: DyteControlBarButton, atIndex index:NSInteger)
-    func getTabBarHeight() -> CGFloat
+    func getTabBarHeightForPortrait() -> CGFloat
+    func getTabBarWidthForLandscape() -> CGFloat
+
 }
 
 public protocol DyteControlBarAppearance: BaseAppearance {
@@ -27,8 +29,11 @@ public class DyteControlBarAppearanceModel : DyteControlBarAppearance {
     public var backgroundColor: BackgroundColorToken.Shade
 }
 
-open class DyteTabbarBar: UIView {
+open class DyteTabbarBar: UIView, AdaptableUI {
+    var portraitConstraints = [NSLayoutConstraint]()
     
+    var landscapeConstraints = [NSLayoutConstraint]()
+        
     private struct Constants {
         static let tabBarAnimationDuration: Double = 1.5
 
@@ -45,18 +50,10 @@ open class DyteTabbarBar: UIView {
     public let stackView = UIStackView()
     
     private var appearance: DyteControlBarAppearance
-
-    @objc public static var height:CGFloat {
-        get {
-            var bottomAdjust:CGFloat = 0.0
-            bottomAdjust = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0.0
-            return baseHeight + (bottomAdjust == 0.0 ? defaultBottomAdjustForNonNotch : bottomAdjust)
-        }
-    }
-    
-    @objc public static var baseHeight: CGFloat = 49.0
-    @objc public static var defaultSafeAreaInsetBottomNotch: CGFloat = 34.0
-    @objc public static var defaultBottomAdjustForNonNotch: CGFloat = 10.0
+    private let bottomSpace: CGFloat
+    @objc public static var baseHeight: CGFloat = 50.0
+    @objc public static var defaultBottomAdjustForNonNotch: CGFloat = 15.0
+    private let baseWidthForLandscape: CGFloat = 57
 
     public private(set) var buttons: [DyteControlBarButton] = []
     
@@ -65,19 +62,51 @@ open class DyteTabbarBar: UIView {
             
         }
     }
-    open override func safeAreaInsetsDidChange() {
-        super.safeAreaInsetsDidChange()
-        self.setHeight()
-    }
-    private var heightConstraint: NSLayoutConstraint?
     
-    private func setHeight() {
-       if let constraint = self.heightConstraint {
-           self.removeConstraint(constraint)
-       }
-        let height = DyteTabbarBar.baseHeight + (self.safeAreaInsets.bottom == 0 ? DyteTabbarBar.defaultBottomAdjustForNonNotch : self.safeAreaInsets.bottom)
-       self.heightConstraint = self.heightAnchor.constraint(equalToConstant: delegate?.getTabBarHeight() ?? height)
+    
+    private var heightConstraint: NSLayoutConstraint?
+    private var widthLandscapeConstraint: NSLayoutConstraint?
+
+    func setHeight() {
+        self.removeWidthContraint()
+        self.removeHeightContraint()
+        var extra = DyteTabbarBar.defaultBottomAdjustForNonNotch
+        if self.superview!.safeAreaInsets.bottom != 0 {
+            extra = self.superview!.safeAreaInsets.bottom
+        }
+        let height = DyteTabbarBar.baseHeight + extra
+       self.heightConstraint = self.heightAnchor.constraint(equalToConstant: delegate?.getTabBarHeightForPortrait() ?? height)
        self.heightConstraint?.isActive = true
+    }
+    
+    private func removeHeightContraint() {
+        if let constraint = self.heightConstraint {
+            self.removeConstraint(constraint)
+        }
+    }
+    
+    private func removeWidthContraint() {
+        if let constraint = self.widthLandscapeConstraint {
+            self.removeConstraint(constraint)
+        }
+    }
+    
+    func setWidth() {
+        var extra = DyteTabbarBar.defaultBottomAdjustForNonNotch
+        if UIScreen.deviceOrientation == .landscapeLeft {
+            extra = self.superview!.safeAreaInsets.right
+        }
+        self.setWidth(extra: extra)
+    }
+    
+    private func setWidth(extra: CGFloat) {
+        self.removeHeightContraint()
+        self.removeWidthContraint()
+        let width = baseWidthForLandscape + extra
+        self.widthLandscapeConstraint = self.widthAnchor.constraint(equalToConstant: delegate?.getTabBarWidthForLandscape() ?? width)
+        self.widthLandscapeConstraint?.isActive = true
+        //containerView.get(.trailing)?.constant = bottomSpace + extra
+
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -86,6 +115,7 @@ open class DyteTabbarBar: UIView {
 
     public init(delegate: DyteTabBarDelegate?, appearance: DyteControlBarAppearance = DyteControlBarAppearanceModel()) {
         self.appearance = appearance
+        bottomSpace = tokenSpace.space1
         super.init(frame: .zero)
         self.backgroundColor = appearance.backgroundColor
         self.delegate = delegate
@@ -97,7 +127,6 @@ open class DyteTabbarBar: UIView {
         createContainerView()
         createStackView()
         layoutViews()
-        self.setHeight()
     }
     
     private func createContainerView() {
@@ -106,12 +135,10 @@ open class DyteTabbarBar: UIView {
         self.backgroundColor = appearance.backgroundColor
     }
     
-   
-    
     private func createStackView() {
         containerView.addSubview(self.stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .horizontal
+        stackView.axis = .vertical
         stackView.distribution = .fillEqually
         stackView.spacing = 0
         stackView.clipsToBounds = true
@@ -119,11 +146,30 @@ open class DyteTabbarBar: UIView {
     
    private func layoutViews() {
         stackView.set(.fillSuperView(containerView))
-        containerView.set(.sameLeadingTrailing(self, tokenSpace.space4),
-                          .top(self, tokenSpace.space2),
-                          .bottom(self, tokenSpace.space3))
+       addPortraitContraintForContainerView()
+       addLandscapeContraintForContainerView()
+       applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
     }
     
+    private func addPortraitContraintForContainerView() {
+        containerView.set(.sameLeadingTrailing(self, tokenSpace.space4),
+                          .top(self, tokenSpace.space2),
+                          .height(DyteTabbarBar.baseHeight))
+        portraitConstraints.append(contentsOf: [containerView.get(.leading)!,
+                                                containerView.get(.trailing)!,
+                                                containerView.get(.top)!,
+                                                containerView.get(.height)!])
+    }
+    
+    private func addLandscapeContraintForContainerView() {
+        containerView.set(.sameTopBottom(self, tokenSpace.space4),
+                          .leading(self, tokenSpace.space2),
+                          .width(baseWidthForLandscape))
+        landscapeConstraints.append(contentsOf: [containerView.get(.leading)!,
+                                                containerView.get(.top)!,
+                                                containerView.get(.bottom)!,
+                                                 containerView.get(.width)!])
+    }
     
     public func setButtons(_ buttons: [DyteControlBarButton]) {
         for button in self.buttons {
@@ -146,7 +192,6 @@ open class DyteTabbarBar: UIView {
         }
     }
     
-    
     public func selectButton(at index: Int) {
         if index >= 0 && index < buttons.count {
             selectedButton = buttons[index]
@@ -158,6 +203,10 @@ open class DyteTabbarBar: UIView {
             return buttons[index]
         }
         return nil
+    }
+        
+    public func setItemsOrientation(axis: NSLayoutConstraint.Axis) {
+        self.stackView.axis = axis
     }
 }
 

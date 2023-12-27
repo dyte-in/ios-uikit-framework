@@ -9,7 +9,7 @@ import UIKit
 
 
 class GridView<CellContainerView: UIView>: UIView {
-    
+
     struct Paddings {
         let top: CGFloat = 20
         let bottom: CGFloat = 20
@@ -46,24 +46,47 @@ class GridView<CellContainerView: UIView>: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
     func settingFrames(visibleItemCount: UInt, animation: Bool = true, completion:@escaping(Bool)->Void) {
-    
         currentVisibleItem = visibleItemCount
         previousAnimation = animation
         self.layoutIfNeeded()
-        self.frames = self.frame(itemsCount: visibleItemCount, width: self.scrollView.frame.width, height: self.scrollView.frame.height)
+        self.frames = self.frameForPortrait(itemsCount: visibleItemCount, width: self.scrollView.frame.width, height: self.scrollView.frame.height)
         self.scrollContentView.get(.width)?.constant = self.scrollView.frame.width
+        self.scrollContentView.get(.height)?.constant = self.scrollView.frame.height
         self.initialize(views: self.views, frames: self.frames, animation: animation, completion: completion)
     }
     
-    func settingFramesForHorizontal(visibleItemCount: UInt, animation: Bool = true, completion:@escaping(Bool)->Void) {
+    func settingFramesForLandScape(visibleItemCount: UInt, animation: Bool = true, completion:@escaping(Bool)->Void) {
         currentVisibleItem = visibleItemCount
         previousAnimation = animation
-        self.frames = self.getFramesForHorizontal(itemsCount: visibleItemCount, height: self.scrollContentView.frame.height)
-        self.scrollContentView.get(.width)?.constant = (self.frames.last?.maxX ?? 0) + paddings.trailing
+        self.layoutIfNeeded()
+        self.frames = self.frameForLandscape(itemsCount: visibleItemCount, width: self.scrollView.frame.width, height: self.scrollView.frame.height)
+        self.scrollContentView.get(.width)?.constant = self.scrollView.frame.width
+        self.scrollContentView.get(.height)?.constant = self.scrollView.frame.height
         self.initialize(views: self.views, frames: self.frames, animation: animation, completion: completion)
     }
+    
+    func settingFramesForPluginsActiveInPortraitMode(visibleItemCount: UInt, animation: Bool = true, completion:@escaping(Bool)->Void) {
+        currentVisibleItem = visibleItemCount
+        previousAnimation = animation
+        self.frames = self.getFramesForHorizontal(itemsCount: visibleItemCount, height: self.scrollView.frame.height)
+        self.scrollContentView.get(.width)?.constant = (self.frames.last?.maxX ?? 0) + paddings.trailing
+        self.scrollContentView.get(.height)?.constant = self.scrollView.frame.height
+
+        self.initialize(views: self.views, frames: self.frames, animation: animation, completion: completion)
+    }
+    
+    func settingFramesForPluginsActiveInLandscapeMode(visibleItemCount: UInt, animation: Bool = true, completion:@escaping(Bool)->Void) {
+        currentVisibleItem = visibleItemCount
+        previousAnimation = animation
+        self.frames = self.getFramesForLandscapeVertical(itemsCount: visibleItemCount, width: self.scrollView.frame.width)
+        self.scrollContentView.get(.width)?.constant = self.scrollView.frame.width
+        self.scrollContentView.get(.height)?.constant = (self.frames.last?.maxY ?? 0) + paddings.bottom
+        self.initialize(views: self.views, frames: self.frames, animation: animation, completion: completion)
+    }
+    
+    
+    
     
     func childView(index: Int) -> CellContainerView? {
         if index >= 0 && index < maxItems {
@@ -78,8 +101,6 @@ extension GridView {
     
    private func getFramesForHorizontal(itemsCount: UInt, height: CGFloat) -> [CGRect] {
         var x = paddings.leading
-        let interimSpacing = paddings.interimPadding * (CGFloat(itemsCount) - 1)
-        let widthSpace = (paddings.leading + paddings.trailing + interimSpacing)
         let width = height * 0.8
         let height = height - (paddings.top + paddings.bottom)
         
@@ -91,16 +112,29 @@ extension GridView {
         }
         return result
     }
+    
+    private func getFramesForLandscapeVertical(itemsCount: UInt, width: CGFloat) -> [CGRect] {
+         var y = paddings.top
+         let height = width * 0.8
+         let width = width - (paddings.leading + paddings.trailing)
+         
+         var result = [CGRect]()
+         for _ in 0..<itemsCount {
+             let frame = CGRect(x: paddings.leading, y: y, width: width, height: height)
+             y += (paddings.interimPadding + height)
+             result.append(frame)
+         }
+         return result
+     }
 }
 
 extension GridView {
     
     private func createSubView() {
         self.addSubViews(self.scrollView)
-        self.scrollView.set(.fillSuperView(self))
         self.scrollView.addSubview(self.scrollContentView)
-        self.scrollContentView.set(.fillSuperView(self.scrollView), .width(0))
-        self.scrollContentView.set(.equateAttribute(.height, toView: self.scrollView, toAttribute: .height, withRelation: .equal))
+        self.scrollView.set(.fillSuperView(self))
+        self.scrollContentView.set(.fillSuperView(self.scrollView), .width(0), .height(0))
         self.views = self.createView(baseView: self.scrollContentView)
     }
     
@@ -154,7 +188,6 @@ extension GridView {
                         view.get(.height)?.constant = frames[i].height
                     }
                     else {
-                        
                         if view.get(.width) == nil {
                             view.set(.width(0))
                         }
@@ -212,49 +245,98 @@ extension GridView {
         
     }
     
-    private func frame(itemsCount: UInt, width: CGFloat , height: CGFloat) -> [CGRect] {
+    private func frameForLandscape(itemsCount: UInt, width: CGFloat , height: CGFloat) -> [CGRect] {
         if isDebugModeOn {
             print("Debug DyteUIKit | frame(itemsCount Width \(width) Height \(height) ")
         }
         let itemsCount = itemsCount > maxItems ? maxItems : itemsCount
-        let rows = numOfRows(itemsCount: itemsCount, width: width, height: height)
-        if rows == 1 {
-            if itemsCount == 1 {
-                let itemWidth = width - (paddings.leading + paddings.trailing)
-                let itemHeight = height - (paddings.top + paddings.bottom)
-                return [CGRect(x: paddings.leading, y: paddings.top, width: itemWidth, height: itemHeight)]
-            } else {
-                let rowHeight = height
-                let rowWidht = width
-                let firsRowFrame = CGRect(x: paddings.leading, y: paddings.top, width: rowWidht, height: rowHeight)
-                let framesFirstRow = self.getFrameForOnlyTwoViewInRow(items: UInt(itemsCount), rowFrame: firsRowFrame)
-                return framesFirstRow
-            }
-        }
-        
-        if rows == 2 && itemsCount <= (2 * maxItemsInRow) {
+        let rows = numOfRowsOfLandscape(itemsCount: itemsCount)
+        if itemsCount <= 3 {
+            return self.getFrameForMiddleRow(items: itemsCount, rowFrame: CGRect(x: 0, y: 0, width: width, height: height))
+        } else {
             var result = [CGRect]()
-            
-            let itemCountIsEven = itemsCount%2 == 0 ? true : false
-            var firstRowCount = CGFloat(itemsCount)/2.0
-            let secondRowCount = firstRowCount
-            if itemCountIsEven == false {
-                firstRowCount = firstRowCount + 1
-            }
-            
             let rowHeight = height/CGFloat(rows)
             let rowWidht = width
             let firsRowFrame = CGRect(x: paddings.leading, y: paddings.top, width: rowWidht, height: rowHeight)
-            let framesFirstRow = self.getFrameForFirstRow(items: UInt(firstRowCount), rowFrame: firsRowFrame)
-            let framesSecondRow = self.getFrameForLastRow(items: UInt(secondRowCount), rowFrame: CGRect(x: paddings.leading, y: rowHeight, width: rowWidht, height: rowHeight))
+            let firstRowItemCount = UInt(ceil(Float64(itemsCount)/CGFloat(rows)))
+            let framesFirstRow = self.getFrameForFirstRow(items: firstRowItemCount, rowFrame: firsRowFrame)
+            let itemsInSecondRow = (itemsCount - firstRowItemCount)
+            let framesSecondRow = self.getFrameForLastRow(items: firstRowItemCount, rowFrame: CGRect(x: paddings.leading, y: rowHeight, width: rowWidht, height: rowHeight))
+            result.append(contentsOf: framesFirstRow)
+            for i in 0..<itemsInSecondRow {
+                result.append(framesSecondRow[Int(i)])
+            }
+            return result
+        }
+    }
+
+    
+    private func frameForPortrait(itemsCount: UInt, width: CGFloat , height: CGFloat) -> [CGRect] {
+        if isDebugModeOn {
+            print("Debug DyteUIKit | frame(itemsCount Width \(width) Height \(height) ")
+        }
+        if itemsCount <= 0 {
+            return [CGRect]()
+        }
+        
+        let itemsCount = itemsCount > maxItems ? maxItems : itemsCount
+        let rows = numOfRowsOfPortrait(itemsCount: itemsCount)
+        if itemsCount == 1 {
+            let itemWidth = width - (paddings.leading + paddings.trailing)
+            let itemHeight = height - (paddings.top + paddings.bottom)
+            return [CGRect(x: paddings.leading, y: paddings.top, width: itemWidth, height: itemHeight)]
+        } else if itemsCount == 2 {
+            var result = [CGRect]()
+            let rowHeight = height/CGFloat(rows)
+            let rowWidht = width
+            let firsRowFrame = CGRect(x: paddings.leading, y: paddings.top, width: rowWidht, height: rowHeight)
+            let framesFirstRow = self.getFrameForFirstRow(items: 1, rowFrame: firsRowFrame)
+            let framesSecondRow = self.getFrameForLastRow(items: 1, rowFrame: CGRect(x: paddings.leading, y: rowHeight, width: rowWidht, height: rowHeight))
             result.append(contentsOf: framesFirstRow)
             result.append(contentsOf: framesSecondRow)
             return result
         }
         
-        return self.frame(itemsCount: itemsCount, rows: rows, width: width, height: height)
+        return self.getFrameForPortrait(itemsCount: itemsCount, rows: rows, width: width, height: height)
     }
     
+    private func getFrameForPortrait(itemsCount: UInt, rows: UInt, width: CGFloat , height: CGFloat) -> [CGRect]  {
+        let rowHeight = height/CGFloat(rows)
+        let rowWidth = width
+        var result = [CGRect]()
+        var items: UInt = 0
+        var y: CGFloat = 0.0
+        for row in 1...rows {
+            if row == 1 {
+                // First row items will always equal to 'maxItemsInRow'
+                result.append(contentsOf: getFrameForFirstRow(items: maxItemsInRow, rowFrame: CGRect(x: 0, y: y, width: rowWidth, height: rowHeight)))
+                items += maxItemsInRow
+            }else if row == rows {
+                
+                // Last row items can be less than 'maxItemsInRow'
+                var itemsLeft = itemsCount - items
+                if itemsLeft > maxItemsInRow {
+                    itemsLeft = maxItemsInRow
+                }
+                // Last row must have frame similar to two items but frame added in result is equivalent to items present
+                let frames = getFrameForLastRow(items: maxItemsInRow, rowFrame: CGRect(x: 0, y: y, width: rowWidth, height: rowHeight))
+                if itemsLeft == 1 {
+                    result.append(frames[0])
+                } else {
+                    result.append(contentsOf: frames)
+                }
+                items += itemsLeft
+            }else {
+                // Middle row items will always equal to 'maxItemsInRow'
+                result.append(contentsOf: getFrameForMiddleRow(items: maxItemsInRow, rowFrame: CGRect(x: 0, y: y, width: rowWidth, height: rowHeight)))
+                items += maxItemsInRow
+            }
+            y += rowHeight
+        }
+        
+        return result
+    }
+
     private func frame(itemsCount: UInt, rows: UInt, width: CGFloat , height: CGFloat) -> [CGRect]  {
         let rowHeight = height/CGFloat(rows)
         let rowWidth = width
@@ -283,28 +365,6 @@ extension GridView {
                 items += maxItemsInRow
             }
             y += rowHeight
-        }
-        
-        return result
-    }
-    
-    private func getFrameForOnlyTwoViewInRow(items: UInt, rowFrame: CGRect) -> [CGRect] {
-        let top = paddings.top
-        var result = [CGRect]()
-        var x = paddings.leading
-        var preFrame:CGRect?
-        
-        let totalInterimSpace = (CGFloat(items)-1)*paddings.interimPadding
-        let itemWidht = (rowFrame.width - (paddings.leading + paddings.trailing + totalInterimSpace))/CGFloat(items)
-        let itemHeight = rowFrame.height - (paddings.top + paddings.bottom)
-        
-        for _ in 0..<items {
-            if let preFrame = preFrame {
-                x = preFrame.maxX + paddings.interimPadding
-            }
-            let frame = CGRect(x: x, y: top, width: itemWidht, height: itemHeight)
-            result.append(frame)
-            preFrame = frame
         }
         
         return result
@@ -356,7 +416,7 @@ extension GridView {
         return result
     }
     
-    private func getFrameForLastRow(items: UInt, rowFrame: CGRect) -> [CGRect] {
+     func getFrameForLastRow(items: UInt, rowFrame: CGRect) -> [CGRect] {
         let top = rowFrame.origin.y + (paddings.interimPadding/2.0)
         var result = [CGRect]()
         var x = paddings.leading
@@ -378,20 +438,23 @@ extension GridView {
         return result
     }
     
-    private func numOfRows(itemsCount: UInt, width: CGFloat , height: CGFloat) -> UInt {
+    
+    private func numOfRowsOfPortrait(itemsCount: UInt) -> UInt {
         if itemsCount == 1 {
             return 1
         }
-        if itemsCount == 2 && width >= height {
-            return 1
-        }
-        let maxElementsInTwoRows = maxItemsInRow * 2
-        if itemsCount <= maxElementsInTwoRows {
+        if itemsCount == 2 || itemsCount < 4 {
             return 2
         }
         return UInt(ceil(Float64(itemsCount)/CGFloat(maxItemsInRow)))
     }
     
+    private func numOfRowsOfLandscape(itemsCount: UInt) -> UInt {
+        if itemsCount <= 3 {
+            return 1
+        }
+        return 2
+    }
 }
 
 

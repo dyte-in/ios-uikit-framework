@@ -10,13 +10,18 @@ import UIKit
 
 
 protocol MeetingViewModelDelegate: AnyObject {
-    func refreshMeetingGrid()
+    func refreshMeetingGrid(forRotation: Bool)
     func refreshPluginsView()
     func meetingRecording(start: Bool)
     func activeSpeakerChanged(participant: DyteMeetingParticipant)
     func pinnedChanged(participant: DyteMeetingParticipant)
     func activeSpeakerRemoved()
     func pinnedParticipantRemoved(participant: DyteMeetingParticipant)
+}
+extension MeetingViewModelDelegate {
+    func refreshMeetingGrid() {
+        self.refreshMeetingGrid(forRotation: false)
+    }
 }
 
 enum DyteNotificationType {

@@ -29,11 +29,12 @@ class DyteParticipantTileContainerView : UIView {
     }
 }
 
-public class BaseViewController: UIViewController {
+public class BaseViewController: UIViewController, AdaptableUI {
     let dyteSelfListner: DyteEventSelfListner!
     internal let dyteMobileClient: DyteMobileClient
     private var waitingRoomView: WaitingRoomView?
-
+    var portraitConstraints = [NSLayoutConstraint]()
+    var landscapeConstraints = [NSLayoutConstraint]()
     
     init(dyteMobileClient: DyteMobileClient) {
         self.dyteMobileClient = dyteMobileClient
@@ -69,7 +70,7 @@ public class BaseViewController: UIViewController {
     
      func addWaitingRoom(completion:@escaping()->Void) {
         self.dyteSelfListner.waitListStatusUpdate = { [weak self] status in
-            guard let self = self else {return}
+            guard self != nil else {return}
             let callBack : ()-> Void = {
                 completion()
             }
@@ -80,7 +81,7 @@ public class BaseViewController: UIViewController {
            waitingRoomView?.removeFromSuperview()
            if status != .none {
                let waitingView = WaitingRoomView(automaticClose: false, onCompletion: { [weak self] in
-                   guard let self = self else {return}
+                   guard self != nil else {return}
                    completion()
                })
                waitingView.accessibilityIdentifier = "WaitingRoom_View"
@@ -93,7 +94,12 @@ public class BaseViewController: UIViewController {
            }
        }
     }
-
+    
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        print("Hello \(self)")
+        super.viewWillTransition(to: size, with: coordinator)
+        applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
+    }
 }
 
 public class MeetingViewController: BaseViewController {
@@ -116,7 +122,10 @@ public class MeetingViewController: BaseViewController {
     
     internal var moreButtonBottomBar: DyteControlBarButton?
     private var layoutContraintPluginBaseZeroHeight: NSLayoutConstraint!
-    private var layoutContraintPluginBaseVariableHeight: NSLayoutConstraint!
+    private var layoutPortraitContraintPluginBaseVariableHeight: NSLayoutConstraint!
+    private var layoutLandscapeContraintPluginBaseVariableWidth: NSLayoutConstraint!
+    private var layoutContraintPluginBaseZeroWidth: NSLayoutConstraint!
+
     private var waitingRoomView: WaitingRoomView?
 
     init(dyteMobileClient: DyteMobileClient, completion:@escaping()->Void) {
@@ -129,14 +138,27 @@ public class MeetingViewController: BaseViewController {
         notificationDelegate = self
     }
     
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     public override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
-        topBar.set(.top(self.view, self.view.safeAreaInsets.top))
+        self.topBar.set(.top(self.view, self.view.safeAreaInsets.top))
+        if UIScreen.isLandscape() {
+            self.bottomBar.setWidth()
+        }else {
+            self.bottomBar.setHeight()
+        }
+        setLeftPaddingContraintForBaseContentView()
+    }
+    
+    private func setLeftPaddingContraintForBaseContentView() {
+        if UIScreen.deviceOrientation == .landscapeLeft {
+            self.baseContentView.get(.leading)?.constant = self.view.safeAreaInsets.bottom
+        }else if UIScreen.deviceOrientation == .landscapeRight {
+            self.baseContentView.get(.leading)?.constant = self.view.safeAreaInsets.right
+        }
     }
     
     public override func viewDidLoad() {
@@ -229,17 +251,12 @@ public class MeetingViewController: BaseViewController {
         }
     }
     
-    public func refreshMeetingGrid() {
+    public func refreshMeetingGrid(forRotation: Bool = false) {
         if isDebugModeOn {
             print("Debug DyteUIKit | refreshMeetingGrid")
         }
         
         self.meetingGridPageBecomeVisible()
-        for i in 0..<self.gridView.maxItems {
-            if let peerView = self.gridView.childView(index: Int(i)) {
-                peerView.prepareForReuse()
-            }
-        }
         
         let arrModels = self.viewModel.arrGridParticipants
         
@@ -247,15 +264,29 @@ public class MeetingViewController: BaseViewController {
             print("Debug DyteUIKIt | refreshing Finished")
         }
         
+        func prepareGridViewsForReuse() {
+            for i in 0..<self.gridView.maxItems {
+                if let peerView = self.gridView.childView(index: Int(i)) {
+                    peerView.prepareForReuse()
+                }
+            }
+        }
+        
         if self.dyteMobileClient.participants.currentPageNumber == 0 {
             self.showPluginView(show: isPluginOrScreenShareActive, animation: false)
             self.loadGrid(fullScreen: !isPluginOrScreenShareActive, animation: true, completion: {
-                populateGridChildViews(models: arrModels)
+                if forRotation == false {
+                    prepareGridViewsForReuse()
+                    populateGridChildViews(models: arrModels)
+                }
             })
         }else {
             self.showPluginView(show: false, animation: false)
             self.loadGrid(fullScreen: true, animation: true, completion: {
-                populateGridChildViews(models: arrModels)
+                if forRotation == false {
+                    prepareGridViewsForReuse()
+                    populateGridChildViews(models: arrModels)
+                }
             })
         }
         
@@ -270,7 +301,7 @@ public class MeetingViewController: BaseViewController {
                 print("Debug DyteUIKit | Iterating for Items \(arrModels.count)")
                 for i in 0..<models.count {
                     if let peerContainerView = self.gridView.childView(index: i), let tileView = peerContainerView.tileView {
-                        print("Debug DyteUIKit | Tile View Exists \(tileView) \nSuperView \(tileView.superview)")
+                        print("Debug DyteUIKit | Tile View Exists \(tileView) \nSuperView \(String(describing: tileView.superview))")
                     }
                 }
             }
@@ -293,10 +324,37 @@ public class MeetingViewController: BaseViewController {
         self.moreButtonBottomBar = controlBar.moreButton
         
         self.view.addSubview(controlBar)
-        controlBar.set(.sameLeadingTrailing(self.view),
-                       .bottom(self.view))
-        
         self.bottomBar = controlBar
+        addBottomBarConstraint()
+    }
+    
+    func addBottomBarConstraint() {
+        addPortraitContraintBottombar()
+        addLandscapeContraintBottombar()
+        applyConstraintAsPerOrientation()
+        bottomBar.applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape()) {
+            bottomBar.setItemsOrientation(axis: .horizontal)
+            bottomBar.setHeight()
+        } onLandscape: {
+            bottomBar.setItemsOrientation(axis: .vertical)
+            bottomBar.setWidth()
+        }
+    }
+    
+    private func addPortraitContraintBottombar() {
+        self.bottomBar.set(.sameLeadingTrailing(self.view),
+                       .bottom(self.view))
+        portraitConstraints.append(contentsOf: [self.bottomBar.get(.leading)!,
+                                                self.bottomBar.get(.trailing)!,
+                                                self.bottomBar.get(.bottom)!])
+    }
+    
+    private func addLandscapeContraintBottombar() {
+        self.bottomBar.set(.trailing(self.view),
+                           .sameTopBottom(self.view))
+        landscapeConstraints.append(contentsOf: [self.bottomBar.get(.trailing)!,
+                                                 self.bottomBar.get(.top)!,
+                                                 self.bottomBar.get(.bottom)!])
     }
 
     
@@ -307,6 +365,27 @@ public class MeetingViewController: BaseViewController {
             print("DyteUIKit | MeetingViewController Deinit is calling ")
         }
     }
+    
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        self.presentedViewController?.dismiss(animated: false)
+        bottomBar.moreButton.hideBottomSheet()
+        bottomBar.applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape()) {
+            bottomBar.setItemsOrientation(axis: .horizontal)
+            bottomBar.setHeight()
+            bottomBar.moreButton.superview!.isHidden = false
+        } onLandscape: {
+            bottomBar.setItemsOrientation(axis: .vertical)
+            bottomBar.setWidth()
+            bottomBar.moreButton.superview!.isHidden = true
+        }
+        self.showPluginViewAsPerOrientation(show: false)
+        self.setLeftPaddingContraintForBaseContentView()
+        DispatchQueue.main.async {
+            //Actually we don't have viewDidTransition method available and In current method frame is returning incorrect value, So used DispatchQueue.main.async
+            self.refreshMeetingGrid(forRotation: true)
+        }
+    }
 }
 
 private extension MeetingViewController {
@@ -315,46 +394,154 @@ private extension MeetingViewController {
         self.topBar.nextPreviousButtonView.isHidden = true
     }
     
-        
     private func createSubView() {
         self.view.addSubview(baseContentView)
-
+        baseContentView.addSubview(pluginBaseView)
+        baseContentView.addSubview(gridBaseView)
+        pluginBaseView.accessibilityIdentifier = "Grid_Plugin_View"
+        
+        gridView = GridView(showingCurrently: 9, getChildView: {
+            return DyteParticipantTileContainerView()
+        })
+        
+        gridBaseView.addSubview(gridView)
+        pluginBaseView.addSubview(pluginView)
+        
+        addPortraitConstraintForSubviews()
+        addLandscapeConstraintForSubviews()
+        applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
+        showPluginViewAsPerOrientation(show: false)
+    }
+    
+    private func showPluginViewAsPerOrientation(show: Bool) {
+        layoutPortraitContraintPluginBaseVariableHeight.isActive = false
+        layoutContraintPluginBaseZeroHeight.isActive = false
+        layoutLandscapeContraintPluginBaseVariableWidth.isActive = false
+        layoutContraintPluginBaseZeroWidth.isActive = false
+        
+        if UIScreen.isLandscape() {
+            layoutLandscapeContraintPluginBaseVariableWidth.isActive = show
+            layoutContraintPluginBaseZeroWidth.isActive = !show
+        }else {
+            layoutPortraitContraintPluginBaseVariableHeight.isActive = show
+            layoutContraintPluginBaseZeroHeight.isActive = !show
+        }
+    }
+    
+    private func addPortraitConstraintForSubviews() {
+        
         baseContentView.set(.sameLeadingTrailing(self.view),
                            .below(topBar),
                            .above(bottomBar))
-
-        baseContentView.addSubview(pluginBaseView)
-        baseContentView.addSubview(gridBaseView)
+        portraitConstraints.append(contentsOf: [baseContentView.get(.leading)!,
+                                                baseContentView.get(.trailing)!,
+                                                baseContentView.get(.top)!,
+                                                baseContentView.get(.bottom)!])
         
         pluginBaseView.set(.sameLeadingTrailing(baseContentView),
                       .top(baseContentView))
-        pluginBaseView.accessibilityIdentifier = "Grid_Plugin_View"
-        layoutContraintPluginBaseVariableHeight = NSLayoutConstraint(item: pluginBaseView, attribute: .height, relatedBy: .equal, toItem: baseContentView, attribute: .height, multiplier: 0.7, constant: 0)
+        portraitConstraints.append(contentsOf: [pluginBaseView.get(.leading)!,
+                                                pluginBaseView.get(.trailing)!,
+                                                pluginBaseView.get(.top)!])
+        
+        layoutPortraitContraintPluginBaseVariableHeight = NSLayoutConstraint(item: pluginBaseView, attribute: .height, relatedBy: .equal, toItem: baseContentView, attribute: .height, multiplier: 0.7, constant: 0)
+        layoutPortraitContraintPluginBaseVariableHeight.isActive = false
+        
         layoutContraintPluginBaseZeroHeight = NSLayoutConstraint(item: pluginBaseView, attribute: .height, relatedBy: .equal, toItem: baseContentView, attribute: .height, multiplier: 0.0, constant: 0)
-        layoutContraintPluginBaseZeroHeight.isActive = true
-        layoutContraintPluginBaseVariableHeight.isActive = false
+        
+        layoutContraintPluginBaseZeroHeight.isActive = false
+
         
         gridBaseView.set(.sameLeadingTrailing(baseContentView),
                       .below(pluginBaseView),
                       .bottom(baseContentView))
         
-        gridView = GridView(showingCurrently: 9, getChildView: {
-             
-            return DyteParticipantTileContainerView()
-        })
-        gridBaseView.addSubview(gridView)
+        portraitConstraints.append(contentsOf: [gridBaseView.get(.leading)!,
+                                                gridBaseView.get(.trailing)!,
+                                                gridBaseView.get(.top)!,
+                                                gridBaseView.get(.bottom)!])
+        
         gridView.set(.fillSuperView(gridBaseView))
-        pluginBaseView.addSubview(pluginView)
+        portraitConstraints.append(contentsOf: [gridView.get(.leading)!,
+                                                gridView.get(.trailing)!,
+                                                gridView.get(.top)!,
+                                                gridView.get(.bottom)!])
         pluginView.set(.fillSuperView(pluginBaseView))
+        portraitConstraints.append(contentsOf: [pluginView.get(.leading)!,
+                                                pluginView.get(.trailing)!,
+                                                pluginView.get(.top)!,
+                                                pluginView.get(.bottom)!])
     }
     
+    private func addLandscapeConstraintForSubviews() {
+        
+        baseContentView.set(.leading(self.view),
+                            .below(self.topBar),
+                            .bottom(self.view),
+                            .before(bottomBar))
+       
+        landscapeConstraints.append(contentsOf: [baseContentView.get(.leading)!,
+                                                 baseContentView.get(.trailing)!,
+                                                 baseContentView.get(.top)!,
+                                                 baseContentView.get(.bottom)!])
+        
+        
+        pluginBaseView.set(.leading(baseContentView),
+                      .sameTopBottom(baseContentView))
+        landscapeConstraints.append(contentsOf: [pluginBaseView.get(.leading)!,
+                                                pluginBaseView.get(.bottom)!,
+                                                pluginBaseView.get(.top)!])
+        
+        layoutLandscapeContraintPluginBaseVariableWidth = NSLayoutConstraint(item: pluginBaseView, attribute: .width, relatedBy: .equal, toItem: baseContentView, attribute: .width, multiplier: 0.7, constant: 0)
+        layoutLandscapeContraintPluginBaseVariableWidth.isActive = false
+        
+        layoutContraintPluginBaseZeroWidth = NSLayoutConstraint(item: pluginBaseView, attribute: .width, relatedBy: .equal, toItem: baseContentView, attribute: .width, multiplier: 0.0, constant: 0)
+        
+        layoutContraintPluginBaseZeroWidth.isActive = false
+
+        
+        gridBaseView.set(.sameTopBottom(baseContentView),
+                      .after(pluginBaseView),
+                      .trailing(baseContentView))
+        
+        landscapeConstraints.append(contentsOf: [gridBaseView.get(.leading)!,
+                                                gridBaseView.get(.trailing)!,
+                                                gridBaseView.get(.top)!,
+                                                gridBaseView.get(.bottom)!])
+               
+        gridView.set(.fillSuperView(gridBaseView))
+        landscapeConstraints.append(contentsOf: [gridView.get(.leading)!,
+                                                gridView.get(.trailing)!,
+                                                gridView.get(.top)!,
+                                                gridView.get(.bottom)!])
+        pluginView.set(.fillSuperView(pluginBaseView))
+        landscapeConstraints.append(contentsOf: [pluginView.get(.leading)!,
+                                                pluginView.get(.trailing)!,
+                                                pluginView.get(.top)!,
+                                                pluginView.get(.bottom)!])
+    }
+
     private func createTopbar() {
         let topbar = DyteMeetingHeaderView(meeting: self.dyteMobileClient)
         self.view.addSubview(topbar)
         topbar.accessibilityIdentifier = "Meeting_ControlTopBar"
-
-        topbar.set(.sameLeadingTrailing(self.view))
         self.topBar = topbar
+        addPotraitContraintTopbar()
+        addLandscapeContraintTopbar()
+        applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
+    }
+    
+    private func addPotraitContraintTopbar() {
+        self.topBar.set(.sameLeadingTrailing(self.view))
+        portraitConstraints.append(contentsOf: [self.topBar.get(.leading)!,
+                                                self.topBar.get(.trailing)!])
+    }
+    
+    private func addLandscapeContraintTopbar() {
+        self.topBar.set(.height(0))
+        landscapeConstraints.append(contentsOf: [self.topBar.get(.leading)!,
+                                                self.topBar.get(.trailing)!,
+                                                self.topBar.get(.height)!])
     }
 }
 
@@ -431,12 +618,10 @@ extension MeetingViewController : MeetingViewModelDelegate {
     
     public func selectPluginOrScreenShare(id: String) {
         var index: Int = -1
-        var find = false
         for button in self.pluginView.activeListView.buttons {
             index = index + 1
             if button.id == id {
                 self.pluginView.selectForAutoSync(button: button)
-                find = true
                 break
             }
         }
@@ -497,8 +682,7 @@ extension MeetingViewController : MeetingViewModelDelegate {
     }
     
     private func showPluginView(show: Bool, animation: Bool) {
-        layoutContraintPluginBaseVariableHeight.isActive = show
-        layoutContraintPluginBaseZeroHeight.isActive = !show
+        self.showPluginViewAsPerOrientation(show: show)
         pluginBaseView.isHidden = !show
         if animation {
             UIView.animate(withDuration: Animations.gridViewAnimationDuration) {
@@ -512,13 +696,27 @@ extension MeetingViewController : MeetingViewModelDelegate {
     private func loadGrid(fullScreen: Bool, animation: Bool, completion:@escaping()->Void) {
         let arrModels = self.viewModel.arrGridParticipants
         if fullScreen == false {
-            self.gridView.settingFramesForHorizontal(visibleItemCount: UInt(arrModels.count), animation: animation) { finish in
-                completion()
+            if UIScreen.isLandscape() {
+                self.gridView.settingFramesForPluginsActiveInLandscapeMode(visibleItemCount: UInt(arrModels.count), animation: animation) { finish in
+                    completion()
+                }
+            }else {
+                self.gridView.settingFramesForPluginsActiveInPortraitMode(visibleItemCount: UInt(arrModels.count), animation: animation) { finish in
+                    completion()
+                }
             }
+            
         }else {
-            self.gridView.settingFrames(visibleItemCount: UInt(arrModels.count), animation: animation) { finish in
-                completion()
+            if UIScreen.isLandscape() {
+                self.gridView.settingFramesForLandScape(visibleItemCount: UInt(arrModels.count), animation: animation) { finish in
+                    completion()
+                }
+            }else {
+                self.gridView.settingFrames(visibleItemCount: UInt(arrModels.count), animation: animation) { finish in
+                    completion()
+                }
             }
+           
         }
     }
     

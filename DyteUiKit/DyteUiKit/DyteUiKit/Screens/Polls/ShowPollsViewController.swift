@@ -403,7 +403,7 @@ class ShowPollsViewModel {
         for poll in polls {
             
             var model =  [(image: RadioTypeImage, title: String, rightTitle: String?, isSelected: Bool)]()
-            let totalParticipant = self.dyteMobileClient.participants.joined.count
+            let _ = self.dyteMobileClient.participants.joined.count
 
             var showVoteButton = true
             for option in poll.options {
@@ -512,7 +512,7 @@ public class ShowPollsViewController: UIViewController , SetTopbar {
     }
     
     private func reloadUI(cardModels: [PollCardModel], newlyAddedPoll: Bool) {
-        var previousY = scrollView.contentOffset.y
+        let previousY = scrollView.contentOffset.y
         scrollView.subviews.forEach { subView in
             subView.removeFromSuperview()
             subView.removeConstraints(subView.constraints)

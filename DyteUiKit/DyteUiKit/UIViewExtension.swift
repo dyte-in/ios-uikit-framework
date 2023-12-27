@@ -45,7 +45,7 @@ extension UIView {
         return subviews
     }
     
-    public func addSubViews(_ views: UIView...) {
+    internal func addSubViews(_ views: UIView...) {
         for view in views {
             self.addSubview(view)
         }
@@ -70,7 +70,7 @@ extension UIView {
     }
     
     private func createToastView(toastMessage: String, duration: CGFloat, uiBlocker: Bool) -> UIView {
-        var bgView = UIView(frame: self.frame)
+        let bgView = UIView(frame: self.frame)
         bgView.backgroundColor = UIColor(red: CGFloat(255.0/255.0), green: CGFloat(255.0/255.0), blue: CGFloat(255.0/255.0), alpha: CGFloat(0.1))
         
         // Label For showing toast text
@@ -163,13 +163,13 @@ extension UILabel {
 
 extension UIStackView {
     
-    public func addArrangedSubviews(_ views: UIView...) {
+    func addArrangedSubviews(_ views: UIView...) {
         for view in views {
             self.addArrangedSubview(view)
         }
     }
     
-    public func removeFully(view: UIView) {
+    func removeFully(view: UIView) {
         removeArrangedSubview(view)
         view.removeFromSuperview()
     }
@@ -188,33 +188,22 @@ extension UIViewController {
 }
 
 @nonobjc extension UIViewController {
-    public  func add(_ child: UIViewController, frame: CGRect? = nil) {
+    
+    func add(_ child: UIViewController, frame: CGRect? = nil) {
         addChild(child)
-        
         DispatchQueue.main.async {
             if let frame = frame {
                 child.view.frame = frame
             }
-            
             self.view.addSubview(child.view)
             child.didMove(toParent: self)
         }
-        
     }
     
-    public func remove() {
+    func remove() {
         willMove(toParent: nil)
         view.removeFromSuperview()
         removeFromParent()
-    }
-}
-extension UIColor {
-    func generateRandomColor() -> UIColor {
-        let redValue = CGFloat(drand48())
-        let greenValue = CGFloat(drand48())
-        let blueValue = CGFloat(drand48())
-        let randomColor = UIColor(red: redValue, green: greenValue, blue: blueValue, alpha: 1.0)
-        return randomColor
     }
 }
 
@@ -236,13 +225,48 @@ extension UISearchBar {
 
 extension Bundle {
     static let resources: Bundle = {
-//        let bundle = Bundle(for: BundleToken.self)
         #if SWIFT_PACKAGE
             return Bundle.module
         #else
              let bundle = Bundle(for:ImageProvider.self)
-             let bundlePath = bundle.path(forResource: "DyteUiKit", ofType: "bundle")
-             return Bundle(path:bundlePath!)!
+        if let bundlePath = bundle.path(forResource: "DyteUiKit", ofType: "bundle") {
+            return Bundle(path:bundlePath)!
+        }
+          return bundle
         #endif
     }()
 }
+
+extension UIViewController {
+    func isLandscape(size: CGSize) -> Bool {
+        return size.width > size.height
+    }
+}
+
+extension UIScreen {
+   static var deviceOrientation:UIDeviceOrientation {
+        switch UIApplication.shared.statusBarOrientation {
+            case .portrait:
+               return .portrait
+            case .portraitUpsideDown:
+               return .portraitUpsideDown
+            case .landscapeLeft:
+              return .landscapeLeft
+
+            case .landscapeRight:
+            return .landscapeRight
+
+            case .unknown:
+            return .unknown
+
+         }
+    }
+    
+    static func isLandscape() -> Bool {
+        if UIScreen.deviceOrientation == .landscapeLeft || UIScreen.deviceOrientation == .landscapeRight {
+            return true
+        }
+        return false
+    }
+}
+

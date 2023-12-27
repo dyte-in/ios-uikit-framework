@@ -34,6 +34,7 @@ public class MicToggleButton: DyteButton {
         self.addTarget(self, action: #selector(clickMic(button:)), for: .touchUpInside)
         setState()
     }
+
     
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -173,9 +174,9 @@ public class VideoToggleButton: DyteButton {
     
 }
 
-public class SetupViewController: UIViewController, KeyboardObservable {
+public class SetupViewController: BaseViewController, KeyboardObservable {
     
-    public var keyboardObserver: KeyboardObserver?
+    var keyboardObserver: KeyboardObserver?
     
     let baseView: BaseView = BaseView()
     private var selfPeerView: DyteParticipantTileView!
@@ -237,7 +238,7 @@ public class SetupViewController: UIViewController, KeyboardObservable {
         self.baseUrl = baseUrl
         self.completion = completion
         self.meetinInfoV2 = nil
-        super.init(nibName: nil, bundle: nil)
+        super.init(dyteMobileClient: mobileClient)
     }
     
     public init(meetingInfo: DyteMeetingInfoV2, mobileClient: DyteMobileClient, baseUrl: String? = nil, completion:@escaping()->Void) {
@@ -247,10 +248,8 @@ public class SetupViewController: UIViewController, KeyboardObservable {
         self.baseUrl = baseUrl
         self.completion = completion
         
-        super.init(nibName: nil, bundle: nil)
+        super.init(dyteMobileClient: mobileClient)
     }
-    
-    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -272,7 +271,9 @@ public class SetupViewController: UIViewController, KeyboardObservable {
     }
     
     private var viewModel: SetupViewModel!
-    
+
+    private var btnStackView: UIStackView!
+    private var bottomStackView: UIStackView!
     private func dyteMobileClientInit() {
         
         if let info = self.meetinInfoV2 {
@@ -283,6 +284,8 @@ public class SetupViewController: UIViewController, KeyboardObservable {
             self.viewModel = SetupViewModel(mobileClient: self.mobileClient, delegate: self, meetingInfoV2: nil, meetingInfo: info)
         }
     }
+
+   
     
     deinit {
         print("DyteUIKit | SetupViewController deinit is calling")
@@ -346,7 +349,8 @@ extension SetupViewController {
     private func setupKeyboard() {
         self.startKeyboardObserving { [weak self] keyboardFrame in
             guard let self = self else {return}
-            self.view.frame.origin.y = keyboardFrame.origin.y - self.baseView.frame.maxY
+            let frame = self.baseView.convert(self.bottomStackView.frame, to: self.view.coordinateSpace)
+            self.view.frame.origin.y = keyboardFrame.origin.y - frame.maxY
         } onHide: { [weak self] in
             guard let self = self else {return}
             self.view.frame.origin.y = 0 // Move view to original position
@@ -355,12 +359,38 @@ extension SetupViewController {
     
     private func createSubviews() {
         self.view.addSubview(baseView)
+        setUpActivityIndicator(baseView: baseView)
+        addConstraintForBaseView()
+        applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
+    }
+    
+    private func addConstraintForBaseView() {
+        addPortaitConstraintsForBaseView()
+        addLandscapeConstraintForBaseView()
+    }
+    
+
+    
+    private func addPortaitConstraintsForBaseView() {
         baseView.set(.sameLeadingTrailing(self.view , spaceToken.space8),
                      .centerY(self.view),
                      .top(self.view, spaceToken.space8, .greaterThanOrEqual))
-        setUpActivityIndicator(baseView: baseView)
+        portraitConstraints.append(contentsOf: [baseView.get(.leading)!,
+                                                baseView.get(.trailing)!,
+                                                baseView.get(.top)!,
+                                                baseView.get(.centerY)!])
     }
     
+    private func addLandscapeConstraintForBaseView() {
+        baseView.set(.leading(self.view, spaceToken.space8),
+                     .trailing(self.view, spaceToken.space8),
+                     .bottom(self.view, spaceToken.space8),
+                     .top(self.view, spaceToken.space8))
+        landscapeConstraints.append(contentsOf: [baseView.get(.top)!,
+                                                 baseView.get(.bottom)!,
+                                                 baseView.get(.leading)!,
+                                                 baseView.get(.trailing)!])
+    }
     private func setUpActivityIndicator(baseView: UIView) {
         baseView.addSubview(activityIndicator)
         activityIndicator.set(.centerView(baseView))
@@ -391,22 +421,83 @@ extension SetupViewController {
         
         selfPeerView.clipsToBounds = true
         
-        selfPeerView.set(.aspectRatio(0.75),
-                         .top(baseView),
-                         .sameLeadingTrailing(baseView, spaceToken.space6))
         let btnStackView = createBtnView()
         baseView.addSubview(btnStackView)
+        self.btnStackView = btnStackView
+       
+        let bottomStackView = createBottomButtonStackView()
+        baseView.addSubview(bottomStackView)
+        self.bottomStackView = bottomStackView
+
+        lblBottom.isHidden = true
+        addConstraintForCreatingMeetingSetUpUI()
+        applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
+        
+    }
+    
+    private func addConstraintForCreatingMeetingSetUpUI() {
+        addPortraintConstraintForCreateMeetingSetupUI()
+        addLandscapeConstraintForCreateMeetingSetupUI()
+    }
+    
+    private func addPortraintConstraintForCreateMeetingSetupUI() {
+
+        selfPeerView.set(UIDevice.current.userInterfaceIdiom == .pad ? .aspectRatio(0.45) : .aspectRatio(0.75),
+                         .top(baseView),
+                         .height(500,.lessThanOrEqual),
+                         .sameLeadingTrailing(baseView, spaceToken.space6))
+        portraitConstraints.append(contentsOf: [selfPeerView.get(.aspectRatio)!,
+                                                selfPeerView.get(.top)!,
+                                                selfPeerView.get(.leading)!,
+                                                selfPeerView.get(.trailing)!])
+        
         btnStackView.set(.below(selfPeerView, spaceToken.space4),
                          .leading(baseView, 0.0, .greaterThanOrEqual),
                          .centerX(baseView))
-        let bottomStackView = createBottomButtonStackView()
-        baseView.addSubview(bottomStackView)
+        portraitConstraints.append(contentsOf: [btnStackView.get(.top)!,
+                                                btnStackView.get(.centerX)!,
+                                                btnStackView.get(.leading)!])
+
         bottomStackView.set(.below(btnStackView, spaceToken.space6),
                             .sameLeadingTrailing(baseView),
                             .bottom(baseView))
-        lblBottom.isHidden = true
+        portraitConstraints.append(contentsOf: [bottomStackView.get(.top)!,
+                                                bottomStackView.get(.bottom)!,
+                                                bottomStackView.get(.leading)!,
+                                                bottomStackView.get(.trailing)!])
+
     }
     
+    private func addLandscapeConstraintForCreateMeetingSetupUI() {
+
+        let equalWidthConstraintPeerView =  ConstraintCreator.Constraint.equate(viewAttribute: .width, toView: baseView, toViewAttribute: .width, relation: .equal, constant: 10, multiplier: 0.5).getConstraint(for: selfPeerView)
+        selfPeerView.set(.top(baseView),
+                         .leading(baseView, spaceToken.space6))
+                
+        landscapeConstraints.append(contentsOf: [selfPeerView.get(.top)!,
+                                                 equalWidthConstraintPeerView,
+                                                 selfPeerView.get(.leading)!])
+        
+        btnStackView.set(.below(selfPeerView, spaceToken.space4),
+                         .centerX(selfPeerView),
+                         .bottom(baseView, spaceToken.space6))
+        landscapeConstraints.append(contentsOf: [btnStackView.get(.top)!,
+                                                 btnStackView.get(.centerX)!,
+                                                 btnStackView.get(.bottom)!])
+        
+        // Right part
+        bottomStackView.set(.after(selfPeerView, spaceToken.space6),
+                            .centerY(baseView),
+                            .width(baseView.frame.width/2 - spaceToken.space6),
+                            .trailing(baseView, spaceToken.space6))
+        landscapeConstraints.append(contentsOf: [bottomStackView.get(.leading)!,
+                                                 bottomStackView.get(.centerY)!,
+                                                 bottomStackView.get(.width)!,
+                                                 bottomStackView.get(.trailing)!])
+        
+    }
+    
+
     private func setupButtonActions() {
         btnSetting.addTarget(self, action: #selector(clickSetting(button:)), for: .touchUpInside)
     }

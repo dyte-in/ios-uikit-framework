@@ -13,8 +13,6 @@ open class DyteMeetingControlBar: DyteControlBar {
    
     override init(meeting: DyteMobileClient, delegate: DyteTabBarDelegate?, presentingViewController: UIViewController, appearance: DyteControlBarAppearance = DyteControlBarAppearanceModel(), meetingViewModel: MeetingViewModel, settingViewControllerCompletion:(()->Void)? = nil, onLeaveMeetingCompletion: (()->Void)? = nil) {
         super.init(meeting: meeting, delegate: delegate, presentingViewController: presentingViewController, appearance: appearance, meetingViewModel: meetingViewModel, settingViewControllerCompletion: settingViewControllerCompletion, onLeaveMeetingCompletion: onLeaveMeetingCompletion)
-        var audioEnabled = false
-        var videoEnabled = false
         var buttons = [DyteControlBarButton]()
         if meeting.localUser.permissions.media.canPublishAudio {
             let micButton = DyteAudioButtonControlBar(meeting: meeting)

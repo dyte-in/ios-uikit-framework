@@ -421,7 +421,7 @@ extension LiveParticipantViewControllerModel {
             sectionOne.insert(TableItemConfigurator<TitleTableViewCell,TitleTableViewCellModel>(model:TitleTableViewCellModel(title: "Waiting\(participantCount)")))
             
             for (index, participant) in waitListedParticipants.enumerated() {
-                var image: DyteImage? = nil
+                let image: DyteImage? = nil
                 var showBottomSeparator = true
                 if index == waitListedParticipants.count - 1 {
                     showBottomSeparator = false

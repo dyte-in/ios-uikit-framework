@@ -159,15 +159,18 @@ class ChatViewController: BaseViewController, UITableViewDelegate, UITableViewDa
         label.textColor = DesignLibrary.shared.color.textColor.onBackground.shade900
         navigationItem.titleView = label
         
-        
-        
         // configure sendButton
-        
         let fileIcon = ImageProvider.image(named: "icon_chat_add")
         sendFileButton.setImage(fileIcon, for: .normal)
-        sendFileButton.set(.width(48))
         sendFileButton.addTarget(self, action: #selector(menuTapped), for: .touchUpInside)
         view.addSubview(sendFileButton)
+        if self.dyteMobileClient.localUser.permissions.chat.canSendFiles {
+            sendFileButton.set(.width(48))
+            sendFileButton.isHidden = false
+        } else {
+            sendFileButton.set(.width(0))
+            sendFileButton.isHidden = true
+        }
         
         //        let imageIcon = ImageProvider.image(named: "icon_image")
         //        sendImageButton.setImage(imageIcon, for: .normal)

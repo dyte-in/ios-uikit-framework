@@ -486,7 +486,7 @@ public class DyteMoreMenu: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func hideSheet() {
+    func hideSheet() {
         self.isHidden = true
     }
 }

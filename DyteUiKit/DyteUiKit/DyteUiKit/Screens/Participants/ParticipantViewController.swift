@@ -223,7 +223,7 @@ extension ParticipantViewController: UITableViewDataSource {
         menus.append(contentsOf: [.cancel])
         
         let moreMenu = DyteMoreMenu(title: participant.name, features: menus, onSelect: { [weak self] menuType in
-            guard let self = self else {return}
+            guard let _ = self else {return}
             switch menuType {
             case .pin:
                 try?participant.pin()

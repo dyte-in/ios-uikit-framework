@@ -140,6 +140,7 @@ open class DyteControlBarButton: UIButton {
         let imageView = UIUTility.createImageView(image: self.normalImage)
         let title = UIUTility.createLabel(text: self.normalTitle)
         title.font = UIFont.systemFont(ofSize: 12)
+        title.numberOfLines = 2
         stackView.addArrangedSubviews(imageView,title)
         return (stackView: stackView ,title: title,imageView: imageView)
     }

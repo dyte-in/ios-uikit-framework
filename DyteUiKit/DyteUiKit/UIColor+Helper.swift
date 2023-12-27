@@ -42,13 +42,13 @@ extension UIColor {
     }
 }
 
-extension UIColor {
+internal extension UIColor {
    
-    public func lighter(by percentage: CGFloat = 12.0) -> Self? {
+     func lighter(by percentage: CGFloat = 12.0) -> Self? {
         return self.adjust(by: abs(percentage) )
     }
     
-    public func darker(by percentage: CGFloat = 12.0) -> UIColor? {
+     func darker(by percentage: CGFloat = 12.0) -> UIColor? {
         return self.adjust(by: -1 * abs(percentage) )
     }
     

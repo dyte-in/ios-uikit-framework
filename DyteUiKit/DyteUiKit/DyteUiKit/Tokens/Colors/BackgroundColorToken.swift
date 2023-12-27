@@ -7,9 +7,6 @@
 
 import UIKit
 
-
-
-
 public struct BackgroundColorToken {
     
     public class Shade: UIColor {}

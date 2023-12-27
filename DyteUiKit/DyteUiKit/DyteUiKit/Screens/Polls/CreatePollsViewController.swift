@@ -604,7 +604,7 @@ enum Result<Value, Error: Swift.Error> {
 
 public class CreatePollsViewController: UIViewController, KeyboardObservable {
     let scrollView:UIScrollView = {return UIScrollView()}()
-    public var keyboardObserver: KeyboardObserver?
+    var keyboardObserver: KeyboardObserver?
     let dyteMobileClient: DyteMobileClient
     let completion:(Result<Bool,Error>)->Void
     let tokenSpace = DesignLibrary.shared.space

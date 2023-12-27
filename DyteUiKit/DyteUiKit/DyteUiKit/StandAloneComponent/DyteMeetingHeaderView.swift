@@ -58,15 +58,17 @@ open class DyteMeetingHeaderView: UIView {
         let stackViewSubTitle = UIUTility.createStackView(axis: .horizontal, spacing: 4)
         stackViewSubTitle.addArrangedSubviews(lblSubtitle,clockView)
         stackView.addArrangedSubviews(title,stackViewSubTitle)
-        stackView.set(.leading(self, tokenSpace.space3),
-                      .sameTopBottom(self, tokenSpace.space2))
         self.addSubview(recordingView)
-        recordingView.set(.centerY(self),
-                          .top(self, tokenSpace.space1, .greaterThanOrEqual),
-                          .after(stackView, tokenSpace.space3))
+            
        let nextPreviouStackView = UIUTility.createStackView(axis: .horizontal, spacing: tokenSpace.space2)
        self.addSubview(nextPreviouStackView)
-       
+      
+       stackView.set(.leading(self, tokenSpace.space3),
+                    .sameTopBottom(self, tokenSpace.space2))
+       recordingView.set(.centerY(self),
+                         .top(self, tokenSpace.space1, .greaterThanOrEqual),
+                         .after(stackView, tokenSpace.space3))
+
        nextPreviouStackView.set(.after(recordingView,tokenSpace.space3, .greaterThanOrEqual),
                           .trailing(self,tokenSpace.space3),
                           .centerY(self),
@@ -80,6 +82,7 @@ open class DyteMeetingHeaderView: UIView {
         self.nextPreviousButtonView.nextButton.addTarget(self, action: #selector(clickNext(button:)), for: .touchUpInside)
     }
     
+
     public func setNextPreviousText(first: Int, second: Int) {
         if first == 0 {
             self.nextPreviousButtonView.autoLayoutImageView.isHidden = false

@@ -693,7 +693,7 @@ extension LivestreamViewController : MeetingViewModelDelegate {
     }
     static var schedule = false
     
-    func refreshMeetingGrid() {
+    func refreshMeetingGrid(forRotation: Bool = false) {
         if isDebugModeOn {
             print("Debug DyteUIKit | refreshMeetingGrid")
         }
