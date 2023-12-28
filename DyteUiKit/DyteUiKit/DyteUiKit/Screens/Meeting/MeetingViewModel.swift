@@ -446,6 +446,10 @@ extension MeetingViewModel: DyteChatEventsListener {
 }
 
 extension MeetingViewModel: DytePluginEventsListener {
+    public func onPluginMessage(plugin: DytePlugin, eventName: String, data: Any?) {
+        
+    }
+    
     
     public func onPluginActivated(plugin: DytePlugin) {
         if isDebugModeOn {

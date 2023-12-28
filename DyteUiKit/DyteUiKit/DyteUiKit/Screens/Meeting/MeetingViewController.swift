@@ -107,11 +107,19 @@ public class MeetingViewController: BaseViewController {
     let pluginView: PluginView
     private let gridBaseView = UIView()
     private let pluginBaseView = UIView()
+    private var fullScreenView: FullScreenView!
     let baseContentView = UIView()
     private let isDebugModeOn = DyteUiKit.isDebugModeOn
     
     private var isPluginOrScreenShareActive = false
     
+    let fullScreenButton: DyteControlBarButton = {
+        
+        let button = DyteControlBarButton(image: DyteImage(image: ImageProvider.image(named: "icon_show_fullscreen")))
+        button.setSelected(image:  DyteImage(image: ImageProvider.image(named: "icon_hide_fullscreen")))
+        button.backgroundColor = tokenColor.background.shade800
+        return button
+    }()
     let viewModel: MeetingViewModel
     
     private var topBar: DyteMeetingHeaderView!
@@ -155,8 +163,10 @@ public class MeetingViewController: BaseViewController {
     
     private func setLeftPaddingContraintForBaseContentView() {
         if UIScreen.deviceOrientation == .landscapeLeft {
+            self.baseContentView.get(.bottom)?.constant = -self.view.safeAreaInsets.bottom
             self.baseContentView.get(.leading)?.constant = self.view.safeAreaInsets.bottom
         }else if UIScreen.deviceOrientation == .landscapeRight {
+            self.baseContentView.get(.bottom)?.constant = -self.view.safeAreaInsets.bottom
             self.baseContentView.get(.leading)?.constant = self.view.safeAreaInsets.right
         }
     }
@@ -379,6 +389,14 @@ public class MeetingViewController: BaseViewController {
             bottomBar.setWidth()
             bottomBar.moreButton.superview!.isHidden = true
         }
+        self.applyConstraintAsPerOrientation {
+            self.fullScreenButton.isHidden = true
+            self.closefullscreen()
+        } onLandscape: {
+            self.fullScreenButton.isSelected = false
+            self.fullScreenButton.isHidden = false
+        }
+       
         self.showPluginViewAsPerOrientation(show: false)
         self.setLeftPaddingContraintForBaseContentView()
         DispatchQueue.main.async {
@@ -407,10 +425,36 @@ private extension MeetingViewController {
         gridBaseView.addSubview(gridView)
         pluginBaseView.addSubview(pluginView)
         
+        pluginView.addSubview(fullScreenButton)
+        fullScreenButton.set(.trailing(pluginView, tokenSpace.space1),
+                   .bottom(pluginView,tokenSpace.space1))
+        fullScreenButton.addTarget(self, action: #selector(buttonClick(button:)), for: .touchUpInside)
+        self.fullScreenButton.isHidden = !UIScreen.isLandscape()
+        fullScreenButton.isSelected = false
         addPortraitConstraintForSubviews()
         addLandscapeConstraintForSubviews()
         applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
         showPluginViewAsPerOrientation(show: false)
+    }
+    
+    @objc func buttonClick(button: DyteButton) {
+        if UIScreen.isLandscape() {
+            if button.isSelected == false {
+                pluginView.removeFromSuperview()
+                self.addFullScreenView(contentView: pluginView)
+            }else {
+                closefullscreen()
+            }
+            button.isSelected = !button.isSelected
+        }
+    }
+    private func closefullscreen() {
+        if fullScreenView?.isVisible == true {
+            self.pluginBaseView.addSubview(self.pluginView)
+            self.pluginView.set(.fillSuperView(self.pluginBaseView))
+            self.removeFullScreenView()
+        }
+       
     }
     
     private func showPluginViewAsPerOrientation(show: Bool) {
@@ -492,7 +536,7 @@ private extension MeetingViewController {
                                                 pluginBaseView.get(.bottom)!,
                                                 pluginBaseView.get(.top)!])
         
-        layoutLandscapeContraintPluginBaseVariableWidth = NSLayoutConstraint(item: pluginBaseView, attribute: .width, relatedBy: .equal, toItem: baseContentView, attribute: .width, multiplier: 0.7, constant: 0)
+        layoutLandscapeContraintPluginBaseVariableWidth = NSLayoutConstraint(item: pluginBaseView, attribute: .width, relatedBy: .equal, toItem: baseContentView, attribute: .width, multiplier: 0.75, constant: 0)
         layoutLandscapeContraintPluginBaseVariableWidth.isActive = false
         
         layoutContraintPluginBaseZeroWidth = NSLayoutConstraint(item: pluginBaseView, attribute: .width, relatedBy: .equal, toItem: baseContentView, attribute: .width, multiplier: 0.0, constant: 0)
@@ -876,6 +920,66 @@ extension MeetingViewController {
 }
 
 
+extension MeetingViewController {
+    func addFullScreenView(contentView: UIView) {
+            if fullScreenView == nil {
+                fullScreenView =  FullScreenView()
+                self.view.addSubview(fullScreenView)
+                fullScreenView.set(.fillSuperView(self.view))
+            }
+            fullScreenView.backgroundColor = self.view.backgroundColor
+            fullScreenView.isUserInteractionEnabled = true
+            fullScreenView.set(contentView: contentView)
+    }
+    
+    func removeFullScreenView() {
+        fullScreenView.backgroundColor = .clear
+        fullScreenView.isUserInteractionEnabled = false
+        fullScreenView.removeContentView()
+    }
+}
+
+
+class FullScreenView: UIView {
+    let containerView = UIView()
+    var isVisible: Bool = false
+    init() {
+        super.init(frame: CGRect.zero)
+        self.addSubview(self.containerView)
+        self.containerView.set(.fillSuperView(self))
+        self.setEdgeConstants()
+    }
+    
+    func set(contentView: UIView) {
+        isVisible = true
+        containerView.addSubview(contentView)
+        contentView.set(.fillSuperView(containerView))
+    }
+    
+    func removeContentView() {
+        isVisible = true
+        for subview in containerView.subviews {
+            subview.removeFromSuperview()
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func safeAreaInsetsDidChange() {
+        super.safeAreaInsetsDidChange()
+        setEdgeConstants()
+    }
+    
+    private func setEdgeConstants() {
+        self.containerView.get(.leading)?.constant = self.safeAreaInsets.left
+        self.containerView.get(.trailing)?.constant = -self.safeAreaInsets.right
+        self.containerView.get(.top)?.constant = self.safeAreaInsets.top
+        self.containerView.get(.bottom)?.constant = -self.safeAreaInsets.bottom
+    }
+    
+}
 
 
 

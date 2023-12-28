@@ -96,6 +96,10 @@ extension AdaptableUI {
        }
     }
     
+    func applyConstraintAsPerOrientation(onPortait:()->Void = {}, onLandscape:()->Void = {}) {
+        applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape(), onPortait: onPortait, onLandscape: onLandscape)
+    }
+    
     func isLandscape(size: CGSize) -> Bool {
         return size.width > size.height
     }

@@ -36,7 +36,7 @@ public class DyteTextField: BaseAtomView {
     let borderRadiusType: BorderRadiusToken.RadiusType = AppTheme.shared.cornerRadiusTypeNameTextField ?? .rounded
     let borderWidhtType: BorderWidthToken.Width = AppTheme.shared.borderSizeWidthTypeTextField ?? .thin
 
-    let borderColor = DesignLibrary.shared.color.brand.shade600
+    var borderColor = DesignLibrary.shared.color.brand.shade600.cgColor
     let backGroundColor: UIColor
     let textFieldTextColorToken = DesignLibrary.shared.color.textColor.onBackground.shade600
     
@@ -73,8 +73,11 @@ public class DyteTextField: BaseAtomView {
            }
     }
     
-    init(textFieldBackgroundColorToken: UIColor = DesignLibrary.shared.color.background.shade900) {
+    init(textFieldBackgroundColorToken: UIColor = DesignLibrary.shared.color.background.shade900,
+         borderColor: CGColor = DesignLibrary.shared.color.brand.shade600.cgColor
+    ) {
         backGroundColor = textFieldBackgroundColorToken
+        self.borderColor = borderColor
         super.init(frame: .zero)
         createSubViews()
 
@@ -96,7 +99,7 @@ public class DyteTextField: BaseAtomView {
                                                                                    radius: borderRadiusType)
         textField.layer.borderWidth = DesignLibrary.shared.borderSize.getWidth(size: .one,
                                                                                width: borderWidhtType)
-        textField.layer.borderColor = borderColor.cgColor
+        textField.layer.borderColor = borderColor
         textField.backgroundColor = backGroundColor
         textField.textColor = textFieldTextColorToken
         lblHeader.isHidden = lblHeader.text?.isEmpty ?? true

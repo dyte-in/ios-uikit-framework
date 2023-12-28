@@ -63,8 +63,10 @@ class ParticipantTableViewCell: BaseTableViewCell {
                       .top(baseView, 0.0, .greaterThanOrEqual))
         buttonStackView.set(.after(nameLabel, tokenSpace.space2, .greaterThanOrEqual),
                             .centerY(profileImageView),
-                            .trailing(baseView),
-                            .top(baseView, 0.0, .greaterThanOrEqual))
+                            .trailing(baseView, 10),
+                            .top(baseView, 0.0, .greaterThanOrEqual)
+        )
+                    
     }
 }
 

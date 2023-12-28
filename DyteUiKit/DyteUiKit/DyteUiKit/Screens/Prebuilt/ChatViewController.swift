@@ -137,7 +137,10 @@ class ChatViewController: BaseViewController, UITableViewDelegate, UITableViewDa
         messageTextView.textStorage.delegate = self
         messageTextView.font = UIFont.boldSystemFont(ofSize: 14)
         messageTextView.isScrollEnabled = false
-        messageTextView.backgroundColor = .black
+        messageTextView.backgroundColor = DesignLibrary.shared.color.background.shade900
+        let borderRadiusType: BorderRadiusToken.RadiusType = AppTheme.shared.cornerRadiusTypeNameTextField ?? .rounded
+        messageTextView.layer.cornerRadius = DesignLibrary.shared.borderRadius.getRadius(size: .one,
+                                                                                         radius: borderRadiusType)
         messageTextView.clipsToBounds = true
         messageTextView.delegate = self
         messageTextView.textColor = .black

@@ -13,7 +13,7 @@ open class DyteNavigationBar:UIView {
     private var previousButtonClick: ((DyteControlBarButton)->Void)?
     private let tokenTextColorToken = DesignLibrary.shared.color.textColor
     private let tokenSpace = DesignLibrary.shared.space
-    let backgroundColorValue = DesignLibrary.shared.color.background.shade700
+    let backgroundColorValue = DesignLibrary.shared.color.background.shade900
 
     public let title: DyteText = {
         return UIUTility.createLabel()

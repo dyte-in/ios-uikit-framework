@@ -87,7 +87,6 @@ class AutoSizingTextView: UIView {
     func createPlaceholderLabel(text: String) -> UILabel {
        let placeholderLabel = UILabel()
            placeholderLabel.text = text
-           placeholderLabel.font = .italicSystemFont(ofSize: (textView.font?.pointSize)!)
            placeholderLabel.sizeToFit()
         placeholderLabel.textColor = textColor
         return placeholderLabel
@@ -111,7 +110,7 @@ extension AutoSizingTextView: UITextViewDelegate {
 class AutoSizingTitleTextView: BaseMoluculeView {
     let gapBetweenTitleAndTextView:CGFloat = 8
         
-    let lblHeader: DyteText = { return UIUTility.createLabel(text: "", alignment: .left) }()
+    let lblHeader: DyteText = { return UIUTility.createLabel(text: "", alignment: .left, weight: UIFont.Weight.bold) }()
     let textView: AutoSizingTextView
     let lblError: DyteText = { return UIUTility.createLabel(text: "" , alignment: .left) }()
 
@@ -153,6 +152,8 @@ class AddOptions: BaseMoluculeView {
     
     let lblErrorColor = DesignLibrary.shared.color.status.danger
     let textFieldBackgroundColorToken = DesignLibrary.shared.color.background.shade700
+    let textFieldBorderColorToken =
+        DesignLibrary.shared.color.background.shade700
     
     let stackView: UIStackView
     
@@ -279,7 +280,7 @@ class AddOptions: BaseMoluculeView {
     
     private func addTextField(heading: String?, text: String, needRemoveButton: Bool) -> TextFieldBaseView {
         let baseView = UIView()
-        let textField = DyteTextField(textFieldBackgroundColorToken: textFieldBackgroundColorToken)
+        let textField = DyteTextField(textFieldBackgroundColorToken: textFieldBackgroundColorToken, borderColor: textFieldBorderColorToken.cgColor)
         textField.errorLabelValidation = { [weak self] (text: String?, textField: DyteTextField) in
             guard let self = self else {return}
             if let text = text, text.count >= 1 {
@@ -414,7 +415,7 @@ enum SelectionType {
 class ListSelectionView<Model: SelectionModel>: UIView {
     let spaceToken = DesignLibrary.shared.space
     let models: [Model]
-    let titleLabel: DyteText = {return UIUTility.createLabel(alignment: .left)}()
+    let titleLabel: DyteText = {return UIUTility.createLabel(alignment: .left, weight: UIFont.Weight.bold)}()
     let selectionType : SelectionType
     
     private let stackView = UIUTility.createStackView(axis: .vertical, spacing: 4)
@@ -507,7 +508,7 @@ class CreatePollView: UIView {
     
     let lblHeader: DyteText = {
         let label = UIUTility.createLabel(text: "Create Poll", alignment: .left)
-        label.font = UIFont.systemFont(ofSize: 20)
+        label.font = UIFont.systemFont(ofSize: 20, weight: UIFont.Weight.bold)
         return label
     }()
     
@@ -585,7 +586,7 @@ class CreatePollView: UIView {
                                 .below(lblHeader, verticalSpacingBetweenElemements))
         addOptionView.set(.sameLeadingTrailing(view),
                           .below(askQuestionTextView, verticalSpacingBetweenElemements))
-        permissionSelectionView.set(.below(addOptionView, verticalSpacingBetweenElemements),
+        permissionSelectionView.set(.below(addOptionView, verticalSpacingBetweenElemements*2),
                           .sameLeadingTrailing(view))
         btnPublish.set(.bottom(view),
                        .trailing(view),

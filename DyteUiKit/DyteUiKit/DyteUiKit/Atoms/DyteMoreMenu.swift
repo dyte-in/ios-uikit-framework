@@ -151,8 +151,8 @@ class BottomSheet: UIView {
     let selfTag = 89373
     private let baseStackView = UIUTility.createStackView(axis: .vertical, spacing: 0)
     let borderRadiusType: BorderRadiusToken.RadiusType = AppTheme.shared.cornerRadiusTypeNameTextField ?? .rounded
-    let backgroundColorValue = DesignLibrary.shared.color.background.shade800
-    let backgroundColorValueForLineSeparator = DesignLibrary.shared.color.background.shade700
+    let backgroundColorValue = DesignLibrary.shared.color.background.shade900
+    let backgroundColorValueForLineSeparator = DesignLibrary.shared.color.background.shade800
     let tokenSpace = DesignLibrary.shared.space
     var options = [UIView]()
     public var onHide: ((BottomSheet)->Void)?

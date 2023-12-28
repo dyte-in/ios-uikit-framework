@@ -23,7 +23,7 @@ public class DyteControlBarAppearanceModel : DyteControlBarAppearance {
 
     public required init(designLibrary: DyteDesignTokens = DesignLibrary.shared) {
         self.desingLibrary = designLibrary
-        backgroundColor = desingLibrary.color.background.shade700
+        backgroundColor = desingLibrary.color.background.shade900
     }
 
     public var backgroundColor: BackgroundColorToken.Shade

@@ -10,10 +10,20 @@ import UIKit
 
 struct UIUTility {
     
-    static func createLabel(text: String? = nil, alignment: NSTextAlignment = .center) -> DyteText {
+    static func createLabel(text: String? = nil, alignment: NSTextAlignment = .center, weight: UIFont.Weight? = nil) -> DyteText {
         let label = DyteText()
         label.textAlignment = alignment
         label.text = text
+        if weight != nil {
+            if let currentFont = label.font {
+        
+                let newFontDescriptor = currentFont.fontDescriptor.addingAttributes([
+                    .traits: [UIFontDescriptor.TraitKey.weight: weight]
+                ])
+                label.font = UIFont(descriptor: newFontDescriptor, size: currentFont.pointSize)
+            }
+        }
+
         return label
     }
     
