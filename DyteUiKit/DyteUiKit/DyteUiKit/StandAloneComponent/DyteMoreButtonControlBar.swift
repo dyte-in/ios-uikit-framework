@@ -22,6 +22,11 @@ open class  DyteMoreButtonControlBar: DyteControlBarButton {
         super.init(image: DyteImage(image: ImageProvider.image(named: "icon_more_tabbar")), title: "More")
         self.addTarget(self, action: #selector(onClick(button:)), for: .touchUpInside)
         self.accessibilityIdentifier = "TabBar_More_Button"
+        NotificationCenter.default.addObserver(self, selector: #selector(newChatArrived(notification:)), name: Notification.Name("Notify_NewChatArrived"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(newPollArrived(notification:)), name: Notification.Name("Notify_NewPollArrived"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(participantUpdate(notification:)), name: Notification.Name("Notify_ParticipantListUpdate"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(recordingUpdate(notification:)), name: Notification.Name("Notify_RecordingUpdate"), object: nil)
+
     }
     
     required public init?(coder: NSCoder) {
@@ -36,6 +41,12 @@ open class  DyteMoreButtonControlBar: DyteControlBarButton {
     
     
     private func createMoreMenu(shown onView: UIView) {
+                     
+        self.bottomSheet = DyteMoreMenuBottomSheet(menus: getMenu(), meeting: self.meeting, presentingViewController: self.presentingViewController, meetingViewModel: self.viewModel)
+        self.bottomSheet.show()
+    }
+    
+    private func getMenu() -> [MenuType] {
         var menus = [MenuType]()
         
         if meeting.localUser.permissions.host.canMuteAudio {
@@ -66,15 +77,10 @@ open class  DyteMoreButtonControlBar: DyteControlBarButton {
         
         let pollPermission = permissions.polls
         if pollPermission.canCreate || pollPermission.canView || pollPermission.canVote {
-            let count = self.meeting.polls.polls.count
+            let count = Shared.data.getUnviewPollCount(totalPolls:self.meeting.polls.polls.count)
             menus.append(.poll(notificationMessage: count > 0 ? "\(count)" : ""))
         }
-        var message = ""
-        let pending = self.meeting.getPendingParticipantCount()
        
-        if pending > 0 {
-            message = "\(pending)"
-        }
         
         let mediaPermission = self.meeting.localUser.permissions.media
         if mediaPermission.canPublishAudio || mediaPermission.canPublishVideo {
@@ -83,14 +89,38 @@ open class  DyteMoreButtonControlBar: DyteControlBarButton {
         
         let chatPermission = self.meeting.localUser.permissions.chat
         if chatPermission.canSendFiles || chatPermission.canSendText {
-            let chatCount = self.meeting.chat.messages.count
+            let chatCount = Shared.data.getUnreadChatCount(totalMessage: self.meeting.chat.messages.count)
             menus.append(.chat(notificationMessage: chatCount > 0 ? "\(chatCount)" : ""))
         }
         
+        var message = ""
+        let pending = self.meeting.getPendingParticipantCount()
+       
+        if pending > 0 {
+            message = "\(pending)"
+        }
         menus.append(contentsOf: [.particpants(notificationMessage: message), .cancel])
-               
-        self.bottomSheet = DyteMoreMenuBottomSheet(menus: menus, meeting: self.meeting, presentingViewController: self.presentingViewController, meetingViewModel: self.viewModel)
-        self.bottomSheet.show()
+        return menus
+    }
+    
+    @objc
+    func newChatArrived(notification: NSNotification) {
+        self.bottomSheet?.reload(features: getMenu())
+    }
+    
+    @objc
+    func newPollArrived(notification: NSNotification) {
+        self.bottomSheet?.reload(features: getMenu())
+    }
+    
+    @objc
+    func recordingUpdate(notification: NSNotification) {
+        self.bottomSheet?.reload(features: getMenu())
+    }
+    
+    @objc
+    func participantUpdate(notification: NSNotification) {
+        self.bottomSheet?.reload(features: getMenu())
     }
     
     func hideBottomSheet() {

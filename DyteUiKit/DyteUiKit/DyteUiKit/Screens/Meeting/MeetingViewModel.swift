@@ -17,6 +17,9 @@ protocol MeetingViewModelDelegate: AnyObject {
     func pinnedChanged(participant: DyteMeetingParticipant)
     func activeSpeakerRemoved()
     func pinnedParticipantRemoved(participant: DyteMeetingParticipant)
+    func participantJoined(participant: DyteMeetingParticipant)
+    func participantLeft(participant: DyteMeetingParticipant)
+    func newPollAdded(createdBy: String)
 }
 extension MeetingViewModelDelegate {
     func refreshMeetingGrid() {
@@ -25,7 +28,7 @@ extension MeetingViewModelDelegate {
 }
 
 enum DyteNotificationType {
-    case Chat
+    case Chat(message: String)
     case Poll
     case Joined
     case Leave
@@ -275,6 +278,8 @@ public final class MeetingViewModel {
         dyteMobileClient.addParticipantEventsListener(participantEventsListener: self)
         dyteMobileClient.addPluginEventsListener(pluginEventsListener: self)
         dyteMobileClient.addChatEventsListener(chatEventsListener: self)
+        self.dyteMobileClient.addPollEventsListener(pollEventsListener: self)
+
     }
     
     func clean() {
@@ -282,7 +287,22 @@ public final class MeetingViewModel {
         dyteMobileClient.removeParticipantEventsListener(participantEventsListener: self)
         dyteMobileClient.removePluginEventsListener(pluginEventsListener: self)
         dyteMobileClient.removeChatEventsListener(chatEventsListener: self)
+        self.dyteMobileClient.removePollEventsListener(pollEventsListener: self)
+
     }
+    
+}
+
+extension MeetingViewModel: DytePollEventsListener {
+    public func onNewPoll(poll: DytePollMessage) {
+        delegate?.newPollAdded(createdBy: poll.createdBy)
+        notificationDelegate?.didReceiveNotification(type: .Poll)
+    }
+    
+    public func onPollUpdates(pollMessages: [DytePollMessage]) {
+        
+    }
+    
     
 }
 
@@ -374,6 +394,8 @@ extension MeetingViewModel: DyteParticipantEventsListener {
         if isDebugModeOn {
             print("Debug DyteUIKit | onParticipantLeave Participant Id \(participant.userId)")
         }
+        delegate?.participantLeft(participant: participant)
+        notificationDelegate?.didReceiveNotification(type: .Leave)
     }
     
     public func onActiveParticipantsChanged(active: [DyteJoinedMeetingParticipant]) {
@@ -397,7 +419,7 @@ extension MeetingViewModel: DyteParticipantEventsListener {
     }
     
     public func onParticipantJoin(participant: DyteJoinedMeetingParticipant) {
-
+        delegate?.participantJoined(participant: participant)
         notificationDelegate?.didReceiveNotification(type: .Joined)
         if isDebugModeOn {
             print("Debug DyteUIKit | Delegate onParticipantJoin \(participant.audioEnabled) \(participant.name) totalCount \(self.dyteMobileClient.participants.joined) participants")
@@ -440,7 +462,17 @@ extension MeetingViewModel: DyteChatEventsListener {
     
     public func onNewChatMessage(message: DyteChatMessage) {
         if message.userId != dyteMobileClient.localUser.userId {
-            notificationDelegate?.didReceiveNotification(type: .Chat)
+            var chat = ""
+            if  let textMessage = message as? DyteTextMessage {
+                chat = "\(textMessage.displayName): \(textMessage.message)"
+            }else {
+                if message.type == DyteMessageType.image {
+                    chat = "\(message.displayName): Send you an Image"
+                } else if message.type == DyteMessageType.file {
+                    chat = "\(message.displayName): Send you an File"
+                }
+            }
+            notificationDelegate?.didReceiveNotification(type: .Chat(message:chat))
         }
     }
 }

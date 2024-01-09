@@ -156,10 +156,8 @@ class BottomSheet: UIView {
     let tokenSpace = DesignLibrary.shared.space
     var options = [UIView]()
     public var onHide: ((BottomSheet)->Void)?
-    private let title: String?
     
-    init(title: String? = nil, features: [some BottomSheetModelProtocol]) {
-        self.title = title
+    init() {
         super.init(frame: .zero)
         self.addSubview(baseStackView)
         baseStackView.layer.cornerRadius = DesignLibrary.shared.borderRadius.getRadius(size: .one,
@@ -171,6 +169,14 @@ class BottomSheet: UIView {
         baseStackView.backgroundColor = backgroundColorValue
         baseStackView.layoutMargins = UIEdgeInsets(top: 0, left: tokenSpace.space4, bottom: 0, right: 0)
         baseStackView.isLayoutMarginsRelativeArrangement = true
+        self.tag = selfTag
+    }
+    
+    func reload(title: String? = nil, features: [some BottomSheetModelProtocol]) {
+        for view in baseStackView.arrangedSubviews {
+            baseStackView.removeFully(view: view)
+        }
+
         if let title = title, title.count > 0 {
             baseStackView.addArrangedSubview(self.getTitleView(title: title))
         }
@@ -184,7 +190,6 @@ class BottomSheet: UIView {
             views.append(button.baseView)
         }
         self.options = views
-        self.tag = selfTag
     }
     
     
@@ -323,12 +328,35 @@ public class DyteMoreMenu: UIView {
     
     var bottomSheet: BottomSheet!
     let selfTag = 89372
-    
+    private var features: [MenuType]
     private var onSelect: (MenuType) -> ()
-    
+    private var title:String? = nil
     public  init(title:String? = nil, features: [MenuType] , onSelect: @escaping (MenuType) -> ()) {
         self.onSelect = onSelect
+        self.title = title
+        self.features = features
         super.init(frame: .zero)
+        bottomSheet = BottomSheet()
+        bottomSheet.onHide = {[weak self] bottomSheet in
+            guard let self = self else {return}
+            self.hideSheet()
+        }
+        reload(title: title, features: features)
+        self.tag = selfTag
+    }
+    
+    func reload(title:String? = nil, features: [MenuType]) {
+        self.features = features
+        var model = getModel(features: features)
+        bottomSheet.reload(title: title, features: model)
+        for i in 0..<features.count {
+            let menu = features[i]
+            //Setting accessIdentifier for Maestro Testing
+            bottomSheet.options[i].accessibilityIdentifier = menu.getAccessIndentifier()
+        }
+    }
+    
+    private func getModel(features: [MenuType]) -> [BottomSheetModel] {
         var model = [BottomSheetModel]()
         for feature in features {
             switch feature {
@@ -462,19 +490,8 @@ public class DyteMoreMenu: UIView {
                 }))
             }
         }
-        bottomSheet = BottomSheet(title: title, features: model)
-        for i in 0..<features.count {
-            let menu = features[i]
-            //Setting accessIdentifier for Maestro Testing
-            bottomSheet.options[i].accessibilityIdentifier = menu.getAccessIndentifier()
-        }
-        bottomSheet.onHide = {[weak self] bottomSheet in
-            guard let self = self else {return}
-            self.hideSheet()
-        }
-        self.tag = selfTag
+        return model
     }
-    
     
     public func show(on view: UIView) {
         view.viewWithTag(selfTag)?.removeFromSuperview()

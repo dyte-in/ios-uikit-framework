@@ -548,21 +548,30 @@ extension SetupViewController {
             
             if success {
                 let mobileClient = self.viewModel.dyteMobileClient
-               
+                Shared.data.delegate?.meetingScreenWillShow()
                 if mobileClient.meta.meetingType == DyteMeetingType.groupCall {
                     let controller = MeetingViewController(dyteMobileClient: mobileClient, completion: self.completion)
                     controller.modalPresentationStyle = .fullScreen
-                    self.present(controller, animated: true)
+                    self.present(controller, animated: true) {
+                        Shared.data.delegate?.meetingScreenDidShow()
+                    }
                     notificationDelegate?.didReceiveNotification(type: .Joined)
-                } else if mobileClient.meta.meetingType == DyteMeetingType.livestream {
+                    
+                }
+                else if mobileClient.meta.meetingType == DyteMeetingType.livestream {
                     let controller = LivestreamViewController(dyteMobileClient: mobileClient, completion: self.completion)
                     controller.modalPresentationStyle = .fullScreen
-                    self.present(controller, animated: true)
+                    self.present(controller, animated: true){
+                        Shared.data.delegate?.meetingScreenDidShow()
+                    }
                     notificationDelegate?.didReceiveNotification(type: .Joined)
-                } else if mobileClient.meta.meetingType == DyteMeetingType.webinar {
+                }
+                else if mobileClient.meta.meetingType == DyteMeetingType.webinar {
                     let controller = WebinarViewController(dyteMobileClient: mobileClient, completion: self.completion)
                     controller.modalPresentationStyle = .fullScreen
-                    self.present(controller, animated: true)
+                    self.present(controller, animated: true){
+                        Shared.data.delegate?.meetingScreenDidShow()
+                    }
                     notificationDelegate?.didReceiveNotification(type: .Joined)
                 }
             }

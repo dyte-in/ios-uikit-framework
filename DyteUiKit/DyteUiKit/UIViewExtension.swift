@@ -59,23 +59,23 @@ extension UIView {
     }
     
     
-    func showToast(toastMessage: String, duration: CGFloat, uiBlocker: Bool = true) {
+    func showToast(toastMessage: String, duration: CGFloat, uiBlocker: Bool = true, showInBottom: Bool = false, bottomSpace: CGFloat = 0) {
         DispatchQueue.main.async {
             // View to blur bg and stopping user interaction
             self.removeToast()
-            let toastView = self.createToastView(toastMessage: toastMessage, duration: duration, uiBlocker: uiBlocker)
+            let toastView = self.createToastView(toastMessage: toastMessage, duration: duration, uiBlocker: uiBlocker, bottom: showInBottom, bottomSpace: bottomSpace)
             toastView.tag = toastTag
             self.addSubview(toastView)
         }
     }
     
-    private func createToastView(toastMessage: String, duration: CGFloat, uiBlocker: Bool) -> UIView {
+    private func createToastView(toastMessage: String, duration: CGFloat, uiBlocker: Bool, bottom: Bool, bottomSpace: CGFloat) -> UIView {
         let bgView = UIView(frame: self.frame)
         bgView.backgroundColor = UIColor(red: CGFloat(255.0/255.0), green: CGFloat(255.0/255.0), blue: CGFloat(255.0/255.0), alpha: CGFloat(0.1))
         
         // Label For showing toast text
         let lblMessage = UILabel()
-        lblMessage.numberOfLines = 0
+        lblMessage.numberOfLines = 2
         lblMessage.lineBreakMode = .byWordWrapping
         lblMessage.textColor = .white
         lblMessage.backgroundColor =  UIColor(red: CGFloat(0.0), green: CGFloat(0.0), blue: CGFloat(0.0), alpha: CGFloat(0.8))
@@ -92,7 +92,12 @@ extension UIView {
         // UILabel can return a size larger than the max size when the number of lines is 1
         expectedSizeTitle = CGSize(width: maxSizeTitle.width.getMinimum(value2: expectedSizeTitle.width), height: maxSizeTitle.height.getMinimum(value2: expectedSizeTitle.height))
         DispatchQueue.main.async {
-            lblMessage.frame = CGRect(x:((self.bounds.size.width)/2) - ((expectedSizeTitle.width+16)/2), y: (self.bounds.size.height/2) - ((expectedSizeTitle.height+16)/2), width: expectedSizeTitle.width+16, height: expectedSizeTitle.height+16)
+            if bottom == true {
+                lblMessage.frame = CGRect(x:((self.bounds.size.width)/2) - ((expectedSizeTitle.width+16)/2), y: (self.bounds.size.height - (expectedSizeTitle.height+16+bottomSpace)), width: expectedSizeTitle.width+16, height: expectedSizeTitle.height+16)
+            }else {
+                lblMessage.frame = CGRect(x:((self.bounds.size.width)/2) - ((expectedSizeTitle.width+16)/2), y: (self.bounds.size.height/2) - ((expectedSizeTitle.height+16)/2), width: expectedSizeTitle.width+16, height: expectedSizeTitle.height+16)
+            }
+            
         }
         
         lblMessage.layer.cornerRadius = 8

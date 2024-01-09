@@ -7,6 +7,7 @@
 
 import DyteiOSCore
 import UIKit
+import AVFAudio
 
 struct Animations {
     static let gridViewAnimationDuration = 0.3
@@ -176,6 +177,7 @@ public class MeetingViewController: BaseViewController {
         UIApplication.shared.isIdleTimerDisabled = true
         self.view.accessibilityIdentifier = "Meeting_Base_View"
         self.view.backgroundColor = DesignLibrary.shared.color.background.shade1000
+        setAudioSession()
         createTopbar()
         createBottomBar()
         createSubView()
@@ -207,6 +209,7 @@ public class MeetingViewController: BaseViewController {
             self.selectPluginOrScreenShare(id: id)
         })
         
+       
         if self.dyteMobileClient.localUser.permissions.waitingRoom.canAcceptRequests {
             self.viewModel.waitlistEventListner.participantJoinedCompletion = {[weak self] participant in
                 guard let self = self else {return}
@@ -217,6 +220,8 @@ public class MeetingViewController: BaseViewController {
                 }else {
                     self.moreButtonBottomBar?.notificationBadge.isHidden = false
                 }
+                NotificationCenter.default.post(name: Notification.Name("Notify_ParticipantListUpdate"), object: nil, userInfo: nil)
+
             }
             
             self.viewModel.waitlistEventListner.participantRequestRejectCompletion = {[weak self] participant in
@@ -235,6 +240,11 @@ public class MeetingViewController: BaseViewController {
                     self.moreButtonBottomBar?.notificationBadge.isHidden = false
                 }
             }
+            self.viewModel.waitlistEventListner.participantRemovedCompletion = {[weak self] participant in
+                guard let self = self else {return}
+
+                NotificationCenter.default.post(name: Notification.Name("Notify_ParticipantListUpdate"), object: nil, userInfo: nil)
+            }
         }
         addWaitingRoom { [weak self] in
             guard let self = self else {return}
@@ -249,6 +259,18 @@ public class MeetingViewController: BaseViewController {
             guard let self = self else {return}
             self.refreshMeetingGrid()
             self.refreshPluginsView()
+            self.setAudioSession()
+        }
+    }
+    
+    private func setAudioSession() {
+        do {
+            try AVAudioSession.sharedInstance().setActive(false)
+            try AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .voiceChat, options: [.allowBluetooth,.allowBluetoothA2DP])
+            try AVAudioSession.sharedInstance().setActive(true)
+        }
+        catch {
+            
         }
     }
     
@@ -593,6 +615,24 @@ private extension MeetingViewController {
 
 
 extension MeetingViewController : MeetingViewModelDelegate {
+   
+    func newPollAdded(createdBy: String) {
+        if Shared.data.notification.newPollArrived.showToast {
+            self.view.showToast(toastMessage: "New poll created by \(createdBy)", duration: 2.0, uiBlocker: false)
+        }
+    }
+    
+    func participantJoined(participant: DyteMeetingParticipant) {
+        if Shared.data.notification.participantJoined.showToast {
+            self.view.showToast(toastMessage: "\(participant.name) just joined", duration: 2.0, uiBlocker: false)
+        }
+    }
+    
+    func participantLeft(participant: DyteMeetingParticipant) {
+        if Shared.data.notification.participantLeft.showToast {
+            self.view.showToast(toastMessage: "\(participant.name) left", duration: 2.0, uiBlocker: false)
+        }
+    }
 
     
     func activeSpeakerChanged(participant: DyteMeetingParticipant) {
@@ -625,6 +665,8 @@ extension MeetingViewController : MeetingViewModelDelegate {
     
     func meetingRecording(start: Bool) {
         self.topBar.recordingView.meetingRecording(start: start)
+        NotificationCenter.default.post(name: Notification.Name("Notify_RecordingUpdate"), object: nil, userInfo: nil)
+
     }
     
     private func getScreenShareTabButton(participants: [ParticipantsShareControl]) -> [ScreenShareTabButton] {
@@ -843,12 +885,32 @@ extension MeetingViewController : MeetingViewModelDelegate {
 extension MeetingViewController: DyteNotificationDelegate {
     func didReceiveNotification(type: DyteNotificationType) {
         switch type {
-        case .Chat, .Poll:
+        case .Chat(let message):
+            if Shared.data.notification.newChatArrived.playSound == true {
+                viewModel.dyteNotification.playNotificationSound(type: type)
+            }
+            if Shared.data.notification.newChatArrived.showToast && message.isEmpty == false {
+                self.view.showToast(toastMessage: message, duration: 2.0, uiBlocker: false, showInBottom: true, bottomSpace: self.bottomBar.bounds.height)
+            }
+            NotificationCenter.default.post(name: Notification.Name("Notify_NewChatArrived"), object: nil, userInfo: nil)
             self.moreButtonBottomBar?.notificationBadge.isHidden = false
-            viewModel.dyteNotification.playNotificationSound(type: .Chat)
-        case .Joined, .Leave:
-            viewModel.dyteNotification.playNotificationSound(type: .Joined)
+            
+        case .Poll:
+                NotificationCenter.default.post(name: Notification.Name("Notify_NewPollArrived"), object: nil, userInfo: nil)
+                if Shared.data.notification.newPollArrived.playSound == true {
+                     viewModel.dyteNotification.playNotificationSound(type: .Poll)
+                }
+            self.moreButtonBottomBar?.notificationBadge.isHidden = false
+        case .Joined:
+            if Shared.data.notification.participantJoined.playSound == true {
+                 viewModel.dyteNotification.playNotificationSound(type: .Joined)
+            }
+        case .Leave:
+            if Shared.data.notification.participantLeft.playSound == true {
+                 viewModel.dyteNotification.playNotificationSound(type: .Leave)
+            }
         }
+
     }
     
     func clearChatNotification() {

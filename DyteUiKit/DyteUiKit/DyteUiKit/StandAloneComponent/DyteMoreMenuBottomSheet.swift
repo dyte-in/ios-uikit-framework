@@ -19,8 +19,11 @@ public class DyteMoreMenuBottomSheet {
        self.viewModel = meetingViewModel
        self.presentingViewController = presentingViewController
        self.meeting = meeting
+      
        create(menus: menus)
     }
+    
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -59,6 +62,10 @@ public class DyteMoreMenuBottomSheet {
          moreMenu.accessibilityIdentifier = "MoreMenu_BottomSheet"
     }
     
+    func reload(title:String? = nil, features: [MenuType]) {
+        moreMenu.reload(title:title, features: features)
+    }
+    
     func show() {
         moreMenu.show(on: self.presentingViewController.view)
     }
@@ -72,6 +79,7 @@ private extension DyteMoreMenuBottomSheet {
     private func launchPollsScreen() {
         let controller = ShowPollsViewController(dyteMobileClient: self.meeting)
         self.presentingViewController.present(controller, animated: true)
+        Shared.data.setPollViewCount(totalMessage: self.meeting.polls.polls.count)
     }
     
     private func launchSettingScreen() {
@@ -104,7 +112,6 @@ private extension DyteMoreMenuBottomSheet {
         if self.meeting.meta.meetingType == DyteMeetingType.webinar {
             controller = WebinarParticipantViewController(viewModel: WebinarParticipantViewControllerModel(mobileClient: self.meeting))
         }
-        
         controller.view.backgroundColor = self.presentingViewController.view.backgroundColor
         controller.modalPresentationStyle = .fullScreen
         self.presentingViewController.present(controller, animated: true)
@@ -115,6 +122,7 @@ private extension DyteMoreMenuBottomSheet {
         let navigationController = UINavigationController(rootViewController: controller)
         navigationController.modalPresentationStyle = .fullScreen
         self.presentingViewController.present(navigationController, animated: true, completion: nil)
+        Shared.data.setChatReadCount(totalMessage: self.meeting.chat.messages.count)
     }
    
     private func onPluginTapped() {

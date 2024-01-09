@@ -8,29 +8,23 @@
 import Foundation
 import AVFAudio
 
-class DyteNotification {
+public class DyteNotification {
+
     var audioPlayer: AVAudioPlayer?
     
     func playNotificationSound(type: DyteNotificationType) {
         var resource = ""
         switch type {
-        case .Chat, .Poll:
+        case .Chat(_), .Poll:
             resource = "notification_message"
         case .Joined, .Leave:
             resource = "notification_join"
         }
         
-        do {
             let frameworkBundle =  Bundle(for: DyteNotification.self)
             guard let url = frameworkBundle.url(forResource: resource, withExtension: "mp3") else {return}
-            
-            let audioData = try Data(contentsOf: url)
-            audioPlayer = try AVAudioPlayer(data: audioData)
-            audioPlayer?.prepareToPlay()
-            audioPlayer?.play()
-        } catch {
-            print("Error: \(error.localizedDescription)")
-            return
-        }
+            var mySound: SystemSoundID = 0
+            AudioServicesCreateSystemSoundID(url as CFURL, &mySound)
+            AudioServicesPlaySystemSound(mySound)
     }
 }

@@ -250,6 +250,7 @@ class  DyteStageActionButtonControlBar: DyteControlBarButton {
             alert.btnBottom2.addTarget(self, action: #selector(alertCancelButton(button:)), for: .touchUpInside)
             alert.set(.fillSuperView(baseController.view))
             self.alert = alert
+            Shared.data.delegate?.webinarJoinStagePopupDidShow()
         }
        
     }
@@ -261,6 +262,7 @@ class  DyteStageActionButtonControlBar: DyteControlBarButton {
     
     @objc open func alertConfirmAndJoinClick(button: DyteJoinButton) {
         removeAlertView()
+        Shared.data.delegate?.webinarJoinStagePopupDidHide(click: .confirmAndJoin)
         self.selfListner.joinWebinarStage { success in
             
         }
@@ -268,6 +270,8 @@ class  DyteStageActionButtonControlBar: DyteControlBarButton {
     
     @objc open func alertCancelButton(button: DyteJoinButton) {
         removeAlertView()
+        Shared.data.delegate?.webinarJoinStagePopupDidHide(click: .cancel)
+
         self.stateMachine.handleEvent(event: .onFail)
     }
     

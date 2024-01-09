@@ -516,6 +516,24 @@ extension LivestreamViewController {
 }
 
 extension LivestreamViewController : MeetingViewModelDelegate {
+    func newPollAdded(createdBy: String) {
+        if Shared.data.notification.newPollArrived.showToast {
+            self.view.showToast(toastMessage: "New poll created by \(createdBy)", duration: 2.0, uiBlocker: false)
+        }
+    }
+    
+    func participantJoined(participant: DyteMeetingParticipant) {
+        if Shared.data.notification.participantJoined.showToast {
+            self.view.showToast(toastMessage: "\(participant.name) just joined", duration: 2.0, uiBlocker: false)
+        }
+    }
+    
+    func participantLeft(participant: DyteMeetingParticipant) {
+        if Shared.data.notification.participantLeft.showToast {
+            self.view.showToast(toastMessage: "\(participant.name) left", duration: 2.0, uiBlocker: false)
+        }
+    }
+    
     func showWaitingRoom(status: WaitListStatus) {
         
     }
@@ -836,7 +854,7 @@ extension LivestreamViewController: DyteNotificationDelegate {
         switch type {
         case .Chat, .Poll:
             self.moreButtonBottomBar?.notificationBadge.isHidden = false
-            viewModel.dyteNotification.playNotificationSound(type: .Chat)
+            viewModel.dyteNotification.playNotificationSound(type: .Poll)
         case .Joined, .Leave:
             viewModel.dyteNotification.playNotificationSound(type: .Joined)
         }

@@ -9,20 +9,56 @@ import Foundation
 import DyteiOSCore
 import UIKit
 
-public class DyteUiKit {
+public class DyteNotificationConfig {
+    public class DyteNotification {
+        public var playSound = true
+        public var showToast = true
         
+        init(playSound: Bool = true, showToast: Bool = true) {
+            self.playSound = playSound
+            self.showToast = showToast
+        }
+    }
+    public var participantJoined = DyteNotification()
+    public var participantLeft = DyteNotification()
+    public var newChatArrived = DyteNotification()
+    public var newPollArrived = DyteNotification()
+    
+}
+
+
+public protocol DyteUiKitLifeCycle {
+    func webinarJoinStagePopupDidShow()
+    func webinarJoinStagePopupDidHide(click buttonType: DyteUiKit.WebinarAlertButtonType)
+    func meetingScreenDidShow()
+    func meetingScreenWillShow()
+
+}
+
+public class DyteUiKit {
+    public enum WebinarAlertButtonType {
+        case confirmAndJoin
+        case cancel
+    }
+    
     private  let configurationV2: DyteMeetingInfoV2?
     private  let configuration: DyteMeetingInfo?
     public let mobileClient: DyteMobileClient
     public let appTheme: AppTheme
     public let designLibrary: DesignLibrary
-    
+    public let notification = DyteNotificationConfig()
+
 #if DEBUG
    static let isDebugModeOn = false
 #else
    static let isDebugModeOn = false
 #endif
     
+    public  var delegate: DyteUiKitLifeCycle? {
+        didSet {
+            Shared.data.delegate = delegate
+        }
+    }
     public  init(meetingInfo: DyteMeetingInfo) {
         mobileClient = DyteiOSClientBuilder().build()
         designLibrary = DesignLibrary.shared
@@ -40,6 +76,8 @@ public class DyteUiKit {
     }
     
     public func startMeeting(completion:@escaping()->Void) -> SetupViewController {
+        Shared.data.initialise()
+        Shared.data.notification = notification
         if let config = self.configuration {
             let controller =  SetupViewController(meetingInfo: config, mobileClient: self.mobileClient, completion: completion)
             return controller
