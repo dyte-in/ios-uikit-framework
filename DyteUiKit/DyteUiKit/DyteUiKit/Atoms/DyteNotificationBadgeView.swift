@@ -32,7 +32,8 @@ public class DyteNotificationBadgeView: UIView {
         clipsToBounds = true
         addSubview(label)
         label.set(.sameTopBottom(self,2),
-                  .sameLeadingTrailing(self,3))
+                  .sameLeadingTrailing(self,3),
+                  .width(10,.greaterThanOrEqual))
     }
     
     public func setBadgeCount(_ count: Int) {

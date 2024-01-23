@@ -112,20 +112,28 @@ public class DyteParticipantTileView: DytePeerView {
         }
     }
     private func updateNameTagViewHeightConstraint() {
-        let width = bounds.height * 0.1
-        let maxHeightWidth:CGFloat = 40
+        var width = bounds.height * 0.1
+        let maxHeightWidth:CGFloat = 36
         let minHeightWidth:CGFloat = 20
-  
+        let maxFontSize = 16.0
+        let minFontSize = 10.0
+        let factorWidth = maxHeightWidth - minHeightWidth
+        let fontFactor = maxFontSize - minFontSize
+        
+        
         if width > maxHeightWidth ||  width < minHeightWidth {
             if width > maxHeightWidth {
-                nameTag.get(.height)?.constant = maxHeightWidth
+                width = maxHeightWidth
             }
             if width < minHeightWidth {
-                nameTag.get(.height)?.constant = minHeightWidth
+                width = minHeightWidth
             }
-        }else {
-            nameTag.get(.height)?.constant = width
         }
+        nameTag.get(.height)?.constant = width
+        let newWidth = width - minHeightWidth
+        let fontSize = newWidth*(fontFactor/factorWidth) + minFontSize
+        nameTag.lblTitle.font = UIFont.systemFont(ofSize: fontSize)
+
     }
 
    

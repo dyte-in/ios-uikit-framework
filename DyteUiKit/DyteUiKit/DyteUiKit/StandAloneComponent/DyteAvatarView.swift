@@ -10,7 +10,11 @@ import DyteiOSCore
 
 
 public class DyteAvatarView: UIView {
-    private let profileImageView: BaseImageView = DyteUIUTility.createImageView(image: nil)
+    private let profileImageView: BaseImageView = {
+        let imageView = DyteUIUTility.createImageView(image: nil)
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
     private let initialName: DyteText = DyteUIUTility.createLabel(text: "")
     private var participant: DyteMeetingParticipant
     
@@ -34,13 +38,13 @@ public class DyteAvatarView: UIView {
         self.addSubview(initialName)
         self.backgroundColor = dyteSharedTokenColor.brand.shade500
         self.addSubview(profileImageView)
-        profileImageView.set(.fillSuperView(initialName))
+        profileImageView.set(.fillSuperView(self))
         initialName.adjustsFontSizeToFitWidth = true
         initialName.font = UIFont.boldSystemFont(ofSize: 30)
         initialName.set(.sameLeadingTrailing(self, dyteSharedTokenSpace.space1),
                         .centerY(self),
                         .height(0))
-        initialName.layer.masksToBounds = true
+        self.layer.masksToBounds = true
     }
     
     
