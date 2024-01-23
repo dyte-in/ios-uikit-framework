@@ -12,7 +12,6 @@ import UIKit
 protocol MeetingViewModelDelegate: AnyObject {
     func refreshMeetingGrid(forRotation: Bool)
     func refreshPluginsView()
-    func meetingRecording(start: Bool)
     func activeSpeakerChanged(participant: DyteMeetingParticipant)
     func pinnedChanged(participant: DyteMeetingParticipant)
     func activeSpeakerRemoved()
@@ -27,23 +26,23 @@ extension MeetingViewModelDelegate {
     }
 }
 
-enum DyteNotificationType {
+public enum DyteNotificationType {
     case Chat(message: String)
     case Poll
     case Joined
     case Leave
 }
 
-protocol DyteNotificationDelegate: AnyObject {
+public protocol DyteNotificationDelegate: AnyObject {
     func didReceiveNotification(type: DyteNotificationType)
     func clearChatNotification()
 }
 
-class GridCellViewModel {
-    var nameInitials: String
-    var fullName: String
-    var participant: DyteJoinedMeetingParticipant
-    init(participant: DyteJoinedMeetingParticipant) {
+public class GridCellViewModel {
+    public var nameInitials: String
+    public var fullName: String
+    public var participant: DyteJoinedMeetingParticipant
+    public  init(participant: DyteJoinedMeetingParticipant) {
         self.participant = participant
         self.fullName = participant.name
         let formatter = PersonNameComponentsFormatter()
@@ -62,12 +61,13 @@ class GridCellViewModel {
 }
 
 
-class ScreenShareViewModel {
-    var arrScreenShareParticipants = [ParticipantsShareControl]()
+public class ScreenShareViewModel {
+    public var arrScreenShareParticipants = [ParticipantsShareControl]()
     private var dict = [String : Int]()
-    var selectedIndex: (UInt, String)?
-    
-    func refresh(plugins: [DytePlugin], selectedPlugin: DytePlugin?) {
+    public var selectedIndex: (UInt, String)?
+    public init() {
+    }
+    public func refresh(plugins: [DytePlugin], selectedPlugin: DytePlugin?) {
         for plugin in plugins {
             if dict[plugin.id] == nil {
                 arrScreenShareParticipants.append(PluginButtonModel(plugin: plugin))
@@ -77,7 +77,7 @@ class ScreenShareViewModel {
         selectPlugin(oldId: selectedPlugin?.id)
     }
     
-    func removed(plugin: DytePlugin) {
+    public func removed(plugin: DytePlugin) {
         removePlugin(id: plugin.id)
         selectPlugin(oldId: selectedIndex?.1)
     }
@@ -91,7 +91,7 @@ class ScreenShareViewModel {
         }
     }
     
-    func refresh(participants: [DyteJoinedMeetingParticipant]) {
+    public func refresh(participants: [DyteJoinedMeetingParticipant]) {
         for participant in participants {
             if dict[participant.id] == nil {
                 arrScreenShareParticipants.append(ScreenShareModel(participant: participant))
@@ -152,28 +152,28 @@ class ScreenShareViewModel {
     }
 }
 
-protocol ParticipantsShareControl {
+public protocol ParticipantsShareControl {
     var image: String? {get}
     var name: String {get}
     var id: String {get}
 }
 
-protocol PluginsButtonModelProtocol: ParticipantsShareControl {
+public protocol PluginsButtonModelProtocol: ParticipantsShareControl {
     var plugin: DytePlugin {get}
 }
 
-protocol ScreenSharePluginsProtocol: ParticipantsShareControl {
+public protocol ScreenSharePluginsProtocol: ParticipantsShareControl {
     var participant: DyteJoinedMeetingParticipant {get}
 }
 
 
-class PluginButtonModel: PluginsButtonModelProtocol {
-    let image: String?
-    let name: String
-    let id: String
-    let plugin: DytePlugin
+public class PluginButtonModel: PluginsButtonModelProtocol {
+    public let image: String?
+    public let name: String
+    public let id: String
+    public let plugin: DytePlugin
     
-    init(plugin: DytePlugin) {
+    public init(plugin: DytePlugin) {
         self.plugin = plugin
         self.id = plugin.id
         self.image = plugin.picture
@@ -181,13 +181,13 @@ class PluginButtonModel: PluginsButtonModelProtocol {
     }
 }
 
-class ScreenShareModel : ScreenSharePluginsProtocol {
-    let image: String?
-    let name: String
-    let id: String
-    let nameInitials: String
-    let participant: DyteJoinedMeetingParticipant
-    init(participant: DyteJoinedMeetingParticipant) {
+public class ScreenShareModel : ScreenSharePluginsProtocol {
+    public let image: String?
+    public let name: String
+    public let id: String
+    public let nameInitials: String
+    public let participant: DyteJoinedMeetingParticipant
+    public init(participant: DyteJoinedMeetingParticipant) {
         self.participant = participant
         self.name = participant.name
         self.image = participant.picture
@@ -226,7 +226,7 @@ public final class MeetingViewModel {
     
     private let isDebugModeOn = DyteUiKit.isDebugModeOn
     
-    init(dyteMobileClient: DyteMobileClient) {
+    public init(dyteMobileClient: DyteMobileClient) {
         self.dyteMobileClient = dyteMobileClient
         self.waitlistEventListner = DyteWaitListParticipantUpdateEventListner(mobileClient: dyteMobileClient)
         self.dyteSelfListner = DyteEventSelfListner(mobileClient: dyteMobileClient)
@@ -240,18 +240,10 @@ public final class MeetingViewModel {
     }
     
     func trackOnGoingState() {
-     
-        if dyteMobileClient.recording.recordingState == .recording || dyteMobileClient.recording.recordingState == .starting {
-            self.delegate?.meetingRecording(start: true)
-        }else if dyteMobileClient.recording.recordingState == .stopping {
-            self.delegate?.meetingRecording(start: false)
-        }
         
         if let participant = dyteMobileClient.participants.pinned {
             self.delegate?.pinnedChanged(participant: participant)
         }
-        
-       
         
         if dyteMobileClient.plugins.active.count >= 1 {
             screenShareViewModel.refresh(plugins: self.dyteMobileClient.plugins.active, selectedPlugin: nil)
@@ -259,7 +251,6 @@ public final class MeetingViewModel {
         }
         
         //TODO: Do this onConnectedToMeetingRoom
-      
         
     }
     
@@ -277,18 +268,15 @@ public final class MeetingViewModel {
     func initialise() {
         dyteMobileClient.addParticipantEventsListener(participantEventsListener: self)
         dyteMobileClient.addPluginEventsListener(pluginEventsListener: self)
-        dyteMobileClient.addChatEventsListener(chatEventsListener: self)
         self.dyteMobileClient.addPollEventsListener(pollEventsListener: self)
 
     }
     
-    func clean() {
+    public func clean() {
         dyteSelfListner.clean()
         dyteMobileClient.removeParticipantEventsListener(participantEventsListener: self)
         dyteMobileClient.removePluginEventsListener(pluginEventsListener: self)
-        dyteMobileClient.removeChatEventsListener(chatEventsListener: self)
         self.dyteMobileClient.removePollEventsListener(pollEventsListener: self)
-
     }
     
 }
@@ -308,7 +296,7 @@ extension MeetingViewModel: DytePollEventsListener {
 
 extension MeetingViewModel {
     
-    func refreshActiveParticipants(pageItemCount: UInt = 0) {
+    public func refreshActiveParticipants(pageItemCount: UInt = 0) {
         //pageItemCount tell on first page how many tiles needs to be shown to user
         self.updateActiveGridParticipants(pageItemCount: pageItemCount)
         self.delegate?.refreshMeetingGrid()
@@ -452,29 +440,6 @@ extension MeetingViewModel: DyteParticipantEventsListener {
         
     }
     
-}
-
-
-extension MeetingViewModel: DyteChatEventsListener {
-    public  func onChatUpdates(messages: [DyteChatMessage]) {
-        self.chatDelegate?.refreshMessages()
-    }
-    
-    public func onNewChatMessage(message: DyteChatMessage) {
-        if message.userId != dyteMobileClient.localUser.userId {
-            var chat = ""
-            if  let textMessage = message as? DyteTextMessage {
-                chat = "\(textMessage.displayName): \(textMessage.message)"
-            }else {
-                if message.type == DyteMessageType.image {
-                    chat = "\(message.displayName): Send you an Image"
-                } else if message.type == DyteMessageType.file {
-                    chat = "\(message.displayName): Send you an File"
-                }
-            }
-            notificationDelegate?.didReceiveNotification(type: .Chat(message:chat))
-        }
-    }
 }
 
 extension MeetingViewModel: DytePluginEventsListener {

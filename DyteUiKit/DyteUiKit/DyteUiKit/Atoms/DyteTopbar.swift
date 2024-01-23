@@ -16,7 +16,7 @@ open class DyteNavigationBar:UIView {
     let backgroundColorValue = DesignLibrary.shared.color.background.shade900
 
     public let title: DyteText = {
-        return UIUTility.createLabel()
+        return DyteUIUTility.createLabel()
     }()
     
     public let leftButton: DyteControlBarButton = {

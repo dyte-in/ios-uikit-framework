@@ -7,9 +7,9 @@
 
 import DyteiOSCore
 
-class DyteEventSelfListner  {
+public class DyteEventSelfListner  {
     private static var currentInstance = 0
-    enum Reconnection {
+    public enum Reconnection {
         case start
         case success
         case failed
@@ -26,7 +26,7 @@ class DyteEventSelfListner  {
     private var selfWebinarLeaveStateCompletion:((Bool)->Void)?
     private var selfRequestToGetPermissionJoinedStateCompletion:((Bool)->Void)?
     private var selfCancelRequestToGetPermissionToJoinStageCompletion:((Bool)->Void)?
-    private var selfMeetingInitStateCompletion:((Bool)->Void)?
+    private var selfMeetingInitStateCompletion:((Bool, String?)->Void)?
     private var selfLeaveStateCompletion:((Bool)->Void)?
     private var selfRemovedStateCompletion:((Bool)->Void)?
     private var selfTabBarSyncStateCompletion:((String)->Void)?
@@ -36,7 +36,7 @@ class DyteEventSelfListner  {
     
     var dyteMobileClient: DyteMobileClient
     let identifier: String
-    init(mobileClient: DyteMobileClient, identifier: String = "Default") {
+    public init(mobileClient: DyteMobileClient, identifier: String = "Default") {
         self.identifier = identifier
         self.dyteMobileClient = mobileClient
         mobileClient.addMeetingRoomEventsListener(meetingRoomEventsListener: self)
@@ -45,7 +45,7 @@ class DyteEventSelfListner  {
         Self.currentInstance += 1
     }
     
-    func clean() {
+    public func clean() {
         dyteMobileClient.removeMeetingRoomEventsListener(meetingRoomEventsListener: self)
         dyteMobileClient.removeSelfEventsListener(selfEventsListener: self)
         dyteMobileClient.removeStageEventsListener(stageEventsListener: self)
@@ -54,7 +54,7 @@ class DyteEventSelfListner  {
     
     private let isDebugModeOn = DyteUiKit.isDebugModeOn
     
-    func toggleLocalAudio(completion: @escaping(_ isEnabled: Bool)->Void) {
+   public func toggleLocalAudio(completion: @escaping(_ isEnabled: Bool)->Void) {
         self.selfAudioStateCompletion = completion
         if self.dyteMobileClient.localUser.audioEnabled == true {
             try?self.dyteMobileClient.localUser.disableAudio()
@@ -83,7 +83,7 @@ class DyteEventSelfListner  {
         self.selfObserveReconnectionStateCompletion = update
     }
     
-    func toggleLocalVideo(completion: @escaping(_ isEnabled: Bool)->Void) {
+    public func toggleLocalVideo(completion: @escaping(_ isEnabled: Bool)->Void) {
         self.selfVideoStateCompletion = completion
         if self.dyteMobileClient.localUser.videoEnabled == true {
             try?self.dyteMobileClient.localUser.disableVideo()
@@ -120,12 +120,12 @@ class DyteEventSelfListner  {
         }
     }
     
-    func initMeetingV2(info: DyteMeetingInfoV2,completion:@escaping (_ success: Bool) -> Void) {
+    func initMeetingV2(info: DyteMeetingInfoV2,completion:@escaping (_ success: Bool, _ message: String?) -> Void) {
         self.selfMeetingInitStateCompletion = completion
         self.dyteMobileClient.doInit(dyteMeetingInfo_: info)
     }
         
-    func initMeetingV1(info: DyteMeetingInfo,completion:@escaping (_ success: Bool) -> Void) {
+    func initMeetingV1(info: DyteMeetingInfo,completion:@escaping (_ success: Bool, _ message: String?) -> Void) {
         self.selfMeetingInitStateCompletion = completion
         dyteMobileClient.doInit(dyteMeetingInfo: info)
     }
@@ -185,59 +185,59 @@ extension DyteEventSelfListner: DyteStageEventListener {
         
     }
 
-    func onParticipantRemovedFromStage(participant: DyteJoinedMeetingParticipant) {
+    public func onParticipantRemovedFromStage(participant: DyteJoinedMeetingParticipant) {
         
     }
     
-    func onAddedToStage() {
+    public func onAddedToStage() {
 
         self.selfWebinarJoinedStateCompletion?(true)
     }
     
-    func onPresentRequestAccepted(participant: DyteJoinedMeetingParticipant) {
+    public func onPresentRequestAccepted(participant: DyteJoinedMeetingParticipant) {
 
     }
     
-    func onPresentRequestAdded(participant: DyteJoinedMeetingParticipant) {
+    public func onPresentRequestAdded(participant: DyteJoinedMeetingParticipant) {
 
     }
     
-    func onPresentRequestClosed(participant: DyteJoinedMeetingParticipant) {
+    public func onPresentRequestClosed(participant: DyteJoinedMeetingParticipant) {
    
     }
     
-    func onPresentRequestReceived() {
+    public func onPresentRequestReceived() {
         //This is called when host allow me to join stage but its depends on user action whether he want to join or not.
         if let update = self.selfObserveRequestToJoinStage {
             update()
         }
     }
     
-    func onPresentRequestRejected(participant: DyteJoinedMeetingParticipant) {}
+    public func onPresentRequestRejected(participant: DyteJoinedMeetingParticipant) {}
     
-    func onPresentRequestWithdrawn(participant: DyteJoinedMeetingParticipant) {
+    public func onPresentRequestWithdrawn(participant: DyteJoinedMeetingParticipant) {
         if participant.id == self.dyteMobileClient.localUser.id {
             self.selfCancelRequestToGetPermissionToJoinStageCompletion?(true)
         }
     }
     
-    func onRemovedFromStage() {
+    public func onRemovedFromStage() {
         self.selfWebinarLeaveStateCompletion?(true)
     }
     
-    func onStageRequestsUpdated(accessRequests: [DyteJoinedMeetingParticipant]) {}
+    public func onStageRequestsUpdated(accessRequests: [DyteJoinedMeetingParticipant]) {}
 }
 
 extension DyteEventSelfListner: DyteSelfEventsListener {
-    func onRoomMessage(type: String, payload: [String : Any]) {
+    public func onRoomMessage(type: String, payload: [String : Any]) {
         
     }
     
-    func onVideoDeviceChanged(videoDevice: DyteVideoDevice) {
+    public func onVideoDeviceChanged(videoDevice: DyteVideoDevice) {
         
     }
     
-    func onStageStatusUpdated(stageStatus: StageStatus) {
+    public func onStageStatusUpdated(stageStatus: StageStatus) {
         if self.selfObserveWebinarStageStatus != nil {
             self.selfObserveWebinarStageStatus?(stageStatus)
         }
@@ -247,33 +247,33 @@ extension DyteEventSelfListner: DyteSelfEventsListener {
         
     }
     
-    func onUpdate(participant_ participant: DyteSelfParticipant) {
+    public func onUpdate(participant_ participant: DyteSelfParticipant) {
         
     }
     
-    func onAudioDevicesUpdated() {
+    public func onAudioDevicesUpdated() {
 
     }
 
-    func onAudioUpdate(audioEnabled: Bool) {
+    public  func onAudioUpdate(audioEnabled: Bool) {
         self.dyteMobileClient.localUser.audioEnabled
         self.selfAudioStateCompletion?(audioEnabled)
         self.selfObserveAudioStateCompletion?(audioEnabled)
     }
     
-    func onMeetingRoomJoinedWithoutCameraPermission() {
+    public func onMeetingRoomJoinedWithoutCameraPermission() {
         
     }
     
-    func onMeetingRoomJoinedWithoutMicPermission() {
+    public func onMeetingRoomJoinedWithoutMicPermission() {
         
     }
     
-    func onProximityChanged(isNear: Bool) {
+    public func onProximityChanged(isNear: Bool) {
         
     }
     
-    func onRemovedFromMeeting() {
+    public func onRemovedFromMeeting() {
         self.selfRemovedStateCompletion?(true)
     }
     
@@ -285,12 +285,12 @@ extension DyteEventSelfListner: DyteSelfEventsListener {
         
     }
     
-    func onVideoUpdate(videoEnabled: Bool) {
+    public func onVideoUpdate(videoEnabled: Bool) {
         self.selfVideoStateCompletion?(videoEnabled)
         self.selfObserveVideoStateCompletion?(videoEnabled)
     }
     
-    func onWaitListStatusUpdate(waitListStatus: WaitListStatus) {
+    public func onWaitListStatusUpdate(waitListStatus: WaitListStatus) {
         self.waitListStatusUpdate?(waitListStatus)
     }
     
@@ -316,23 +316,23 @@ extension DyteEventSelfListner: DyteSelfEventsListener {
 }
 
 extension  DyteEventSelfListner: DyteMeetingRoomEventsListener {
-    func onActiveTabUpdate(id: String, tabType: ActiveTabType) {
+    public func onActiveTabUpdate(id: String, tabType: ActiveTabType) {
         self.selfTabBarSyncStateCompletion?(id)
     }
 
-    func onConnectedToMeetingRoom() {
+    public func onConnectedToMeetingRoom() {
         
     }
     
-    func onConnectingToMeetingRoom() {
+    public func onConnectingToMeetingRoom() {
         
     }
     
-    func onDisconnectedFromMeetingRoom() {
+    public func onDisconnectedFromMeetingRoom() {
         
     }
     
-    func onMeetingRoomConnectionFailed() {
+    public func onMeetingRoomConnectionFailed() {
         
     }
     
@@ -344,14 +344,14 @@ extension  DyteEventSelfListner: DyteMeetingRoomEventsListener {
         
     }
     
-    func onMeetingRoomReconnectionFailed() {
+    public func onMeetingRoomReconnectionFailed() {
         if isDebugModeOn {
             print("Debug DyteUIKit | DyteEventSelfListner \(Self.currentInstance)  onMeetingRoomReconnectionFailed")
         }
         self.selfObserveReconnectionStateCompletion?(.failed)
     }
     
-    func onReconnectedToMeetingRoom() {
+    public func onReconnectedToMeetingRoom() {
         if isDebugModeOn {
             print("Debug DyteUIKit | DyteEventSelfListner \(Self.currentInstance)  onReconnectedToMeetingRoom")
         }
@@ -359,7 +359,7 @@ extension  DyteEventSelfListner: DyteMeetingRoomEventsListener {
         self.selfObserveReconnectionStateCompletion?(.success)
     }
     
-    func onReconnectingToMeetingRoom() {
+    public func onReconnectingToMeetingRoom() {
         if isDebugModeOn {
             print("Debug DyteUIKit | DyteEventSelfListner \(Self.currentInstance) onReconnectingToMeetingRoom")
         }
@@ -368,40 +368,40 @@ extension  DyteEventSelfListner: DyteMeetingRoomEventsListener {
     }
     
     
-    func onMeetingInitCompleted() {
-        self.selfMeetingInitStateCompletion?(true)
+    public func onMeetingInitCompleted() {
+        self.selfMeetingInitStateCompletion?(true, "")
     }
     
-    func onMeetingInitFailed(exception: KotlinException) {
-        self.selfMeetingInitStateCompletion?(false)
+    public  func onMeetingInitFailed(exception: KotlinException) {
+        self.selfMeetingInitStateCompletion?(false, exception.message)
     }
     
-    func onMeetingInitStarted() {
+    public func onMeetingInitStarted() {
         
     }
     
-    func onMeetingRoomDisconnected() {
+    public func onMeetingRoomDisconnected() {
         
     }
     
-    func onMeetingRoomJoinCompleted() {
+    public func onMeetingRoomJoinCompleted() {
 
     }
     
-    func onMeetingRoomJoinFailed(exception: KotlinException) {
+    public func onMeetingRoomJoinFailed(exception: KotlinException) {
     }
     
-    func onMeetingRoomJoinStarted() {
+    public func onMeetingRoomJoinStarted() {
         
     }
     
-    func onMeetingRoomLeaveCompleted() {
+    public func onMeetingRoomLeaveCompleted() {
         if let completion = self.selfLeaveStateCompletion {
             completion(true)
         }
     }
    
-    func onMeetingRoomLeaveStarted() {
+    public func onMeetingRoomLeaveStarted() {
         
     }
 }

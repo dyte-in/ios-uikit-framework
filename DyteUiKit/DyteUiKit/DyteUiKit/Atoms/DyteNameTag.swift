@@ -33,13 +33,13 @@ public class DyteNameTagAppearanceModel: DyteNameTagAppearance {
     public var subTitleFont: UIFont
     public var paddings: UIEdgeInsets
     public var desingLibrary: DyteDesignTokens
-
+    
     required public init(designLibrary: DyteDesignTokens = DesignLibrary.shared) {
         self.desingLibrary = designLibrary
         paddings = UIEdgeInsets(top: designLibrary.space.space1,
                                 left: designLibrary.space.space1,
                                 bottom: designLibrary.space.space1,
-                                right: designLibrary.space.space2)
+                                right: designLibrary.space.space1)
         backGroundColor = designLibrary.color.background.shade900
         titleTextColorToken = designLibrary.color.textColor.onBackground.shade1000
         subTitleTextColorToken = designLibrary.color.textColor.onBackground.shade600
@@ -56,10 +56,15 @@ public class DyteNameTag : BaseAtomView {
     }
     
     private let baseStackView: BaseStackView = {
-       return UIUTility.createStackView(axis: .horizontal, spacing: 4.0)
+        return DyteUIUTility.createStackView(axis: .horizontal, spacing: 4.0)
     }()
     
-    public var lblTitle: DyteText = { return UIUTility.createLabel(text: "") }()
+    public var lblTitle: DyteText = {
+        let lbl = DyteUIUTility.createLabel(text: "", alignment: .left)
+        lbl.minimumScaleFactor = 0.8
+        return lbl
+    }()
+    
     public var lblSubTitle: DyteText?
     
     public var imageView: BaseImageView = {
@@ -67,10 +72,21 @@ public class DyteNameTag : BaseAtomView {
         return imageView
     }()
     
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        updateImageViewConstraints()
+    }
+    
+    private func updateImageViewConstraints() {
+        let width: CGFloat = self.frame.height - (appearance.paddings.top + appearance.paddings.bottom)
+        imageView.get(.width)?.constant = width
+        imageView.get(.height)?.constant = width
+    }
+    
     private var lableStackView: BaseStackView = {
-        let stackView = UIUTility.createStackView(axis: .vertical,distribution: .fillEqually, spacing: 4.0)
+        let stackView = DyteUIUTility.createStackView(axis: .vertical,distribution: .fillEqually, spacing: 4.0)
         return stackView
-        }()
+    }()
     
     private let image: DyteImage
     private let titleText: String
@@ -107,33 +123,39 @@ extension DyteNameTag {
 
 extension DyteNameTag {
     
-   private func createSubViews() {
+    private func createSubViews() {
         self.addSubview(baseStackView)
         let wrappedImageView = imageView.wrapperView()
-        imageView.set(.fillSuperView(wrappedImageView, 4))
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.set(
+            .width(0),
+            .height(0),
+            .fillSuperView(wrappedImageView))
         baseStackView.addArrangedSubview(wrappedImageView)
         baseStackView.addArrangedSubview(lableStackView)
         lableStackView.addArrangedSubview(lblTitle)
         lblTitle.text = titleText
         imageView.image = image.image
         if self.subtitle.isEmpty == false  {
-            lblSubTitle = UIUTility.createLabel(text: subtitle)
+            lblSubTitle = DyteUIUTility.createLabel(text: subtitle)
+            lblSubTitle?.adjustsFontSizeToFitWidth = true
             lableStackView.addArrangedSubview(lblSubTitle!)
         }
         addConstraints()
         applyDesign(appearance: appearance)
     }
     
-  public func applyDesign(appearance: DyteNameTagAppearance) {
+    public func applyDesign(appearance: DyteNameTagAppearance) {
         self.appearance = appearance
         self.backgroundColor = appearance.backGroundColor
         self.layer.cornerRadius = appearance.desingLibrary.borderRadius.getRadius(size: .one, radius: appearance.cornerRadius)
         self.lblTitle.textColor = appearance.titleTextColorToken
         self.lblSubTitle?.textColor = appearance.subTitleTextColorToken
-    } 
+    }
     
     private func addConstraints() {
         baseStackView.set(.fillSuperView(self, appearance.paddings.top, left: appearance.paddings.left, bottom: appearance.paddings.left, right: appearance.paddings.right))
     }
 }
-     
+

@@ -59,12 +59,12 @@ class DyteRecordingView: UIView {
     }
     
     func createSubViews() {
-        let stackView = UIUTility.createStackView(axis: .horizontal, spacing: 4)
+        let stackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: 4)
         var imageView = BaseImageView()
         if let image = self.image {
-            imageView = UIUTility.createImageView(image: image)
+            imageView = DyteUIUTility.createImageView(image: image)
         }
-        let title = UIUTility.createLabel(text: self.title)
+        let title = DyteUIUTility.createLabel(text: self.title)
         title.font = appearance.font
         title.textColor = appearance.textColor
         stackView.addArrangedSubviews(imageView,title)
@@ -99,10 +99,12 @@ extension  DyteRecordingView: DyteRecordingEventsListener {
     
     public  func onMeetingRecordingEnded() {
         self.meetingRecording(start: false)
+        NotificationCenter.default.post(name: Notification.Name("Notify_RecordingUpdate"), object: nil, userInfo: nil)
     }
     
     public  func onMeetingRecordingStarted() {
         self.meetingRecording(start: true)
+        NotificationCenter.default.post(name: Notification.Name("Notify_RecordingUpdate"), object: nil, userInfo: nil)
     }
     
     public  func onMeetingRecordingStateUpdated(state: DyteRecordingState) {

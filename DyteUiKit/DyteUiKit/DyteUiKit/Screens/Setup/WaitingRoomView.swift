@@ -8,16 +8,16 @@
 import UIKit
 import DyteiOSCore
 
-class WaitingRoomView: UIView {
+public class WaitingRoomView: UIView {
     
     var titleLabel: DyteText = {
-        let label = UIUTility.createLabel()
+        let label = DyteUIUTility.createLabel()
         label.numberOfLines = 0
         return label
     }()
     
-    var button: DyteButton = {
-        return UIUTility.createButton(text: "close")
+    public var button: DyteButton = {
+        return DyteUIUTility.createButton(text: "close")
     }()
     
     private let automaticClose: Bool
@@ -25,7 +25,7 @@ class WaitingRoomView: UIView {
     private let automaticCloseTime = 2
     private let onComplete: ()->Void
    
-    init(automaticClose: Bool, onCompletion:@escaping()->Void) {
+    public  init(automaticClose: Bool, onCompletion:@escaping()->Void) {
          self.automaticClose = automaticClose
          self.onComplete = onCompletion
          super.init(frame: .zero)
@@ -36,7 +36,7 @@ class WaitingRoomView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func createSubviews() {
+   private func createSubviews() {
         let baseView = UIView()
         if automaticClose {
             baseView.addSubview(titleLabel)
@@ -46,9 +46,9 @@ class WaitingRoomView: UIView {
                 self.onComplete()
             }
         }else {
-            let buttonBaseView = UIUTility.wrapped(view: button)
+            let buttonBaseView = DyteUIUTility.wrapped(view: button)
             button.set(.centerX(buttonBaseView),
-                       .leading(buttonBaseView, tokenSpace.space2, .greaterThanOrEqual),
+                       .leading(buttonBaseView, dyteSharedTokenSpace.space2, .greaterThanOrEqual),
                        .sameTopBottom(buttonBaseView))
             baseView.addSubViews(titleLabel,buttonBaseView)
             titleLabel.set(.sameLeadingTrailing(baseView),
@@ -59,8 +59,8 @@ class WaitingRoomView: UIView {
         
         self.addSubview(baseView)
         baseView.set(.centerView(self),
-                          .leading(self, tokenSpace.space4, .greaterThanOrEqual),
-                          .top(self, tokenSpace.space4, .greaterThanOrEqual))
+                          .leading(self, dyteSharedTokenSpace.space4, .greaterThanOrEqual),
+                          .top(self, dyteSharedTokenSpace.space4, .greaterThanOrEqual))
         self.button.addTarget(self, action: #selector(clickBottom(button:)), for: .touchUpInside)
     }
     
@@ -69,23 +69,23 @@ class WaitingRoomView: UIView {
         self.onComplete()
     }
     
-    func show(status: WaitListStatus) {
+    public func show(status: WaitListStatus) {
         self.button.isHidden = true
         if status == WaitListStatus.waiting {
             self.titleLabel.text = "You are in the waiting room, the host will let you in soon."
-            self.titleLabel.textColor = tokenColor.textColor.onBackground.shade1000
+            self.titleLabel.textColor = dyteSharedTokenColor.textColor.onBackground.shade1000
 
         }else if status == WaitListStatus.accepted {
             self.removeFromSuperview()
         }else if status == WaitListStatus.rejected {
             self.titleLabel.text = "You were removed from the meeting."
-            self.titleLabel.textColor = tokenColor.status.danger
+            self.titleLabel.textColor = dyteSharedTokenColor.status.danger
             self.button.isHidden = false
 
         }
     }
     
-    func show(message: String) {
+    public func show(message: String) {
         self.titleLabel.text = message
     }
 }

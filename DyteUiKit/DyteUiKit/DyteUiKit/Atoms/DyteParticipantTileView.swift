@@ -20,14 +20,14 @@ public class DyteParticipantTileView: DytePeerView {
         return view
     }()
     private let tokenColor = DesignLibrary.shared.color
-    var nameTag: DyteMeetingNameTag!
+    public var nameTag: DyteMeetingNameTag!
     let spaceToken = DesignLibrary.shared.space
     public let viewModel: VideoPeerViewModel
     private let isDebugModeOn = DyteUiKit.isDebugModeOn
     
     private lazy var pinView : UIView = {
         let baseView = UIView()
-        let imageView = UIUTility.createImageView(image: DyteImage(image:ImageProvider.image(named: "icon_pin")))
+        let imageView = DyteUIUTility.createImageView(image: DyteImage(image:ImageProvider.image(named: "icon_pin")))
         baseView.addSubview(imageView)
         imageView.set(.fillSuperView(baseView, spaceToken.space1))
         return baseView
@@ -45,44 +45,112 @@ public class DyteParticipantTileView: DytePeerView {
         registerUpdates()
     }
     
-    convenience init(mobileClient: DyteMobileClient, participant: DyteJoinedMeetingParticipant, isForLocalUser: Bool, showScreenShareVideoView: Bool = false) {
+    public convenience init(mobileClient: DyteMobileClient, participant: DyteJoinedMeetingParticipant, isForLocalUser: Bool, showScreenShareVideoView: Bool = false) {
         self.init(viewModel: VideoPeerViewModel(mobileClient: mobileClient, participant: participant, showSelfPreviewVideo: isForLocalUser, showScreenShareVideoView: showScreenShareVideoView))
     }
     
-    func pinView(show: Bool) {
-        let heightWidth:CGFloat = 30
+    public func pinView(show: Bool) {
+       
+
         if pinView.superview == nil {
             self.addSubview(pinView)
             pinView.backgroundColor = tokenColor.background.shade900
-            pinView.set(.leading(self, tokenSpace.space3),
-                        .top(self, tokenSpace.space3),
-                        .height(heightWidth),
-                        .width(heightWidth))
-            pinView.layer.cornerRadius = tokenSpace.space1
+            pinView.set(.leading(self, dyteSharedTokenSpace.space3),
+                        .top(self, dyteSharedTokenSpace.space3),
+                        .height(0),
+                        .width(0))
+            pinView.layer.cornerRadius = dyteSharedTokenSpace.space1
+            
         }
         pinView.isHidden = !show
     }
     
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        self.updatePinViewHeightConstraint()
+        self.updateAvatorViewHeightConstraint()
+        self.updateNameTagViewHeightConstraint()
+    }
+   
+    private func updateAvatorViewHeightConstraint() {
+        let width = bounds.width * 0.4
+        let maxHeightWidth:CGFloat = 100
+        let minHeightWidth:CGFloat = 40
+  
+        if width > maxHeightWidth ||  width < minHeightWidth {
+            if width > maxHeightWidth {
+                dyteAvatarView.get(.width)?.constant = maxHeightWidth
+                dyteAvatarView.get(.height)?.constant = maxHeightWidth
+            }
+            if width < minHeightWidth {
+                dyteAvatarView.get(.width)?.constant = minHeightWidth
+                dyteAvatarView.get(.height)?.constant = minHeightWidth
+            }
+        }else {
+            dyteAvatarView.get(.width)?.constant = width
+            dyteAvatarView.get(.height)?.constant = width
+        }
+    }
+    
+    private func updatePinViewHeightConstraint() {
+        let width = bounds.width * 0.2
+        let maxHeightWidth:CGFloat = 30
+        let minHeightWidth:CGFloat = 15
+  
+        if width > maxHeightWidth ||  width < minHeightWidth {
+            if width > maxHeightWidth {
+                pinView.get(.width)?.constant = maxHeightWidth
+                pinView.get(.height)?.constant = maxHeightWidth
+            }
+            if width < minHeightWidth {
+                pinView.get(.width)?.constant = minHeightWidth
+                pinView.get(.height)?.constant = minHeightWidth
+            }
+        }else {
+            pinView.get(.width)?.constant = width
+            pinView.get(.height)?.constant = width
+        }
+    }
+    private func updateNameTagViewHeightConstraint() {
+        let width = bounds.height * 0.1
+        let maxHeightWidth:CGFloat = 40
+        let minHeightWidth:CGFloat = 20
+  
+        if width > maxHeightWidth ||  width < minHeightWidth {
+            if width > maxHeightWidth {
+                nameTag.get(.height)?.constant = maxHeightWidth
+            }
+            if width < minHeightWidth {
+                nameTag.get(.height)?.constant = minHeightWidth
+            }
+        }else {
+            nameTag.get(.height)?.constant = width
+        }
+    }
+
+   
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    
-    
-private func initialiseView() {
+
+  private func initialiseView() {
     if self.isDebugModeOn {
         print("Debug DyteUIKit | New DyteParticipantTileView \(self) tile is created to load a video")
     }    
     self.addSubview(dyteAvatarView)
-    dyteAvatarView.set(.centerView(self))
-    
+    dyteAvatarView.set(.centerView(self),
+                       .height(0),
+                       .width(0))
     self.addSubview(videoView)
     videoView.set(.fillSuperView(self))
     nameTag = DyteMeetingNameTag(meeting: self.viewModel.mobileClient, participant: self.viewModel.participant)
     self.addSubview(nameTag)
+      
     nameTag.set(.leading(self, spaceToken.space3),
                 .bottom(self, spaceToken.space3),
-                .trailing(self, spaceToken.space3, .greaterThanOrEqual))
+                .trailing(self, spaceToken.space3, .greaterThanOrEqual),
+                .height(0))
 }
     
    private func updateView() {
@@ -137,4 +205,21 @@ private func initialiseView() {
         }
     }
     
+}
+
+public class DyteParticipantTileContainerView : UIView {
+    public var tileView: DyteParticipantTileView!
+    
+    public func prepareForReuse() {
+        tileView?.removeFromSuperview()
+        tileView = nil
+    }
+    
+    public func setParticipant(meeting: DyteMobileClient, participant: DyteJoinedMeetingParticipant) {
+        prepareForReuse()
+        let tile = DyteParticipantTileView(mobileClient: meeting, participant: participant, isForLocalUser: false, showScreenShareVideoView: false)
+        self.tileView = tile
+        self.addSubview(tile)
+        tile.set(.fillSuperView(self))
+    }
 }

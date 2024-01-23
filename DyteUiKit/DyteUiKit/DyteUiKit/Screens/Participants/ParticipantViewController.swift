@@ -9,11 +9,12 @@ import DyteiOSCore
 import UIKit
 
 
-let tokenColor = DesignLibrary.shared.color
+public let dyteSharedTokenColor = DesignLibrary.shared.color
 
-let tokenSpace = DesignLibrary.shared.space
+public let dyteSharedTokenSpace = DesignLibrary.shared.space
 
-class ParticipantViewController: BaseViewController, SetTopbar, KeyboardObservable {
+class ParticipantViewController: DyteBaseViewController, SetTopbar, KeyboardObservable {
+    var shouldShowTopBar: Bool = true
     let tableView = UITableView()
     let viewModel: ParticipantViewControllerModelProtocol
     var keyboardObserver: KeyboardObserver?
@@ -64,7 +65,7 @@ class ParticipantViewController: BaseViewController, SetTopbar, KeyboardObservab
     
     func setUpTableView() {
         self.view.addSubview(tableView)
-        tableView.backgroundColor = tokenColor.background.shade1000
+        tableView.backgroundColor = dyteSharedTokenColor.background.shade1000
         tableView.set(.sameLeadingTrailing(self.view),
                       .below(topBar),
                       .bottom(self.view))

@@ -104,14 +104,14 @@ extension DyteParticipantUpdateEventListner: DyteParticipantUpdateListener {
 
 public class DyteWaitListParticipantUpdateEventListner  {
     
-    var participantJoinedCompletion:((DyteMeetingParticipant)->Void)?
-    var participantRemovedCompletion:((DyteMeetingParticipant)->Void)?
-    var participantRequestAcceptedCompletion:((DyteMeetingParticipant)->Void)?
-    var participantRequestRejectCompletion:((DyteMeetingParticipant)->Void)?
+    public var participantJoinedCompletion:((DyteMeetingParticipant)->Void)?
+    public var participantRemovedCompletion:((DyteMeetingParticipant)->Void)?
+    public var participantRequestAcceptedCompletion:((DyteMeetingParticipant)->Void)?
+    public var participantRequestRejectCompletion:((DyteMeetingParticipant)->Void)?
     
     let mobileClient: DyteMobileClient
     
-    init(mobileClient: DyteMobileClient) {
+    public init(mobileClient: DyteMobileClient) {
         self.mobileClient = mobileClient
         self.mobileClient.addWaitlistEventsListener(waitlistEventsListener: self)
     }

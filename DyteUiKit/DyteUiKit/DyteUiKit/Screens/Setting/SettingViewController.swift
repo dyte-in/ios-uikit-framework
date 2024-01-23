@@ -8,9 +8,10 @@
 import DyteiOSCore
 import UIKit
 
-class SettingViewController: BaseViewController, SetTopbar {
+public class SettingViewController: DyteBaseViewController, SetTopbar {
+    public  var shouldShowTopBar: Bool = true
     
-    var topBar: DyteNavigationBar = DyteNavigationBar(title: "Settings")
+    public var topBar: DyteNavigationBar = DyteNavigationBar(title: "Settings")
     let baseView: BaseView = BaseView()
     let selfPeerView: DyteParticipantTileView
 
@@ -25,7 +26,8 @@ class SettingViewController: BaseViewController, SetTopbar {
     
     let backgroundColor = DesignLibrary.shared.color.background.shade1000
     private let completion: (()->Void)?
-    init(nameTag: String, dyteMobileClient: DyteMobileClient, completion:(()->Void)? = nil) {
+    
+   public init(nameTag: String, dyteMobileClient: DyteMobileClient, completion:(()->Void)? = nil) {
         nameTagTitle = nameTag
         self.completion = completion
         selfPeerView = DyteParticipantTileView(viewModel: VideoPeerViewModel(mobileClient: dyteMobileClient, participant: dyteMobileClient.localUser, showSelfPreviewVideo: true))
@@ -42,7 +44,7 @@ class SettingViewController: BaseViewController, SetTopbar {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
          super.viewDidLoad()
          createSubviews()
          self.setTag(name: nameTagTitle)
@@ -54,8 +56,9 @@ class SettingViewController: BaseViewController, SetTopbar {
          self.view.backgroundColor =  backgroundColor
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
     }
     
 //    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -111,9 +114,9 @@ class SettingViewController: BaseViewController, SetTopbar {
     }
     
     private  func createDropdownStackView() -> BaseStackView {
-        let stackView = UIUTility.createStackView(axis: .vertical, spacing: spaceToken.space4)
+        let stackView = DyteUIUTility.createStackView(axis: .vertical, spacing: spaceToken.space4)
         createDropDowns()
-        if dyteMobileClient.localUser.permissions.media.canPublishVideo && dyteMobileClient.localUser.videoEnabled {
+        if meeting.localUser.permissions.media.canPublishVideo && meeting.localUser.videoEnabled {
             stackView.addArrangedSubviews(cameraDropDown)
         }
         
@@ -128,22 +131,22 @@ class SettingViewController: BaseViewController, SetTopbar {
     }
     
     private func createCameraDropDown() -> DyteDropdown<CameraPickerCellModel> {
-        let currentCameraSelectedDevice: VideoDeviceType? = dyteMobileClient.localUser.getSelectedVideoDevice()?.type
+        let currentCameraSelectedDevice: VideoDeviceType? = meeting.localUser.getSelectedVideoDevice()?.type
         
         let cameraDropDown =  DyteDropdown(rightImage: DyteImage(image: ImageProvider.image(named: "icon_angle_arrow_down")), heading: "Camera", options: [CameraPickerCellModel(name: "Front camera", deviceType: .front) ,CameraPickerCellModel(name: "Back camera", deviceType: .rear)], selectedIndex: currentCameraSelectedDevice == .front ? 0 : 1) { [weak self] dropDown in
             guard let self = self else {return}
-            let currentSelectedDevice: VideoDeviceType? = self.dyteMobileClient.localUser.getSelectedVideoDevice()?.type
+            let currentSelectedDevice: VideoDeviceType? = self.meeting.localUser.getSelectedVideoDevice()?.type
            
             let picker = DyteCustomPickerView.show(model: DytePickerModel(title: dropDown.heading, selectedIndex: currentSelectedDevice == .front ? 0 : 1, cells: dropDown.options), on: self.view)
             picker.onSelectRow = { [weak self] picker, index  in
                 guard let self = self else {return}
                 let currentSelectedDevice = picker.options[index]
-                self.toggleCamera(mobileClient: self.dyteMobileClient, selectDevice: currentSelectedDevice.deviceType)
+                self.toggleCamera(mobileClient: self.meeting, selectDevice: currentSelectedDevice.deviceType)
                 dropDown.selectOption(index: currentSelectedDevice.deviceType == .front ? 0 : 1)
             }
             picker.onCancelButtonClick = { [weak self] _ in
                 guard let self = self else {return}
-                self.toggleCamera(mobileClient: self.dyteMobileClient, selectDevice: currentSelectedDevice)
+                self.toggleCamera(mobileClient: self.meeting, selectDevice: currentSelectedDevice)
                 dropDown.selectOption(index: currentSelectedDevice == .front ? 0 : 1)
             }
         }
@@ -151,8 +154,8 @@ class SettingViewController: BaseViewController, SetTopbar {
     }
     
     private func createAudioDropDown() -> DyteDropdown<DyteAudioPickerCellModel> {
-        let currentAudioSelectedDevice: AudioDeviceType? = self.dyteMobileClient.localUser.getSelectedAudioDevice()?.type
-        let audioDevices = self.dyteMobileClient.localUser.getAudioDevices()
+        let currentAudioSelectedDevice: AudioDeviceType? = self.meeting.localUser.getSelectedAudioDevice()?.type
+        let audioDevices = self.meeting.localUser.getAudioDevices()
         var deviceModels = [DyteAudioPickerCellModel]()
         for device in audioDevices {
             deviceModels.append(DyteAudioPickerCellModel(name: device.type.displayName, deviceType: device.type))
@@ -172,14 +175,14 @@ class SettingViewController: BaseViewController, SetTopbar {
         let speakerDropDown =  DyteDropdown(rightImage: DyteImage(image: ImageProvider.image(named: "icon_angle_arrow_down")), heading: "Speaker", options: deviceModels, selectedIndex: UInt(selectedIndex(current: currentAudioSelectedDevice))) { [weak self] dropDown in
             guard let self = self else {return}
 
-            let currentSelectedDevice = self.dyteMobileClient.localUser.getSelectedAudioDevice()?.type
+            let currentSelectedDevice = self.meeting.localUser.getSelectedAudioDevice()?.type
             let picker = DyteCustomPickerView.show(model: DytePickerModel(title: dropDown.heading, selectedIndex: UInt(selectedIndex(current: currentSelectedDevice)), cells: dropDown.options), on: self.view)
             picker.onSelectRow = { [weak self] picker, index  in
                 guard let self = self else {return}
                 let currentSelectedDevice = picker.options[index]
                 for device in audioDevices {
                     if currentSelectedDevice.deviceType == device.type {
-                        self.dyteMobileClient.localUser.setAudioDevice(dyteAndroidDevice: device)
+                        self.meeting.localUser.setAudioDevice(dyteAndroidDevice: device)
                         dropDown.selectOption(index: UInt(index))
                     }
                 }

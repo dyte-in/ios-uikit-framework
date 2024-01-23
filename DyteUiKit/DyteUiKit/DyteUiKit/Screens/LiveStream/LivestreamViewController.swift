@@ -12,7 +12,7 @@ import AmazonIVSPlayer
 public class LivestreamViewController: UIViewController {
     
     private var gridView: GridView<DyteParticipantTileContainerView>!
-    let pluginView: PluginView
+    let pluginView: DytePluginView
     private var playerView: IVSPlayerView!
     private let gridBaseView = UIView()
     private var controlsView = UIView()
@@ -51,7 +51,7 @@ public class LivestreamViewController: UIViewController {
     }
     
     init(dyteMobileClient: DyteMobileClient, completion:@escaping()->Void) {
-        self.pluginView = PluginView(videoPeerViewModel:VideoPeerViewModel(mobileClient: dyteMobileClient, participant: dyteMobileClient.localUser, showSelfPreviewVideo: false))
+        self.pluginView = DytePluginView(videoPeerViewModel:VideoPeerViewModel(mobileClient: dyteMobileClient, participant: dyteMobileClient.localUser, showSelfPreviewVideo: false))
         self.completion = completion
         self.viewModel = MeetingViewModel(dyteMobileClient: dyteMobileClient)
         self.dyteMobileClient = dyteMobileClient
@@ -325,7 +325,7 @@ private extension LivestreamViewController {
     }
     
     private func setInitialsConfiguration() {
-        self.topBar.nextPreviousButtonView.isHidden = true
+       // self.topBar.setInitialConfiguration()
     }
     
     
@@ -433,7 +433,7 @@ extension LivestreamViewController {
     }
     
     private func onChatTapped() {
-        let controller = ChatViewController(dyteMobileClient: self.dyteMobileClient, meetingViewModel: self.viewModel)
+        let controller = ChatViewController(dyteMobileClient: self.dyteMobileClient)
         let navigationController = UINavigationController(rootViewController: controller)
         navigationController.modalPresentationStyle = .fullScreen
         present(navigationController, animated: true, completion: nil)
@@ -563,15 +563,6 @@ extension LivestreamViewController : MeetingViewModelDelegate {
             self.pluginView.showPinnedView(participant: pinned)
         }else {
             self.pluginView.hideActiveSpeaker()
-        }
-    }
-    
-    func meetingRecording(start: Bool) {
-        self.topBar.recordingView.isHidden = !start
-        if start {
-            self.topBar.recordingView.blink()
-        }else {
-            self.topBar.recordingView.stopBlink()
         }
     }
     
@@ -763,22 +754,7 @@ extension LivestreamViewController : MeetingViewModelDelegate {
         if let participant = dyteMobileClient.participants.pinned {
             self.refreshMeetingGridTile(participant: participant)
         }
-        
-        let nextPagePossible = self.dyteMobileClient.participants.canGoNextPage
-        let prevPagePossible = self.dyteMobileClient.participants.canGoPreviousPage
-        
-        if !nextPagePossible && !prevPagePossible {
-            //No page view to be shown
-            self.topBar.nextPreviousButtonView.isHidden = true
-        } else {
-            self.topBar.nextPreviousButtonView.isHidden = false
-            
-            self.topBar.nextPreviousButtonView.nextButton.isEnabled = nextPagePossible
-            self.topBar.nextPreviousButtonView.previousButton.isEnabled = prevPagePossible
-            self.topBar.nextPreviousButtonView.nextButton.hideActivityIndicator()
-            self.topBar.nextPreviousButtonView.previousButton.hideActivityIndicator()
-            self.topBar.setNextPreviousText(first: Int(self.dyteMobileClient.participants.currentPageNumber), second: Int(self.dyteMobileClient.participants.pageCount) - 1)
-        }
+        self.topBar.refreshNextPreviouButtonState()
     }
 }
 
@@ -828,7 +804,7 @@ extension LivestreamViewController: DyteLiveStreamEventsListener {
     
     public func onStageCountUpdated(count: Int32) {
         if dyteMobileClient.stage.stageStatus == StageStatus.onStage {
-            let controller = MeetingViewController(dyteMobileClient: dyteMobileClient, completion: self.completion)
+            let controller = MeetingViewController(meeting: dyteMobileClient, completion: self.completion)
             controller.view.backgroundColor = self.view.backgroundColor
             controller.modalPresentationStyle = .fullScreen
             self.present(controller, animated: true)
@@ -846,11 +822,11 @@ extension LivestreamViewController: DyteLiveStreamEventsListener {
 }
 
 extension LivestreamViewController: DyteNotificationDelegate {
-    func clearChatNotification() {
+    public func clearChatNotification() {
         self.moreButtonBottomBar?.notificationBadge.isHidden = true
     }
     
-    func didReceiveNotification(type: DyteNotificationType) {
+    public  func didReceiveNotification(type: DyteNotificationType) {
         switch type {
         case .Chat, .Poll:
             self.moreButtonBottomBar?.notificationBadge.isHidden = false

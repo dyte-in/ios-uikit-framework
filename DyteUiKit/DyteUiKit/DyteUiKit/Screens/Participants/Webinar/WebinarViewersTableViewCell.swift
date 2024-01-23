@@ -18,7 +18,7 @@ class WebinarViewersTableViewCell: ParticipantTableViewCell {
 
     override func createSubView(on baseView: UIView) {
         super.createSubView(on: baseView)
-        let videoButtonStackView = UIUTility.createStackView(axis: .horizontal, spacing: 0)
+        let videoButtonStackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: 0)
         self.buttonStackView.addArrangedSubviews(videoButtonStackView, moreButton)
         self.moreButton.addTarget(self, action: #selector(moreButtonClick(button:)), for: .touchUpInside)
     }

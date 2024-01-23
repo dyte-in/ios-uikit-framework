@@ -115,7 +115,7 @@ protocol BottomSheetModelProtocol {
 class UNReadCountView: UIView {
 
    private let title : DyteText = {
-       let label = UIUTility.createLabel(text: "")
+       let label = DyteUIUTility.createLabel(text: "")
        label.font = UIFont.systemFont(ofSize: 12)
        return label
    }()
@@ -138,10 +138,10 @@ class UNReadCountView: UIView {
     }
     
     private func createSubView() {
-        self.backgroundColor = tokenColor.brand.shade500
+        self.backgroundColor = dyteSharedTokenColor.brand.shade500
         self.addSubview(title)
-        title.set(.sameLeadingTrailing(self, tokenSpace.space1),
-                  .sameTopBottom(self, tokenSpace.space1))
+        title.set(.sameLeadingTrailing(self, dyteSharedTokenSpace.space1),
+                  .sameTopBottom(self, dyteSharedTokenSpace.space1))
         
     }
     
@@ -149,7 +149,7 @@ class UNReadCountView: UIView {
 
 class BottomSheet: UIView {
     let selfTag = 89373
-    private let baseStackView = UIUTility.createStackView(axis: .vertical, spacing: 0)
+    private let baseStackView = DyteUIUTility.createStackView(axis: .vertical, spacing: 0)
     let borderRadiusType: BorderRadiusToken.RadiusType = AppTheme.shared.cornerRadiusTypeNameTextField ?? .rounded
     let backgroundColorValue = DesignLibrary.shared.color.background.shade900
     let backgroundColorValueForLineSeparator = DesignLibrary.shared.color.background.shade800
@@ -235,7 +235,7 @@ class BottomSheet: UIView {
     private func getTitleView(title: String, needLine: Bool = true) -> UIView {
         let view = UIView()
         view.isUserInteractionEnabled = false
-        let title = UIUTility.createLabel(text: title, alignment: .center)
+        let title = DyteUIUTility.createLabel(text: title, alignment: .center)
         view.addSubview(title)
         title.font = UIFont.systemFont(ofSize: 16)
         title.set(.sameLeadingTrailing(view), .sameTopBottom(view, tokenSpace.space4))
@@ -257,7 +257,7 @@ class BottomSheet: UIView {
         let color = DesignLibrary.shared.color.textColor.onBackground.shade900
         let view = UIView()
         view.isUserInteractionEnabled = false
-        let imageView = UIUTility.createImageView(image: systemImage)
+        let imageView = DyteUIUTility.createImageView(image: systemImage)
         imageView.tintColor = color
         let baseImageView = UIView()
         baseImageView.addSubview(imageView)
@@ -265,7 +265,7 @@ class BottomSheet: UIView {
         imageView.set(.centerView(baseImageView),
                       .top(baseImageView, 0.0 , .greaterThanOrEqual),
                       .leading(baseImageView,0.0,.greaterThanOrEqual))
-        let title = UIUTility.createLabel(text: title, alignment: .left)
+        let title = DyteUIUTility.createLabel(text: title, alignment: .left)
         title.textColor = color
         view.addSubview(baseImageView)
         view.addSubview(title)
@@ -347,7 +347,7 @@ public class DyteMoreMenu: UIView {
     
     func reload(title:String? = nil, features: [MenuType]) {
         self.features = features
-        var model = getModel(features: features)
+        let model = getModel(features: features)
         bottomSheet.reload(title: title, features: model)
         for i in 0..<features.count {
             let menu = features[i]

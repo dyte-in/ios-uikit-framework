@@ -25,7 +25,7 @@ public class NextPreviousButtonView: UIView {
     public var autolayoutModeEnable = true
     
     let autoLayoutImageView: BaseImageView = {
-        let imageView = UIUTility.createImageView(image: DyteImage(image: ImageProvider.image(named: "icon_topbar_autolayout")))
+        let imageView = DyteUIUTility.createImageView(image: DyteImage(image: ImageProvider.image(named: "icon_topbar_autolayout")))
         return imageView
     }()
     
@@ -36,13 +36,13 @@ public class NextPreviousButtonView: UIView {
     init(firsButtonImage: DyteImage, secondButtonImage: DyteImage) {
         self.previousButton = DyteControlBarButton(image: firsButtonImage, appearance: AppTheme.shared.controlBarButtonAppearance)
         self.nextButton = DyteControlBarButton(image: secondButtonImage, appearance: AppTheme.shared.controlBarButtonAppearance)
-        self.firstLabel = UIUTility.createLabel()
+        self.firstLabel = DyteUIUTility.createLabel()
         self.firstLabel.font = UIFont.systemFont(ofSize: 16)
         self.firstLabel.textColor = tokenTextColorToken.onBackground.shade900
-        self.slashLabel = UIUTility.createLabel(text: "/")
+        self.slashLabel = DyteUIUTility.createLabel(text: "/")
         self.slashLabel.font = UIFont.systemFont(ofSize: 16)
         self.slashLabel.textColor = tokenTextColorToken.onBackground.shade600
-        self.secondLabel = UIUTility.createLabel()
+        self.secondLabel = DyteUIUTility.createLabel()
         self.secondLabel.font = UIFont.systemFont(ofSize: 12)
         self.secondLabel.textColor = tokenTextColorToken.onBackground.shade600
         super.init(frame: .zero)
@@ -54,7 +54,7 @@ public class NextPreviousButtonView: UIView {
     }
     
     private func createView() {
-        let stackView = UIUTility.createStackView(axis: .horizontal, spacing: 0)
+        let stackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: 0)
         self.addSubview(stackView)
         stackView.set(.fillSuperView(self))
         
@@ -132,13 +132,13 @@ public class ScreenShareTabButton: UIButton {
     private var selectedImage: DyteImage?
     fileprivate var selectedTitle: String?
 
-    var btnImageView: BaseImageView?
+    public var btnImageView: BaseImageView?
     fileprivate var btnTitle: DyteText?
     private var baseActivityIndicatorView: BaseIndicatorView?
     fileprivate let appearance: ScreenShareTabButtonDesignDependency
-    var index: Int = 0
-    let id: String
-    init(image: DyteImage?, title: String = "", id: String = "", appearance: ScreenShareTabButtonDesignDependency = ScreenShareTabButtonDesignDependencyModel()) {
+    public var index: Int = 0
+    public let id: String
+    public init(image: DyteImage?, title: String = "", id: String = "", appearance: ScreenShareTabButtonDesignDependency = ScreenShareTabButtonDesignDependencyModel()) {
         self.normalImage = image
         self.id = id
         self.appearance = appearance
@@ -191,16 +191,16 @@ public class ScreenShareTabButton: UIButton {
         self.btnImageView = buttonsComponent.imageView
         self.btnImageView?.tintColor = self.btnTitle?.textColor
         baseView.addSubview(buttonsComponent.stackView)
-        buttonsComponent.stackView.set(.top(baseView, tokenSpace.space2, .greaterThanOrEqual),
+        buttonsComponent.stackView.set(.top(baseView, dyteSharedTokenSpace.space2, .greaterThanOrEqual),
                                        .centerY(baseView),
-                                       .leading(baseView, tokenSpace.space2, .greaterThanOrEqual),
+                                       .leading(baseView, dyteSharedTokenSpace.space2, .greaterThanOrEqual),
                                        .centerX(baseView))
     }
     
     private func getLabelAndImageOnlyView() -> (stackView: BaseStackView, title: DyteText , imageView: BaseImageView) {
-        let stackView = UIUTility.createStackView(axis: .horizontal, spacing: tokenSpace.space2)
-        let imageView = UIUTility.createImageView(image: self.normalImage)
-        let title = UIUTility.createLabel(text: self.normalTitle)
+        let stackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: dyteSharedTokenSpace.space2)
+        let imageView = DyteUIUTility.createImageView(image: self.normalImage)
+        let title = DyteUIUTility.createLabel(text: self.normalTitle)
         title.font = UIFont.systemFont(ofSize: 14)
         stackView.addArrangedSubviews(imageView,title)
         return (stackView: stackView ,title: title,imageView: imageView)

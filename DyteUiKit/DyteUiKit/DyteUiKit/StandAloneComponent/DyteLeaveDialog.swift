@@ -12,7 +12,7 @@ import DyteiOSCore
 
 
 public class DyteLeaveDialog {
-    static let onEndMeetingForAllButtonPress: Notification.Name = Notification.Name("onEndMeetingForAllButtonPress")
+    public static let onEndMeetingForAllButtonPress: Notification.Name = Notification.Name("onEndMeetingForAllButtonPress")
     
 
     public  enum DyteLeaveDialogAlertButtonType {

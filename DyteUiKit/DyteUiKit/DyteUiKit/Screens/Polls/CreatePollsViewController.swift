@@ -110,9 +110,9 @@ extension AutoSizingTextView: UITextViewDelegate {
 class AutoSizingTitleTextView: BaseMoluculeView {
     let gapBetweenTitleAndTextView:CGFloat = 8
         
-    let lblHeader: DyteText = { return UIUTility.createLabel(text: "", alignment: .left, weight: UIFont.Weight.bold) }()
+    let lblHeader: DyteText = { return DyteUIUTility.createLabel(text: "", alignment: .left, weight: UIFont.Weight.bold) }()
     let textView: AutoSizingTextView
-    let lblError: DyteText = { return UIUTility.createLabel(text: "" , alignment: .left) }()
+    let lblError: DyteText = { return DyteUIUTility.createLabel(text: "" , alignment: .left) }()
 
     init(headerTitle: String, placeHolderText: String) {
         textView = AutoSizingTextView(maxheight: 100, minHeight: 68, placeHolderText: placeHolderText)
@@ -128,7 +128,7 @@ class AutoSizingTitleTextView: BaseMoluculeView {
     }
     
     func createSubviews() {
-        let stackView = UIUTility.createStackView(axis: .vertical, spacing: gapBetweenTitleAndTextView)
+        let stackView = DyteUIUTility.createStackView(axis: .vertical, spacing: gapBetweenTitleAndTextView)
         self.addSubview(stackView)
         stackView.set(.fillSuperView(self))
         stackView.addArrangedSubviews(lblHeader, textView, lblError)
@@ -158,7 +158,7 @@ class AddOptions: BaseMoluculeView {
     let stackView: UIStackView
     
     init() {
-        stackView = UIUTility.createStackView(axis: .vertical, spacing: verticalGap)
+        stackView = DyteUIUTility.createStackView(axis: .vertical, spacing: verticalGap)
         super.init(frame: .zero)
         createSubviews()
     }
@@ -329,7 +329,7 @@ class SelectionView: UIView {
     let spaceToken = DesignLibrary.shared.space
     let imageView:BaseImageView = { return BaseImageView()}()
     let title: DyteText = {
-        let label = UIUTility.createLabel(alignment: .left)
+        let label = DyteUIUTility.createLabel(alignment: .left)
         label.numberOfLines = 0
         return label
     }()
@@ -415,11 +415,11 @@ enum SelectionType {
 class ListSelectionView<Model: SelectionModel>: UIView {
     let spaceToken = DesignLibrary.shared.space
     let models: [Model]
-    let titleLabel: DyteText = {return UIUTility.createLabel(alignment: .left, weight: UIFont.Weight.bold)}()
+    let titleLabel: DyteText = {return DyteUIUTility.createLabel(alignment: .left, weight: UIFont.Weight.bold)}()
     let selectionType : SelectionType
     
-    private let stackView = UIUTility.createStackView(axis: .vertical, spacing: 4)
-    private let stackViewSelectionView = UIUTility.createStackView(axis: .vertical, spacing: 4)
+    private let stackView = DyteUIUTility.createStackView(axis: .vertical, spacing: 4)
+    private let stackViewSelectionView = DyteUIUTility.createStackView(axis: .vertical, spacing: 4)
 
     private var arrSelectionView = [SelectionView]()
     
@@ -507,7 +507,7 @@ class CreatePollView: UIView {
     let verticalSpacingBetweenElemements = DesignLibrary.shared.space.space4
     
     let lblHeader: DyteText = {
-        let label = UIUTility.createLabel(text: "Create Poll", alignment: .left)
+        let label = DyteUIUTility.createLabel(text: "Create Poll", alignment: .left)
         label.font = UIFont.systemFont(ofSize: 20, weight: UIFont.Weight.bold)
         return label
     }()

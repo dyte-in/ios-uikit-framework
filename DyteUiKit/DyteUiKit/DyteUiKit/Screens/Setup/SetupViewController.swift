@@ -174,15 +174,23 @@ public class VideoToggleButton: DyteButton {
     
 }
 
-public class SetupViewController: BaseViewController, KeyboardObservable {
+public protocol SetupViewControllerDataSource : UIViewController {
+    var delegate: SetupViewControllerDelegate? {get set}
+}
+
+public protocol SetupViewControllerDelegate {
+    func userJoinedMeetingSuccessfully(sender: UIViewController)
+}
+
+public class SetupViewController: DyteBaseViewController, KeyboardObservable, SetupViewControllerDataSource {
     
     var keyboardObserver: KeyboardObserver?
-    
     let baseView: BaseView = BaseView()
     private var selfPeerView: DyteParticipantTileView!
     let borderRadius = DesignLibrary.shared.borderRadius
+    public var delegate: SetupViewControllerDelegate?
     let btnsStackView: BaseStackView = {
-        return UIUTility.createStackView(axis: .horizontal, spacing: DesignLibrary.shared.space.space6)
+        return DyteUIUTility.createStackView(axis: .horizontal, spacing: DesignLibrary.shared.space.space6)
     }()
     
    lazy var btnMic: MicToggleButton = {
@@ -206,7 +214,7 @@ public class SetupViewController: BaseViewController, KeyboardObservable {
         return button
     }()
     
-    let lblJoinAs: DyteText = {return UIUTility.createLabel(text: "Join in as")}()
+    let lblJoinAs: DyteText = {return DyteUIUTility.createLabel(text: "Join in as")}()
     
     let textFieldBottom: DyteTextField = {
         let textField = DyteTextField()
@@ -216,7 +224,7 @@ public class SetupViewController: BaseViewController, KeyboardObservable {
     
     var btnBottom: DyteJoinButton!
     
-    let lblBottom: DyteText = { return UIUTility.createLabel(text: "24 people Present")}()
+    let lblBottom: DyteText = { return DyteUIUTility.createLabel(text: "24 people Present")}()
     
     let spaceToken = DesignLibrary.shared.space
     
@@ -247,7 +255,6 @@ public class SetupViewController: BaseViewController, KeyboardObservable {
         self.meetinInfo = nil
         self.baseUrl = baseUrl
         self.completion = completion
-        
         super.init(dyteMobileClient: mobileClient)
     }
     
@@ -275,7 +282,6 @@ public class SetupViewController: BaseViewController, KeyboardObservable {
     private var btnStackView: UIStackView!
     private var bottomStackView: UIStackView!
     private func dyteMobileClientInit() {
-        
         if let info = self.meetinInfoV2 {
             self.viewModel = SetupViewModel(mobileClient: self.mobileClient, delegate: self, meetingInfoV2: info, meetingInfo: nil)
         }
@@ -306,30 +312,44 @@ extension SetupViewController {
 }
 
 extension SetupViewController: MeetingDelegate {
-   
+
     internal func onMeetingInitCompleted() {
         self.setupUIAfterMeetingInit()
         let mediaPermission = self.mobileClient.localUser.permissions.media
         if mediaPermission.canPublishAudio == false {
             btnMic.isHidden = true
         }
-        
+
         if mediaPermission.canPublishVideo == false {
             btnVideo.isHidden = true
         }
-        
+
         if mediaPermission.canPublishAudio == false && mediaPermission.canPublishVideo == false {
             btnSetting.isHidden = true
         }
-        
+
         loadSelfVideoView()
     }
     
-    func onMeetingInitFailed() {
-        print("DyteUiKit | Error: Meeting Init Failed")
-        self.completion()
+    func onMeetingInitFailed(message: String?) {
+        showInitFailedAlert(title: message ?? "", retry: { [weak self] in
+            guard let self = self else {return}
+            self.dyteMobileClientInit()
+        })
     }
     
+    private func showInitFailedAlert(title: String, retry:@escaping()->Void) {
+        let alert = UIAlertController(title: "Error", message: title, preferredStyle: .alert)
+        // Add "OK" Button to alert, pressing it will bring you to the settings app
+        alert.addAction(UIAlertAction(title: "retry", style: .default, handler: { action in
+            retry()
+        }))
+        alert.addAction(UIAlertAction(title: "exit", style: .default, handler: { action in
+            self.completion()
+        }))
+        // Show the alert with animation
+        self.present(alert, animated: true)
+    }
 }
 
 extension SetupViewController {
@@ -369,8 +389,6 @@ extension SetupViewController {
         addLandscapeConstraintForBaseView()
     }
     
-
-    
     private func addPortaitConstraintsForBaseView() {
         baseView.set(.sameLeadingTrailing(self.view , spaceToken.space8),
                      .centerY(self.view),
@@ -391,6 +409,7 @@ extension SetupViewController {
                                                  baseView.get(.leading)!,
                                                  baseView.get(.trailing)!])
     }
+    
     private func setUpActivityIndicator(baseView: UIView) {
         baseView.addSubview(activityIndicator)
         activityIndicator.set(.centerView(baseView))
@@ -497,7 +516,6 @@ extension SetupViewController {
         
     }
     
-
     private func setupButtonActions() {
         btnSetting.addTarget(self, action: #selector(clickSetting(button:)), for: .touchUpInside)
     }
@@ -511,9 +529,8 @@ extension SetupViewController {
         }
     }
     
-    
     private  func createBtnView() -> BaseStackView {
-        let stackView = UIUTility.createStackView(axis: .horizontal, spacing: DesignLibrary.shared.space.space6)
+        let stackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: DesignLibrary.shared.space.space6)
         
         if let info = self.meetinInfo {
             btnMic.isSelected = !info.enableAudio
@@ -529,7 +546,7 @@ extension SetupViewController {
     }
     
     private func createBottomButtonStackView() -> BaseStackView {
-        let stackView = UIUTility.createStackView(axis: .vertical, spacing: spaceToken.space2)
+        let stackView = DyteUIUTility.createStackView(axis: .vertical, spacing: spaceToken.space2)
         stackView.addArrangedSubviews(lblJoinAs, createBottomJoinButton(), lblBottom)
         return stackView
     }
@@ -545,35 +562,8 @@ extension SetupViewController {
     
     private func addJoinButton(on view: UIView) -> DyteJoinButton {
         let joinButton = DyteJoinButton(meeting: self.mobileClient) { button, success in
-            
             if success {
-                let mobileClient = self.viewModel.dyteMobileClient
-                Shared.data.delegate?.meetingScreenWillShow()
-                if mobileClient.meta.meetingType == DyteMeetingType.groupCall {
-                    let controller = MeetingViewController(dyteMobileClient: mobileClient, completion: self.completion)
-                    controller.modalPresentationStyle = .fullScreen
-                    self.present(controller, animated: true) {
-                        Shared.data.delegate?.meetingScreenDidShow()
-                    }
-                    notificationDelegate?.didReceiveNotification(type: .Joined)
-                    
-                }
-                else if mobileClient.meta.meetingType == DyteMeetingType.livestream {
-                    let controller = LivestreamViewController(dyteMobileClient: mobileClient, completion: self.completion)
-                    controller.modalPresentationStyle = .fullScreen
-                    self.present(controller, animated: true){
-                        Shared.data.delegate?.meetingScreenDidShow()
-                    }
-                    notificationDelegate?.didReceiveNotification(type: .Joined)
-                }
-                else if mobileClient.meta.meetingType == DyteMeetingType.webinar {
-                    let controller = WebinarViewController(dyteMobileClient: mobileClient, completion: self.completion)
-                    controller.modalPresentationStyle = .fullScreen
-                    self.present(controller, animated: true){
-                        Shared.data.delegate?.meetingScreenDidShow()
-                    }
-                    notificationDelegate?.didReceiveNotification(type: .Joined)
-                }
+                self.delegate?.userJoinedMeetingSuccessfully(sender: self)
             }
         }
         

@@ -41,8 +41,12 @@ class Shared {
         return unreadCount
     }
     
-    func setPollViewCount(totalMessage: Int) {
-        viewedPollCount = totalMessage
+    func setPollViewCount(totalPolls: Int) {
+        viewedPollCount = totalPolls
+    }
+    
+    func getTotalUnreadCountPollsAndChat(totalMessage: Int, totalsPolls: Int) -> Int {
+        return getUnviewPollCount(totalPolls: totalsPolls) + getUnreadChatCount(totalMessage: totalMessage)
     }
     
     func initialise() {

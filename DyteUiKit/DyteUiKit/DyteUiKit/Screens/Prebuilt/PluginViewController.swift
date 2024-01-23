@@ -54,7 +54,7 @@ class PluginViewController: UIViewController {
         let customBarButtonItem = UIBarButtonItem(customView: leftButton)
         navigationItem.leftBarButtonItem = customBarButtonItem
         
-        let label = UIUTility.createLabel(text: "Plugins")
+        let label = DyteUIUTility.createLabel(text: "Plugins")
         label.font = UIFont.boldSystemFont(ofSize: 18)
         label.textColor = DesignLibrary.shared.color.textColor.onBackground.shade900
         navigationItem.titleView = label

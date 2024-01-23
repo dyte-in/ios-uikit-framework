@@ -9,122 +9,40 @@ import DyteiOSCore
 import UIKit
 import AVFAudio
 
-struct Animations {
-    static let gridViewAnimationDuration = 0.3
+public struct Animations {
+    public static let gridViewAnimationDuration = 0.3
 }
 
-class DyteParticipantTileContainerView : UIView {
-    var tileView: DyteParticipantTileView!
-    
-    func prepareForReuse() {
-        tileView?.removeFromSuperview()
-        tileView = nil
-    }
-    
-    func setParticipant(meeting: DyteMobileClient, participant: DyteJoinedMeetingParticipant) {
-        prepareForReuse()
-        let tile = DyteParticipantTileView(mobileClient: meeting, participant: participant, isForLocalUser: false, showScreenShareVideoView: false)
-        self.tileView = tile
-        self.addSubview(tile)
-        tile.set(.fillSuperView(self))
-    }
+public protocol MeetingViewControllerDataSource {
+    func getTopbar(viewController: MeetingViewController) -> DyteMeetingHeaderView?
+    func getMiddleView(viewController: MeetingViewController) -> UIView?
+    func getBottomTabbar(viewController: MeetingViewController) -> DyteMeetingControlBar?
 }
 
-public class BaseViewController: UIViewController, AdaptableUI {
-    let dyteSelfListner: DyteEventSelfListner!
-    internal let dyteMobileClient: DyteMobileClient
-    private var waitingRoomView: WaitingRoomView?
-    var portraitConstraints = [NSLayoutConstraint]()
-    var landscapeConstraints = [NSLayoutConstraint]()
-    
-    init(dyteMobileClient: DyteMobileClient) {
-        self.dyteMobileClient = dyteMobileClient
-        dyteSelfListner = DyteEventSelfListner(mobileClient: dyteMobileClient)
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    public override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
-     func setUpReconnection(failed: @escaping()->Void, success: @escaping()->Void) {
-        dyteSelfListner.observeMeetingReconnectionState { [weak self] state in
-            guard let self = self else {return}
-            switch state {
-            case .failed:
-                self.view.removeToast()
-                let retryAction = UIAlertAction(title: "ok", style: .default) { action in
-                    failed()
-                }
-                UIUTility.displayAlert(alertTitle: "Connection Lost!", message: "Please try again later", actions: [retryAction])
-            case .success:
-                success()
-                self.view.showToast(toastMessage: "Connection Restored", duration: 2.0)
-            case .start:
-                self.view.showToast(toastMessage: "Reconnecting...", duration: -1)
-            }
-        }
-    }
-    
-     func addWaitingRoom(completion:@escaping()->Void) {
-        self.dyteSelfListner.waitListStatusUpdate = { [weak self] status in
-            guard self != nil else {return}
-            let callBack : ()-> Void = {
-                completion()
-            }
-            showWaitingRoom(status: status, completion: callBack)
-        }
-        
-        func showWaitingRoom(status: WaitListStatus, completion: @escaping()->Void) {
-           waitingRoomView?.removeFromSuperview()
-           if status != .none {
-               let waitingView = WaitingRoomView(automaticClose: false, onCompletion: { [weak self] in
-                   guard self != nil else {return}
-                   completion()
-               })
-               waitingView.accessibilityIdentifier = "WaitingRoom_View"
-               waitingView.backgroundColor = self.view.backgroundColor
-               self.view.addSubview(waitingView)
-               waitingView.set(.fillSuperView(self.view))
-               self.view.endEditing(true)
-               waitingRoomView = waitingView
-               waitingView.show(status: status)
-           }
-       }
-    }
-    
-    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        print("Hello \(self)")
-        super.viewWillTransition(to: size, with: coordinator)
-        applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
-    }
-}
-
-public class MeetingViewController: BaseViewController {
+public class MeetingViewController: DyteBaseViewController {
     private var gridView: GridView<DyteParticipantTileContainerView>!
-    let pluginView: PluginView
-    private let gridBaseView = UIView()
+    let pluginView: DytePluginView
+    let gridBaseView = UIView()
     private let pluginBaseView = UIView()
     private var fullScreenView: FullScreenView!
+    
     let baseContentView = UIView()
+    
     private let isDebugModeOn = DyteUiKit.isDebugModeOn
+    public var dataSource: MeetingViewControllerDataSource?
     
     private var isPluginOrScreenShareActive = false
     
     let fullScreenButton: DyteControlBarButton = {
-        
         let button = DyteControlBarButton(image: DyteImage(image: ImageProvider.image(named: "icon_show_fullscreen")))
         button.setSelected(image:  DyteImage(image: ImageProvider.image(named: "icon_hide_fullscreen")))
-        button.backgroundColor = tokenColor.background.shade800
+        button.backgroundColor = dyteSharedTokenColor.background.shade800
         return button
     }()
     let viewModel: MeetingViewModel
     
     private var topBar: DyteMeetingHeaderView!
-    internal var bottomBar: DyteControlBar!
+    private var bottomBar: DyteControlBar!
     
     internal let onFinishedMeeting: ()->Void
     private var viewWillAppear = false
@@ -134,16 +52,15 @@ public class MeetingViewController: BaseViewController {
     private var layoutPortraitContraintPluginBaseVariableHeight: NSLayoutConstraint!
     private var layoutLandscapeContraintPluginBaseVariableWidth: NSLayoutConstraint!
     private var layoutContraintPluginBaseZeroWidth: NSLayoutConstraint!
-
+    
     private var waitingRoomView: WaitingRoomView?
 
-    init(dyteMobileClient: DyteMobileClient, completion:@escaping()->Void) {
+   public init(meeting: DyteMobileClient, completion:@escaping()->Void) {
         //TODO: Check the local user passed now
-        self.pluginView = PluginView(videoPeerViewModel:VideoPeerViewModel(mobileClient: dyteMobileClient, participant: dyteMobileClient.localUser, showSelfPreviewVideo: false, showScreenShareVideoView: true))
+        self.pluginView = DytePluginView(videoPeerViewModel:VideoPeerViewModel(mobileClient: meeting, participant: meeting.localUser, showSelfPreviewVideo: false, showScreenShareVideoView: true))
         self.onFinishedMeeting = completion
-        self.viewModel = MeetingViewModel(dyteMobileClient: dyteMobileClient)
-        super.init(dyteMobileClient: dyteMobileClient)
-
+        self.viewModel = MeetingViewModel(dyteMobileClient: meeting)
+        super.init(dyteMobileClient: meeting)
         notificationDelegate = self
     }
     
@@ -177,7 +94,6 @@ public class MeetingViewController: BaseViewController {
         UIApplication.shared.isIdleTimerDisabled = true
         self.view.accessibilityIdentifier = "Meeting_Base_View"
         self.view.backgroundColor = DesignLibrary.shared.color.background.shade1000
-        setAudioSession()
         createTopbar()
         createBottomBar()
         createSubView()
@@ -208,25 +124,24 @@ public class MeetingViewController: BaseViewController {
         self.viewModel.dyteSelfListner.observePluginScreenShareTabSync(update: { id in
             self.selectPluginOrScreenShare(id: id)
         })
-        
        
-        if self.dyteMobileClient.localUser.permissions.waitingRoom.canAcceptRequests {
+        if self.meeting.localUser.permissions.waitingRoom.canAcceptRequests {
             self.viewModel.waitlistEventListner.participantJoinedCompletion = {[weak self] participant in
                 guard let self = self else {return}
                 
                 self.view.showToast(toastMessage: "\(participant.name) has requested to join the call ", duration: 2.0, uiBlocker: false)
-                if self.dyteMobileClient.getWaitlistCount() > 0 {
+                if self.meeting.getWaitlistCount() > 0 {
                     self.moreButtonBottomBar?.notificationBadge.isHidden = false
                 }else {
                     self.moreButtonBottomBar?.notificationBadge.isHidden = false
                 }
                 NotificationCenter.default.post(name: Notification.Name("Notify_ParticipantListUpdate"), object: nil, userInfo: nil)
-
+                
             }
             
             self.viewModel.waitlistEventListner.participantRequestRejectCompletion = {[weak self] participant in
                 guard let self = self else {return}
-                if self.dyteMobileClient.getWaitlistCount() > 0 {
+                if self.meeting.getWaitlistCount() > 0 {
                     self.moreButtonBottomBar?.notificationBadge.isHidden = false
                 }else {
                     self.moreButtonBottomBar?.notificationBadge.isHidden = false
@@ -234,14 +149,14 @@ public class MeetingViewController: BaseViewController {
             }
             self.viewModel.waitlistEventListner.participantRequestAcceptedCompletion = {[weak self] participant in
                 guard let self = self else {return}
-                if self.dyteMobileClient.getWaitlistCount() > 0 {
+                if self.meeting.getWaitlistCount() > 0 {
                     self.moreButtonBottomBar?.notificationBadge.isHidden = false
                 }else {
                     self.moreButtonBottomBar?.notificationBadge.isHidden = false
                 }
             }
             self.viewModel.waitlistEventListner.participantRemovedCompletion = {[weak self] participant in
-                guard let self = self else {return}
+                guard let _ = self else {return}
 
                 NotificationCenter.default.post(name: Notification.Name("Notify_ParticipantListUpdate"), object: nil, userInfo: nil)
             }
@@ -259,18 +174,6 @@ public class MeetingViewController: BaseViewController {
             guard let self = self else {return}
             self.refreshMeetingGrid()
             self.refreshPluginsView()
-            self.setAudioSession()
-        }
-    }
-    
-    private func setAudioSession() {
-        do {
-            try AVAudioSession.sharedInstance().setActive(false)
-            try AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .voiceChat, options: [.allowBluetooth,.allowBluetoothA2DP])
-            try AVAudioSession.sharedInstance().setActive(true)
-        }
-        catch {
-            
         }
     }
     
@@ -297,14 +200,12 @@ public class MeetingViewController: BaseViewController {
         }
         
         func prepareGridViewsForReuse() {
-            for i in 0..<self.gridView.maxItems {
-                if let peerView = self.gridView.childView(index: Int(i)) {
-                    peerView.prepareForReuse()
-                }
+            self.gridView.prepareForReuse { peerView in
+                peerView.prepareForReuse()
             }
         }
         
-        if self.dyteMobileClient.participants.currentPageNumber == 0 {
+        if self.meeting.participants.currentPageNumber == 0 {
             self.showPluginView(show: isPluginOrScreenShareActive, animation: false)
             self.loadGrid(fullScreen: !isPluginOrScreenShareActive, animation: true, completion: {
                 if forRotation == false {
@@ -322,11 +223,11 @@ public class MeetingViewController: BaseViewController {
             })
         }
         
-       
+        
         func populateGridChildViews(models: [GridCellViewModel]) {
             for i in 0..<models.count {
                 if let peerContainerView = self.gridView.childView(index: i) {
-                    peerContainerView.setParticipant(meeting: self.dyteMobileClient, participant: models[i].participant)
+                    peerContainerView.setParticipant(meeting: self.meeting, participant: models[i].participant)
                 }
             }
             if isDebugModeOn {
@@ -340,12 +241,18 @@ public class MeetingViewController: BaseViewController {
         }
     }
     
-    internal func createBottomBar() {
-        
-        let controlBar =  DyteMeetingControlBar(meeting: self.dyteMobileClient, delegate: nil, presentingViewController: self, meetingViewModel: self.viewModel) {
+    private func createBottomBar() {
+        self.bottomBar = self.dataSource?.getBottomTabbar(viewController: self) ?? getBottomBar()
+        self.moreButtonBottomBar = self.bottomBar.moreButton
+        self.view.addSubview(self.bottomBar)
+        addBottomBarConstraint()
+    }
+    
+   internal func getBottomBar() -> DyteControlBar {
+        let controlBar =  DyteMeetingControlBar(meeting: self.meeting, delegate: nil, presentingViewController: self) {
             [weak self] in
             guard let self = self else {return}
-            self.refreshMeetingGridTile(participant: self.dyteMobileClient.localUser)
+            self.refreshMeetingGridTile(participant: self.meeting.localUser)
         } onLeaveMeetingCompletion: {
             [weak self] in
             guard let self = self else {return}
@@ -353,14 +260,10 @@ public class MeetingViewController: BaseViewController {
             self.onFinishedMeeting()
         }
         controlBar.accessibilityIdentifier = "Meeting_ControlBottomBar"
-        self.moreButtonBottomBar = controlBar.moreButton
-        
-        self.view.addSubview(controlBar)
-        self.bottomBar = controlBar
-        addBottomBarConstraint()
+        return controlBar
     }
-    
-    func addBottomBarConstraint() {
+  
+    private  func addBottomBarConstraint() {
         addPortraitContraintBottombar()
         addLandscapeContraintBottombar()
         applyConstraintAsPerOrientation()
@@ -375,7 +278,7 @@ public class MeetingViewController: BaseViewController {
     
     private func addPortraitContraintBottombar() {
         self.bottomBar.set(.sameLeadingTrailing(self.view),
-                       .bottom(self.view))
+                           .bottom(self.view))
         portraitConstraints.append(contentsOf: [self.bottomBar.get(.leading)!,
                                                 self.bottomBar.get(.trailing)!,
                                                 self.bottomBar.get(.bottom)!])
@@ -388,29 +291,26 @@ public class MeetingViewController: BaseViewController {
                                                  self.bottomBar.get(.top)!,
                                                  self.bottomBar.get(.bottom)!])
     }
-
+    
     
     deinit {
         UIApplication.shared.isIdleTimerDisabled = false
-
+        NotificationCenter.default.removeObserver(self, name: Notification.Name("NotificationAllChatsRead"), object: nil)
         if isDebugModeOn {
             print("DyteUIKit | MeetingViewController Deinit is calling ")
         }
     }
     
-    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
+    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
         self.presentedViewController?.dismiss(animated: false)
         bottomBar.moreButton.hideBottomSheet()
-        bottomBar.applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape()) {
-            bottomBar.setItemsOrientation(axis: .horizontal)
-            bottomBar.setHeight()
-            bottomBar.moreButton.superview!.isHidden = false
-        } onLandscape: {
-            bottomBar.setItemsOrientation(axis: .vertical)
-            bottomBar.setWidth()
-            bottomBar.moreButton.superview!.isHidden = true
+        if UIScreen.isLandscape() {
+            bottomBar.moreButton.superview?.isHidden = true
+        }else {
+            bottomBar.moreButton.superview?.isHidden = false
         }
+       
         self.applyConstraintAsPerOrientation {
             self.fullScreenButton.isHidden = true
             self.closefullscreen()
@@ -418,20 +318,19 @@ public class MeetingViewController: BaseViewController {
             self.fullScreenButton.isSelected = false
             self.fullScreenButton.isHidden = false
         }
-       
+        
         self.showPluginViewAsPerOrientation(show: false)
         self.setLeftPaddingContraintForBaseContentView()
-        DispatchQueue.main.async {
-            //Actually we don't have viewDidTransition method available and In current method frame is returning incorrect value, So used DispatchQueue.main.async
-            self.refreshMeetingGrid(forRotation: true)
-        }
+        self.refreshMeetingGrid(forRotation: true)
+
     }
+
 }
 
 private extension MeetingViewController {
-           
+    
     private func setInitialsConfiguration() {
-        self.topBar.nextPreviousButtonView.isHidden = true
+       // self.topBar.setInitialConfiguration()
     }
     
     private func createSubView() {
@@ -448,8 +347,9 @@ private extension MeetingViewController {
         pluginBaseView.addSubview(pluginView)
         
         pluginView.addSubview(fullScreenButton)
-        fullScreenButton.set(.trailing(pluginView, tokenSpace.space1),
-                   .bottom(pluginView,tokenSpace.space1))
+
+        fullScreenButton.set(.trailing(pluginView, dyteSharedTokenSpace.space1),
+                   .bottom(pluginView,dyteSharedTokenSpace.space1))
         fullScreenButton.addTarget(self, action: #selector(buttonClick(button:)), for: .touchUpInside)
         self.fullScreenButton.isHidden = !UIScreen.isLandscape()
         fullScreenButton.isSelected = false
@@ -470,13 +370,13 @@ private extension MeetingViewController {
             button.isSelected = !button.isSelected
         }
     }
+    
     private func closefullscreen() {
         if fullScreenView?.isVisible == true {
             self.pluginBaseView.addSubview(self.pluginView)
             self.pluginView.set(.fillSuperView(self.pluginBaseView))
             self.removeFullScreenView()
         }
-       
     }
     
     private func showPluginViewAsPerOrientation(show: Bool) {
@@ -497,15 +397,15 @@ private extension MeetingViewController {
     private func addPortraitConstraintForSubviews() {
         
         baseContentView.set(.sameLeadingTrailing(self.view),
-                           .below(topBar),
-                           .above(bottomBar))
+                            .below(topBar),
+                            .above(bottomBar))
         portraitConstraints.append(contentsOf: [baseContentView.get(.leading)!,
                                                 baseContentView.get(.trailing)!,
                                                 baseContentView.get(.top)!,
                                                 baseContentView.get(.bottom)!])
         
         pluginBaseView.set(.sameLeadingTrailing(baseContentView),
-                      .top(baseContentView))
+                           .top(baseContentView))
         portraitConstraints.append(contentsOf: [pluginBaseView.get(.leading)!,
                                                 pluginBaseView.get(.trailing)!,
                                                 pluginBaseView.get(.top)!])
@@ -516,11 +416,11 @@ private extension MeetingViewController {
         layoutContraintPluginBaseZeroHeight = NSLayoutConstraint(item: pluginBaseView, attribute: .height, relatedBy: .equal, toItem: baseContentView, attribute: .height, multiplier: 0.0, constant: 0)
         
         layoutContraintPluginBaseZeroHeight.isActive = false
-
+        
         
         gridBaseView.set(.sameLeadingTrailing(baseContentView),
-                      .below(pluginBaseView),
-                      .bottom(baseContentView))
+                         .below(pluginBaseView),
+                         .bottom(baseContentView))
         
         portraitConstraints.append(contentsOf: [gridBaseView.get(.leading)!,
                                                 gridBaseView.get(.trailing)!,
@@ -545,7 +445,7 @@ private extension MeetingViewController {
                             .below(self.topBar),
                             .bottom(self.view),
                             .before(bottomBar))
-       
+        
         landscapeConstraints.append(contentsOf: [baseContentView.get(.leading)!,
                                                  baseContentView.get(.trailing)!,
                                                  baseContentView.get(.top)!,
@@ -553,10 +453,10 @@ private extension MeetingViewController {
         
         
         pluginBaseView.set(.leading(baseContentView),
-                      .sameTopBottom(baseContentView))
+                           .sameTopBottom(baseContentView))
         landscapeConstraints.append(contentsOf: [pluginBaseView.get(.leading)!,
-                                                pluginBaseView.get(.bottom)!,
-                                                pluginBaseView.get(.top)!])
+                                                 pluginBaseView.get(.bottom)!,
+                                                 pluginBaseView.get(.top)!])
         
         layoutLandscapeContraintPluginBaseVariableWidth = NSLayoutConstraint(item: pluginBaseView, attribute: .width, relatedBy: .equal, toItem: baseContentView, attribute: .width, multiplier: 0.75, constant: 0)
         layoutLandscapeContraintPluginBaseVariableWidth.isActive = false
@@ -564,31 +464,31 @@ private extension MeetingViewController {
         layoutContraintPluginBaseZeroWidth = NSLayoutConstraint(item: pluginBaseView, attribute: .width, relatedBy: .equal, toItem: baseContentView, attribute: .width, multiplier: 0.0, constant: 0)
         
         layoutContraintPluginBaseZeroWidth.isActive = false
-
+        
         
         gridBaseView.set(.sameTopBottom(baseContentView),
-                      .after(pluginBaseView),
-                      .trailing(baseContentView))
+                         .after(pluginBaseView),
+                         .trailing(baseContentView))
         
         landscapeConstraints.append(contentsOf: [gridBaseView.get(.leading)!,
-                                                gridBaseView.get(.trailing)!,
-                                                gridBaseView.get(.top)!,
-                                                gridBaseView.get(.bottom)!])
-               
+                                                 gridBaseView.get(.trailing)!,
+                                                 gridBaseView.get(.top)!,
+                                                 gridBaseView.get(.bottom)!])
+        
         gridView.set(.fillSuperView(gridBaseView))
         landscapeConstraints.append(contentsOf: [gridView.get(.leading)!,
-                                                gridView.get(.trailing)!,
-                                                gridView.get(.top)!,
-                                                gridView.get(.bottom)!])
+                                                 gridView.get(.trailing)!,
+                                                 gridView.get(.top)!,
+                                                 gridView.get(.bottom)!])
         pluginView.set(.fillSuperView(pluginBaseView))
         landscapeConstraints.append(contentsOf: [pluginView.get(.leading)!,
-                                                pluginView.get(.trailing)!,
-                                                pluginView.get(.top)!,
-                                                pluginView.get(.bottom)!])
+                                                 pluginView.get(.trailing)!,
+                                                 pluginView.get(.top)!,
+                                                 pluginView.get(.bottom)!])
     }
-
+    
     private func createTopbar() {
-        let topbar = DyteMeetingHeaderView(meeting: self.dyteMobileClient)
+        let topbar = DyteMeetingHeaderView(meeting: self.meeting)
         self.view.addSubview(topbar)
         topbar.accessibilityIdentifier = "Meeting_ControlTopBar"
         self.topBar = topbar
@@ -606,8 +506,8 @@ private extension MeetingViewController {
     private func addLandscapeContraintTopbar() {
         self.topBar.set(.height(0))
         landscapeConstraints.append(contentsOf: [self.topBar.get(.leading)!,
-                                                self.topBar.get(.trailing)!,
-                                                self.topBar.get(.height)!])
+                                                 self.topBar.get(.trailing)!,
+                                                 self.topBar.get(.height)!])
     }
 }
 
@@ -615,7 +515,7 @@ private extension MeetingViewController {
 
 
 extension MeetingViewController : MeetingViewModelDelegate {
-   
+    
     func newPollAdded(createdBy: String) {
         if Shared.data.notification.newPollArrived.showToast {
             self.view.showToast(toastMessage: "New poll created by \(createdBy)", duration: 2.0, uiBlocker: false)
@@ -633,11 +533,11 @@ extension MeetingViewController : MeetingViewModelDelegate {
             self.view.showToast(toastMessage: "\(participant.name) left", duration: 2.0, uiBlocker: false)
         }
     }
-
+    
     
     func activeSpeakerChanged(participant: DyteMeetingParticipant) {
         //For now commenting out the functionality of Active Speaker, It's Not working as per our expectation
-       // showAndHideActiveSpeaker()
+        // showAndHideActiveSpeaker()
     }
     
     func pinnedChanged(participant: DyteMeetingParticipant) {
@@ -656,17 +556,11 @@ extension MeetingViewController : MeetingViewModelDelegate {
     
     private func showAndHideActiveSpeaker() {
         let pluginViewIsVisible = isPluginOrScreenShareActive
-        if let pinned = self.dyteMobileClient.participants.pinned, pluginViewIsVisible {
+        if let pinned = self.meeting.participants.pinned, pluginViewIsVisible {
             self.pluginView.showPinnedView(participant: pinned)
         }else {
-          self.pluginView.hideActiveSpeaker()
+            self.pluginView.hideActiveSpeaker()
         }
-    }
-    
-    func meetingRecording(start: Bool) {
-        self.topBar.recordingView.meetingRecording(start: start)
-        NotificationCenter.default.post(name: Notification.Name("Notify_RecordingUpdate"), object: nil, userInfo: nil)
-
     }
     
     private func getScreenShareTabButton(participants: [ParticipantsShareControl]) -> [ScreenShareTabButton] {
@@ -674,7 +568,7 @@ extension MeetingViewController : MeetingViewModelDelegate {
         for participant in participants {
             var image: DyteImage?
             if let _ = participant as? ScreenShareModel {
-                //For 
+                //For
                 image = DyteImage(image: ImageProvider.image(named: "icon_screen_share"))
             }else {
                 if let strUrl = participant.image , let imageUrl = URL(string: strUrl) {
@@ -724,14 +618,14 @@ extension MeetingViewController : MeetingViewModelDelegate {
                 if let plugin = pluginsButtonsModels[button.index] as? PluginButtonModel {
                     if self.pluginView.syncButton?.isSelected == false && isUserClick {
                         //This is send only when Syncbutton is on and Visible
-                        self.dyteMobileClient.meta.syncTab(id: plugin.id, tabType: .plugin)
+                        self.meeting.meta.syncTab(id: plugin.id, tabType: .plugin)
                     }
                     self.handleClicksOnPluginsTab(model: plugin, at: button.index)
                     
                 }else if let screenShare = pluginsButtonsModels[button.index] as? ScreenShareModel {
                     if self.pluginView.syncButton?.isSelected == false && isUserClick {
                         //This is send only when Syncbutton is on and Visible
-                        self.dyteMobileClient.meta.syncTab(id: screenShare.id, tabType: .screenshare)
+                        self.meeting.meta.syncTab(id: screenShare.id, tabType: .screenshare)
                     }
                     self.handleClicksOnScreenShareTab(model: screenShare, index: button.index)
                 }
@@ -742,7 +636,7 @@ extension MeetingViewController : MeetingViewModelDelegate {
         }
         self.pluginView.showAndHideActiveButtonListView(buttons: arrButtons)
     }
-        
+    
     func refreshPluginsView() {
         let participants = self.viewModel.screenShareViewModel.arrScreenShareParticipants
         let arrButtons = self.getScreenShareTabButton(participants: participants)
@@ -756,7 +650,7 @@ extension MeetingViewController : MeetingViewModelDelegate {
                 if let pluginModel = participants[index] as? PluginButtonModel {
                     self.pluginView.show(pluginView: pluginModel.plugin.getPluginView())
                 }
-               else if let screenShare = participants[index] as? ScreenShareModel {
+                else if let screenShare = participants[index] as? ScreenShareModel {
                     self.pluginView.showVideoView(participant: screenShare.participant)
                 }
                 self.showPlugInView()
@@ -802,14 +696,14 @@ extension MeetingViewController : MeetingViewModelDelegate {
                     completion()
                 }
             }
-           
+            
         }
     }
     
     private func showPlugInView() {
         // We need to move gridview to Starting View
         isPluginOrScreenShareActive = true
-        if self.dyteMobileClient.participants.currentPageNumber == 0 {
+        if self.meeting.participants.currentPageNumber == 0 {
             //We have to only show PluginView on page == 0 only
             self.showPluginView(show: true, animation: true)
             self.loadGrid(fullScreen: false, animation: true, completion: {})
@@ -823,7 +717,7 @@ extension MeetingViewController : MeetingViewModelDelegate {
         isPluginOrScreenShareActive = false
         self.pluginView.setButtons(buttons: buttons, selectedIndex: nil) {_,_  in}
         self.showPluginView(show: false, animation: true)
-        if self.dyteMobileClient.participants.currentPageNumber == 0 {
+        if self.meeting.participants.currentPageNumber == 0 {
             self.loadGrid(fullScreen: true, animation: true, completion: {})
         }
     }
@@ -849,41 +743,28 @@ extension MeetingViewController : MeetingViewModelDelegate {
             index += 1
             if model.participant.userId == participant.userId {
                 if let peerContainerView = self.gridView.childView(index: index) {
-                    peerContainerView.setParticipant(meeting: self.dyteMobileClient, participant: arrModels[index].participant)
+                    peerContainerView.setParticipant(meeting: self.meeting, participant: arrModels[index].participant)
                     return
                 }
             }
         }
     }
-   
+    
     private func meetingGridPageBecomeVisible() {
         
-        if let participant = dyteMobileClient.participants.pinned {
+        if let participant = meeting.participants.pinned {
             self.refreshMeetingGridTile(participant: participant)
         }
 
-        let nextPagePossible = self.dyteMobileClient.participants.canGoNextPage
-        let prevPagePossible = self.dyteMobileClient.participants.canGoPreviousPage
-
-        if !nextPagePossible && !prevPagePossible {
-            //No page view to be shown
-            self.topBar.nextPreviousButtonView.isHidden = true
-        } else {
-            self.topBar.nextPreviousButtonView.isHidden = false
-
-            self.topBar.nextPreviousButtonView.nextButton.isEnabled = nextPagePossible
-            self.topBar.nextPreviousButtonView.previousButton.isEnabled = prevPagePossible
-            self.topBar.nextPreviousButtonView.nextButton.hideActivityIndicator()
-            self.topBar.nextPreviousButtonView.previousButton.hideActivityIndicator()
-            self.topBar.setNextPreviousText(first: Int(self.dyteMobileClient.participants.currentPageNumber), second: Int(self.dyteMobileClient.participants.pageCount) - 1)
-        }
+        self.topBar.refreshNextPreviouButtonState()
     }
 }
 
 
 
 extension MeetingViewController: DyteNotificationDelegate {
-    func didReceiveNotification(type: DyteNotificationType) {
+
+    public func didReceiveNotification(type: DyteNotificationType) {
         switch type {
         case .Chat(let message):
             if Shared.data.notification.newChatArrived.playSound == true {
@@ -894,26 +775,30 @@ extension MeetingViewController: DyteNotificationDelegate {
             }
             NotificationCenter.default.post(name: Notification.Name("Notify_NewChatArrived"), object: nil, userInfo: nil)
             self.moreButtonBottomBar?.notificationBadge.isHidden = false
+            self.moreButtonBottomBar?.notificationBadge.setBadgeCount(Shared.data.getTotalUnreadCountPollsAndChat(totalMessage:self.meeting.chat.messages.count, totalsPolls: self.meeting.polls.polls.count))
             
         case .Poll:
-                NotificationCenter.default.post(name: Notification.Name("Notify_NewPollArrived"), object: nil, userInfo: nil)
-                if Shared.data.notification.newPollArrived.playSound == true {
-                     viewModel.dyteNotification.playNotificationSound(type: .Poll)
-                }
+            NotificationCenter.default.post(name: Notification.Name("Notify_NewPollArrived"), object: nil, userInfo: nil)
+            if Shared.data.notification.newPollArrived.playSound == true {
+                viewModel.dyteNotification.playNotificationSound(type: .Poll)
+            }
             self.moreButtonBottomBar?.notificationBadge.isHidden = false
+            self.moreButtonBottomBar?.notificationBadge.setBadgeCount(Shared.data.getTotalUnreadCountPollsAndChat(totalMessage:self.meeting.chat.messages.count, totalsPolls: self.meeting.polls.polls.count))
+
         case .Joined:
             if Shared.data.notification.participantJoined.playSound == true {
-                 viewModel.dyteNotification.playNotificationSound(type: .Joined)
+                viewModel.dyteNotification.playNotificationSound(type: .Joined)
             }
         case .Leave:
             if Shared.data.notification.participantLeft.playSound == true {
-                 viewModel.dyteNotification.playNotificationSound(type: .Leave)
+                viewModel.dyteNotification.playNotificationSound(type: .Leave)
             }
         }
-
+        
     }
     
-    func clearChatNotification() {
+    @objc
+    public  func clearChatNotification() {
         self.moreButtonBottomBar?.notificationBadge.isHidden = true
     }
 }
@@ -952,8 +837,8 @@ extension MeetingViewController: DyteLiveStreamEventsListener {
     }
     
     public func onStageCountUpdated(count: Int32) {
-        if dyteMobileClient.stage.stageStatus == StageStatus.offStage {
-            let controller = LivestreamViewController(dyteMobileClient: dyteMobileClient, completion: self.onFinishedMeeting)
+        if meeting.stage.stageStatus == StageStatus.offStage {
+            let controller = LivestreamViewController(dyteMobileClient: meeting, completion: self.onFinishedMeeting)
             controller.view.backgroundColor = self.view.backgroundColor
             controller.modalPresentationStyle = .fullScreen
             self.present(controller, animated: true)
@@ -973,25 +858,26 @@ extension MeetingViewController: DyteLiveStreamEventsListener {
 }
 extension MeetingViewController {
     func setupNotifications() {
-           NotificationCenter.default.addObserver(self, selector: #selector(self.onEndMettingForAllButtonPressed), name: DyteLeaveDialog.onEndMeetingForAllButtonPress, object: nil)
-       }
-       // MARK: Notification Setup Functionality
-       @objc private func onEndMettingForAllButtonPressed(notification: Notification) {
-           self.viewModel.dyteSelfListner.observeSelfRemoved(update: nil)
-       }
+        NotificationCenter.default.addObserver(self, selector: #selector(self.clearChatNotification), name: Notification.Name("NotificationAllChatsRead"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onEndMettingForAllButtonPressed), name: DyteLeaveDialog.onEndMeetingForAllButtonPress, object: nil)
+    }
+    // MARK: Notification Setup Functionality
+    @objc private func onEndMettingForAllButtonPressed(notification: Notification) {
+        self.viewModel.dyteSelfListner.observeSelfRemoved(update: nil)
+    }
 }
 
 
 extension MeetingViewController {
     func addFullScreenView(contentView: UIView) {
-            if fullScreenView == nil {
-                fullScreenView =  FullScreenView()
-                self.view.addSubview(fullScreenView)
-                fullScreenView.set(.fillSuperView(self.view))
-            }
-            fullScreenView.backgroundColor = self.view.backgroundColor
-            fullScreenView.isUserInteractionEnabled = true
-            fullScreenView.set(contentView: contentView)
+        if fullScreenView == nil {
+            fullScreenView =  FullScreenView()
+            self.view.addSubview(fullScreenView)
+            fullScreenView.set(.fillSuperView(self.view))
+        }
+        fullScreenView.backgroundColor = self.view.backgroundColor
+        fullScreenView.isUserInteractionEnabled = true
+        fullScreenView.set(contentView: contentView)
     }
     
     func removeFullScreenView() {

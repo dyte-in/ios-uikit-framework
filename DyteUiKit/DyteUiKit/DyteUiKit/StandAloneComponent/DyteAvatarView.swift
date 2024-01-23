@@ -10,8 +10,8 @@ import DyteiOSCore
 
 
 public class DyteAvatarView: UIView {
-    private let profileImageView: BaseImageView = UIUTility.createImageView(image: nil)
-    private let initialName: DyteText = UIUTility.createLabel(text: "")
+    private let profileImageView: BaseImageView = DyteUIUTility.createImageView(image: nil)
+    private let initialName: DyteText = DyteUIUTility.createLabel(text: "")
     private var participant: DyteMeetingParticipant
     
     public init(participant: DyteMeetingParticipant) {
@@ -32,17 +32,38 @@ public class DyteAvatarView: UIView {
     
     private func createSubView() {
         self.addSubview(initialName)
-        initialName.addSubview(profileImageView)
+        self.backgroundColor = dyteSharedTokenColor.brand.shade500
+        self.addSubview(profileImageView)
         profileImageView.set(.fillSuperView(initialName))
-        
-        let heightWidht = 100.0
+        initialName.adjustsFontSizeToFitWidth = true
         initialName.font = UIFont.boldSystemFont(ofSize: 30)
-        initialName.backgroundColor = tokenColor.brand.shade500
-        initialName.set(.centerView(self),
-                        .width(heightWidht),
-                        .height(heightWidht))
-        initialName.layer.cornerRadius = heightWidht/2.0
+        initialName.set(.sameLeadingTrailing(self, dyteSharedTokenSpace.space1),
+                        .centerY(self),
+                        .height(0))
         initialName.layer.masksToBounds = true
+    }
+    
+    
+    private func updateInitialNameConstraints() {
+        let multiplier: CGFloat = 0.4
+        let height = bounds.height * multiplier
+        let minheight: CGFloat = 20
+        let maxheight: CGFloat = 40
+        if height < minheight ||  height > maxheight  {
+            if height < minheight {
+                initialName.get(.height)?.constant = minheight
+            }
+            if height > maxheight {
+                initialName.get(.height)?.constant = maxheight
+            }
+        }else {
+            initialName.get(.height)?.constant = height
+        }
+        self.layer.cornerRadius = bounds.width/2.0
+    }
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        updateInitialNameConstraints()
     }
     
     public func refresh() {

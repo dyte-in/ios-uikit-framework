@@ -19,7 +19,7 @@ class SelectionProgressView: UIView {
         
     }()
     let title: DyteText = {
-        let label = UIUTility.createLabel(alignment: .left)
+        let label = DyteUIUTility.createLabel(alignment: .left)
         label.numberOfLines = 0
         label.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
         label.font = UIFont.systemFont(ofSize: 12)
@@ -27,7 +27,7 @@ class SelectionProgressView: UIView {
     }()
     
     let progressTitle: DyteText = {
-        let label = UIUTility.createLabel(alignment: .right)
+        let label = DyteUIUTility.createLabel(alignment: .right)
         label.font = UIFont.systemFont(ofSize: 12)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
@@ -163,18 +163,18 @@ class ListProgressSelectionView: UIView {
     var onSelectView:((Int)->Void)?
     
     let titleLabel: DyteText = {
-        let label = UIUTility.createLabel(alignment: .left)
+        let label = DyteUIUTility.createLabel(alignment: .left)
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()
     let leftSubTitleLabel: DyteText = {
-        let label = UIUTility.createLabel(alignment: .left)
+        let label = DyteUIUTility.createLabel(alignment: .left)
         label.font = UIFont.systemFont(ofSize: 12)
         return label
     }()
     let rightSubTitleLabel: DyteText = {
-        let label = UIUTility.createLabel(alignment: .left)
+        let label = DyteUIUTility.createLabel(alignment: .left)
         label.font = UIFont.systemFont(ofSize: 12)
         return label
     }()
@@ -188,9 +188,9 @@ class ListProgressSelectionView: UIView {
     
     init(model: ListProgressSelectionViewModel) {
         self.model = model
-        stackView = UIUTility.createStackView(axis: .vertical, spacing: spaceToken.space4)
-        stackViewSubtitle = UIUTility.createStackView(axis: .horizontal, spacing: spaceToken.space2)
-        stackViewSelectionView = UIUTility.createStackView(axis: .vertical, spacing: spaceToken.space2)
+        stackView = DyteUIUTility.createStackView(axis: .vertical, spacing: spaceToken.space4)
+        stackViewSubtitle = DyteUIUTility.createStackView(axis: .horizontal, spacing: spaceToken.space2)
+        stackViewSelectionView = DyteUIUTility.createStackView(axis: .vertical, spacing: spaceToken.space2)
         
         super.init(frame: .zero)
         titleLabel.text = model.title
@@ -210,7 +210,7 @@ class ListProgressSelectionView: UIView {
         self.arrSelectionView = createListView(on: stackViewSelectionView)
         stackViewSubtitle.addArrangedSubviews(leftSubTitleLabel,rightSubTitleLabel)
 
-        let stackViewSubTitleSelectionView = UIUTility.createStackView(axis: .vertical, spacing: spaceToken.space3)
+        let stackViewSubTitleSelectionView = DyteUIUTility.createStackView(axis: .vertical, spacing: spaceToken.space3)
         stackViewSubTitleSelectionView.addArrangedSubviews(stackViewSubtitle,stackViewSelectionView)
         stackView.addArrangedSubviews(titleLabel,stackViewSubTitleSelectionView)
     }
@@ -273,14 +273,14 @@ class ShowPolls: UIView {
     let backGroundColor = DesignLibrary.shared.color.background.shade900
  
     let lblTitle: DyteText = {
-        let label = UIUTility.createLabel(alignment: .left)
+        let label = DyteUIUTility.createLabel(alignment: .left)
         label.numberOfLines = 0
         label.font = UIFont.boldSystemFont(ofSize: 12)
         return label
     }()
     
     let lblTime: DyteText = {
-        let label = UIUTility.createLabel(alignment: .left)
+        let label = DyteUIUTility.createLabel(alignment: .left)
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 12)
         return label
@@ -447,7 +447,9 @@ extension ShowPollsViewModel: DytePollEventsListener {
 }
 
 public class ShowPollsViewController: UIViewController , SetTopbar {
-    let topBar: DyteNavigationBar = {
+    public var shouldShowTopBar: Bool = true
+    
+    public let topBar: DyteNavigationBar = {
         let topBar = DyteNavigationBar(title: "Polls")
         return topBar
     }()
@@ -459,7 +461,7 @@ public class ShowPollsViewController: UIViewController , SetTopbar {
 
     let viewBackGroundColor = DesignLibrary.shared.color.background.shade1000
     let lblNoPollExist: DyteText = {
-        let label = UIUTility.createLabel(text: "No active polls! \n\n Let's start a new poll now by clicking Create Poll button below")
+        let label = DyteUIUTility.createLabel(text: "No active polls! \n\n Let's start a new poll now by clicking Create Poll button below")
         label.numberOfLines = 0
         label.accessibilityIdentifier = "Polls_EmptyScreen_Label"
         label.isHidden = true
@@ -478,7 +480,7 @@ public class ShowPollsViewController: UIViewController , SetTopbar {
         topBar.set(.top(self.view, self.view.safeAreaInsets.top))
     }
     
-    init(dyteMobileClient: DyteMobileClient) {
+    public init(dyteMobileClient: DyteMobileClient) {
         self.viewModel = ShowPollsViewModel(dyteMobileClient: dyteMobileClient)
         self.dyteMobileClient = dyteMobileClient
         super.init(nibName: nil, bundle: nil)

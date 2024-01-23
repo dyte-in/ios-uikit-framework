@@ -18,7 +18,7 @@ open class  DyteAudioButtonControlBar: DyteControlBarButton {
         self.dyteSelfListner = DyteEventSelfListner(mobileClient: mobileClient)
         super.init(image: DyteImage(image: ImageProvider.image(named: "icon_mic_enabled")), title: "Mic on", appearance: appearance)
         self.setSelected(image: DyteImage(image: ImageProvider.image(named: "icon_mic_disabled")), title: "Mic off")
-        self.selectedStateTintColor = tokenColor.status.danger
+        self.selectedStateTintColor = dyteSharedTokenColor.status.danger
         self.addTarget(self, action: #selector(onClick(button:)), for: .touchUpInside)
         self.isSelected = !mobileClient.localUser.audioEnabled
 

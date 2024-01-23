@@ -11,7 +11,6 @@ public protocol DyteTabBarDelegate: AnyObject {
     func didTap(button: DyteControlBarButton, atIndex index:NSInteger)
     func getTabBarHeightForPortrait() -> CGFloat
     func getTabBarWidthForLandscape() -> CGFloat
-
 }
 
 public protocol DyteControlBarAppearance: BaseAppearance {
@@ -30,9 +29,8 @@ public class DyteControlBarAppearanceModel : DyteControlBarAppearance {
 }
 
 open class DyteTabbarBar: UIView, AdaptableUI {
-    var portraitConstraints = [NSLayoutConstraint]()
-    
-    var landscapeConstraints = [NSLayoutConstraint]()
+    public var portraitConstraints = [NSLayoutConstraint]()
+    public var landscapeConstraints = [NSLayoutConstraint]()
         
     private struct Constants {
         static let tabBarAnimationDuration: Double = 1.5
@@ -63,11 +61,10 @@ open class DyteTabbarBar: UIView, AdaptableUI {
         }
     }
     
-    
     private var heightConstraint: NSLayoutConstraint?
     private var widthLandscapeConstraint: NSLayoutConstraint?
 
-    func setHeight() {
+   public func setHeight() {
         self.removeWidthContraint()
         self.removeHeightContraint()
         var extra = DyteTabbarBar.defaultBottomAdjustForNonNotch
@@ -77,6 +74,14 @@ open class DyteTabbarBar: UIView, AdaptableUI {
         let height = DyteTabbarBar.baseHeight + extra
        self.heightConstraint = self.heightAnchor.constraint(equalToConstant: delegate?.getTabBarHeightForPortrait() ?? height)
        self.heightConstraint?.isActive = true
+    }
+    
+    public func setWidth() {
+        var extra = DyteTabbarBar.defaultBottomAdjustForNonNotch
+        if UIScreen.deviceOrientation == .landscapeLeft {
+            extra = self.superview!.safeAreaInsets.right
+        }
+        self.setWidth(extra: extra)
     }
     
     private func removeHeightContraint() {
@@ -91,22 +96,12 @@ open class DyteTabbarBar: UIView, AdaptableUI {
         }
     }
     
-    func setWidth() {
-        var extra = DyteTabbarBar.defaultBottomAdjustForNonNotch
-        if UIScreen.deviceOrientation == .landscapeLeft {
-            extra = self.superview!.safeAreaInsets.right
-        }
-        self.setWidth(extra: extra)
-    }
-    
     private func setWidth(extra: CGFloat) {
         self.removeHeightContraint()
         self.removeWidthContraint()
         let width = baseWidthForLandscape + extra
         self.widthLandscapeConstraint = self.widthAnchor.constraint(equalToConstant: delegate?.getTabBarWidthForLandscape() ?? width)
         self.widthLandscapeConstraint?.isActive = true
-        //containerView.get(.trailing)?.constant = bottomSpace + extra
-
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -146,12 +141,12 @@ open class DyteTabbarBar: UIView, AdaptableUI {
     
    private func layoutViews() {
         stackView.set(.fillSuperView(containerView))
-       addPortraitContraintForContainerView()
-       addLandscapeContraintForContainerView()
+       addPortraitConstraintsForContainerView()
+       addLandscapeConstraintsForContainerView()
        applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
     }
     
-    private func addPortraitContraintForContainerView() {
+    private func addPortraitConstraintsForContainerView() {
         containerView.set(.sameLeadingTrailing(self, tokenSpace.space4),
                           .top(self, tokenSpace.space2),
                           .height(DyteTabbarBar.baseHeight))
@@ -161,7 +156,7 @@ open class DyteTabbarBar: UIView, AdaptableUI {
                                                 containerView.get(.height)!])
     }
     
-    private func addLandscapeContraintForContainerView() {
+    private func addLandscapeConstraintsForContainerView() {
         containerView.set(.sameTopBottom(self, tokenSpace.space4),
                           .leading(self, tokenSpace.space2),
                           .width(baseWidthForLandscape))
@@ -208,6 +203,18 @@ open class DyteTabbarBar: UIView, AdaptableUI {
     public func setItemsOrientation(axis: NSLayoutConstraint.Axis) {
         self.stackView.axis = axis
     }
+    
+    open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        self.applyConstraintAsPerOrientation()
+        if UIScreen.isLandscape() {
+            self.stackView.axis = .vertical
+            self.setWidth()
+        }else {
+            self.stackView.axis = .horizontal
+            self.setHeight()
+        }
+    }
 }
 
 
@@ -217,10 +224,11 @@ open class DyteControlBar: DyteTabbarBar {
     private let presentingViewController: UIViewController
     private let meeting: DyteMobileClient
     private let endCallCompletion: (()->Void)?
-    init(meeting: DyteMobileClient, delegate: DyteTabBarDelegate?, presentingViewController: UIViewController, appearance: DyteControlBarAppearance = DyteControlBarAppearanceModel(), meetingViewModel: MeetingViewModel, settingViewControllerCompletion:(()->Void)? = nil, onLeaveMeetingCompletion: (()->Void)? = nil) {
+    
+    public init(meeting: DyteMobileClient, delegate: DyteTabBarDelegate?, presentingViewController: UIViewController, appearance: DyteControlBarAppearance = DyteControlBarAppearanceModel(), settingViewControllerCompletion:(()->Void)? = nil, onLeaveMeetingCompletion: (()->Void)? = nil) {
         self.meeting = meeting
         self.presentingViewController = presentingViewController
-        let moreButton = DyteMoreButtonControlBar(mobileClient: meeting, presentingViewController: presentingViewController, meetingViewModel: meetingViewModel, settingViewControllerCompletion: settingViewControllerCompletion)
+        let moreButton = DyteMoreButtonControlBar(mobileClient: meeting, presentingViewController: presentingViewController, settingViewControllerCompletion: settingViewControllerCompletion)
         self.moreButton = moreButton
         moreButton.accessibilityIdentifier = "More_ControlBarButton"
         self.endCallCompletion = onLeaveMeetingCompletion
@@ -234,13 +242,24 @@ open class DyteControlBar: DyteTabbarBar {
         self.setButtons([DyteControlBarButton]())
     }
     
+    //Override this if you don't want to add More and Call Buttons by defaults
+    open func addDefaultButtons(_ buttons: [DyteControlBarButton]) -> [DyteControlBarButton] {
+        return buttons
+    }
+    
     public override func setButtons(_ buttons: [DyteControlBarButton]) {
         var buttons = buttons
-        buttons.append(moreButton)
+        buttons.append(contentsOf: addDefaultButtons(getDefaultButton()))
+        super.setButtons(buttons)
+    }
+    
+    private func getDefaultButton() -> [DyteControlBarButton] {
+        var defaultButtons =  [DyteControlBarButton]()
+        defaultButtons.append(moreButton)
         self.endCallButton = getEndCallButton()
         self.endCallButton.accessibilityIdentifier = "End_ControlBarButton"
-        buttons.append(endCallButton)
-        super.setButtons(buttons)
+        defaultButtons.append(endCallButton)
+        return defaultButtons
     }
     
     private func getEndCallButton() -> DyteEndMeetingControlBarButton {

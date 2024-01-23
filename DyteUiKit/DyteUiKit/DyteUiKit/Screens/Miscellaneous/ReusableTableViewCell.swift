@@ -11,7 +11,7 @@ import UIKit
 
 class TitleTableViewCell: BaseTableViewCell {
     let lblTitle = {
-        let lblTitle = UIUTility.createLabel()
+        let lblTitle = DyteUIUTility.createLabel()
         return lblTitle
     }()
     
@@ -30,9 +30,9 @@ class TitleTableViewCell: BaseTableViewCell {
         let baseView = UIView()
         createSubView(on: baseView)
         contentView.addSubview(baseView)
-        baseView.set(.below(self.cellSeparatorTop, tokenSpace.space5),
-                     .above(cellSeparatorBottom, tokenSpace.space5),
-                     .sameLeadingTrailing(contentView,tokenSpace.space4))
+        baseView.set(.below(self.cellSeparatorTop, dyteSharedTokenSpace.space5),
+                     .above(cellSeparatorBottom, dyteSharedTokenSpace.space5),
+                     .sameLeadingTrailing(contentView,dyteSharedTokenSpace.space4))
       
     }
     
@@ -62,7 +62,7 @@ class AcceptButtonTableViewCell: ButtonTableViewCell {
     
     override func setupView() {
         super.setupView()
-        self.button.backgroundColor = tokenColor.background.shade800
+        self.button.backgroundColor = dyteSharedTokenColor.background.shade800
     }
 }
 class AcceptButtonJoinStageRequestTableViewCell: AcceptButtonTableViewCell {
@@ -75,7 +75,7 @@ class RejectButtonTableViewCell: ButtonTableViewCell {
     
     override func setupView() {
         super.setupView()
-        self.button.backgroundColor = tokenColor.background.shade800
+        self.button.backgroundColor = dyteSharedTokenColor.background.shade800
     }
 }
 class RejectButtonJoinStageRequestTableViewCell: RejectButtonTableViewCell {
@@ -105,8 +105,8 @@ class ButtonTableViewCell: BaseTableViewCell {
         let baseView = UIView()
         createSubView(on: baseView)
         contentView.addSubview(baseView)
-        baseView.set(.below(self.cellSeparatorTop, tokenSpace.space2),
-                     .above(cellSeparatorBottom, tokenSpace.space2),
+        baseView.set(.below(self.cellSeparatorTop, dyteSharedTokenSpace.space2),
+                     .above(cellSeparatorBottom, dyteSharedTokenSpace.space2),
                      .sameLeadingTrailing(cellSeparatorBottom))
         button.addTarget(self, action: #selector(buttonClick(button:)), for: .touchUpInside)
     }
@@ -122,7 +122,7 @@ class ButtonTableViewCell: BaseTableViewCell {
 
 struct ButtonTableViewCellModel {
     var buttonTitle: String
-    var titleColor: UIColor = tokenColor.status.success
+    var titleColor: UIColor = dyteSharedTokenColor.status.success
 }
 
 extension ButtonTableViewCell: ConfigureView {
@@ -148,7 +148,7 @@ struct SearchTableViewCellModel {
 class SearchTableViewCell: BaseTableViewCell {
     let searchBar = {
         let searchBar = UISearchBar()
-        searchBar.changeText(color: tokenColor.textColor.onBackground.shade700)
+        searchBar.changeText(color: dyteSharedTokenColor.textColor.onBackground.shade700)
         searchBar.searchBarStyle = .minimal
         searchBar.isUserInteractionEnabled = false
         return searchBar
@@ -169,9 +169,9 @@ class SearchTableViewCell: BaseTableViewCell {
         let baseView = UIView()
         createSubView(on: baseView)
         contentView.addSubview(baseView)
-        baseView.set(.below(self.cellSeparatorTop, tokenSpace.space2),
-                     .above(cellSeparatorBottom, tokenSpace.space2),
-                     .sameLeadingTrailing(contentView,tokenSpace.space4))
+        baseView.set(.below(self.cellSeparatorTop, dyteSharedTokenSpace.space2),
+                     .above(cellSeparatorBottom, dyteSharedTokenSpace.space2),
+                     .sameLeadingTrailing(contentView,dyteSharedTokenSpace.space4))
     }
     
     required init?(coder: NSCoder) {

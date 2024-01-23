@@ -65,13 +65,13 @@ protocol Molecule: AutoLayoutable {
     var atoms:[BaseAtom] {get}
 }
 
-protocol AdaptableUI {
+public protocol AdaptableUI {
     var portraitConstraints: [NSLayoutConstraint] {get}
     var landscapeConstraints: [NSLayoutConstraint] {get}
     func applyConstraintAsPerOrientation(isLandscape:Bool, onPortait:()->Void, onLandscape:()->Void)
 }
 
-extension AdaptableUI {
+public extension AdaptableUI {
     func setContraintAsDeactive() {
         portraitConstraints.forEach { $0.isActive = false}
         landscapeConstraints.forEach { $0.isActive = false}

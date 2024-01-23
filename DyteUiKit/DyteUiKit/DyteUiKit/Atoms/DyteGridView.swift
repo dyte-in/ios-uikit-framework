@@ -8,7 +8,7 @@
 import UIKit
 
 
-class GridView<CellContainerView: UIView>: UIView {
+public class GridView<CellContainerView: UIView>: UIView {
 
     struct Paddings {
         let top: CGFloat = 20
@@ -31,7 +31,7 @@ class GridView<CellContainerView: UIView>: UIView {
     private let scrollView = UIScrollView()
     private let scrollContentView = UIView()
 
-    init(maxItems: UInt = 9, showingCurrently: UInt, getChildView: @escaping()->CellContainerView) {
+    public  init(maxItems: UInt = 9, showingCurrently: UInt, getChildView: @escaping()->CellContainerView) {
         self.maxItems = maxItems
         self.getChildView = getChildView
         if isDebugModeOn {
@@ -46,7 +46,7 @@ class GridView<CellContainerView: UIView>: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func settingFrames(visibleItemCount: UInt, animation: Bool = true, completion:@escaping(Bool)->Void) {
+    public func settingFrames(visibleItemCount: UInt, animation: Bool = true, completion:@escaping(Bool)->Void) {
         currentVisibleItem = visibleItemCount
         previousAnimation = animation
         self.layoutIfNeeded()
@@ -56,7 +56,7 @@ class GridView<CellContainerView: UIView>: UIView {
         self.initialize(views: self.views, frames: self.frames, animation: animation, completion: completion)
     }
     
-    func settingFramesForLandScape(visibleItemCount: UInt, animation: Bool = true, completion:@escaping(Bool)->Void) {
+    public  func settingFramesForLandScape(visibleItemCount: UInt, animation: Bool = true, completion:@escaping(Bool)->Void) {
         currentVisibleItem = visibleItemCount
         previousAnimation = animation
         self.layoutIfNeeded()
@@ -66,7 +66,7 @@ class GridView<CellContainerView: UIView>: UIView {
         self.initialize(views: self.views, frames: self.frames, animation: animation, completion: completion)
     }
     
-    func settingFramesForPluginsActiveInPortraitMode(visibleItemCount: UInt, animation: Bool = true, completion:@escaping(Bool)->Void) {
+    public  func settingFramesForPluginsActiveInPortraitMode(visibleItemCount: UInt, animation: Bool = true, completion:@escaping(Bool)->Void) {
         currentVisibleItem = visibleItemCount
         previousAnimation = animation
         self.frames = self.getFramesForHorizontal(itemsCount: visibleItemCount, height: self.scrollView.frame.height)
@@ -76,7 +76,7 @@ class GridView<CellContainerView: UIView>: UIView {
         self.initialize(views: self.views, frames: self.frames, animation: animation, completion: completion)
     }
     
-    func settingFramesForPluginsActiveInLandscapeMode(visibleItemCount: UInt, animation: Bool = true, completion:@escaping(Bool)->Void) {
+    public func settingFramesForPluginsActiveInLandscapeMode(visibleItemCount: UInt, animation: Bool = true, completion:@escaping(Bool)->Void) {
         currentVisibleItem = visibleItemCount
         previousAnimation = animation
         self.frames = self.getFramesForLandscapeVertical(itemsCount: visibleItemCount, width: self.scrollView.frame.width)
@@ -86,9 +86,15 @@ class GridView<CellContainerView: UIView>: UIView {
     }
     
     
+    public  func prepareForReuse(childView:(CellContainerView)->Void) {
+        for i in 0..<self.maxItems {
+            if let peerView = self.childView(index: Int(i)) {
+                childView(peerView)
+            }
+        }
+    }
     
-    
-    func childView(index: Int) -> CellContainerView? {
+    public func childView(index: Int) -> CellContainerView? {
         if index >= 0 && index < maxItems {
             return self.views[index]
         }
@@ -147,7 +153,7 @@ extension GridView {
             baseView.addSubview(view)
             result.append(view)
             if isDebugModeOn {
-                let label = UIUTility.createLabel(text:"View No: \(i) test \(view)")
+                let label = DyteUIUTility.createLabel(text:"View No: \(i) test \(view)")
                 label.textColor = .black
                 label.layer.zPosition = 1.0
                 view.addSubview(label)

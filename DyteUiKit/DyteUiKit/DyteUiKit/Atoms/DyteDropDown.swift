@@ -18,12 +18,12 @@ public class DyteDropdown<Model: PickerCellModel>: UIView {
     let spaceToken = DesignLibrary.shared.space
     
     fileprivate  var lblTitle: DyteText = {
-        let lbl = UIUTility.createLabel(text: "", alignment: .left)
+        let lbl = DyteUIUTility.createLabel(text: "", alignment: .left)
         return lbl
     }()
     
-    let lblHeader: DyteText = { return UIUTility.createLabel(text: "", alignment: .left) }()
-    let lblError: DyteText = { return UIUTility.createLabel(text: "", alignment: .left) }()
+    let lblHeader: DyteText = { return DyteUIUTility.createLabel(text: "", alignment: .left) }()
+    let lblError: DyteText = { return DyteUIUTility.createLabel(text: "", alignment: .left) }()
     
     let verticalSpaceTopLabelAndTextField = 8.0
     let verticalSpaceErrorLabel = 4.0
@@ -60,7 +60,7 @@ public class DyteDropdown<Model: PickerCellModel>: UIView {
     }
     
    private func createSubViews() {
-        let stackViewTextField = UIUTility.createStackView(axis: .vertical, spacing: verticalSpaceTopLabelAndTextField)
+        let stackViewTextField = DyteUIUTility.createStackView(axis: .vertical, spacing: verticalSpaceTopLabelAndTextField)
         let lblBaseView = lblTitle.wrapperView()
         
        
@@ -73,7 +73,7 @@ public class DyteDropdown<Model: PickerCellModel>: UIView {
         stackViewTextField.addArrangedSubviews(lblHeader, lblBaseView)
         
         
-        let stackViewTextFieldAndErrorLabel = UIUTility.createStackView(axis: .vertical, spacing: verticalSpaceErrorLabel)
+        let stackViewTextFieldAndErrorLabel = DyteUIUTility.createStackView(axis: .vertical, spacing: verticalSpaceErrorLabel)
         stackViewTextFieldAndErrorLabel.addArrangedSubviews(stackViewTextField, lblError)
         self.addSubview(stackViewTextFieldAndErrorLabel)
         stackViewTextFieldAndErrorLabel.set(.fillSuperView(self))
@@ -108,7 +108,7 @@ public class DyteDropdown<Model: PickerCellModel>: UIView {
         let viewBaseArrow = UIView()
         view.addSubview(viewBaseArrow)
         viewBaseArrow.set(.width(width), .trailing(view), .sameTopBottom(view))
-        let iconImageView = UIUTility.createImageView(image: image)
+        let iconImageView = DyteUIUTility.createImageView(image: image)
         viewBaseArrow.addSubview(iconImageView)
         iconImageView.set(.centerView(viewBaseArrow), .leading(viewBaseArrow, 0.0, .greaterThanOrEqual), .top(viewBaseArrow, 0.0, .greaterThanOrEqual))
     }

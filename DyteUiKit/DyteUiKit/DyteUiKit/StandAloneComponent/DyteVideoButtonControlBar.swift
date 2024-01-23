@@ -17,7 +17,7 @@ open class  DyteVideoButtonControlBar: DyteControlBarButton {
         self.dyteSelfListner = DyteEventSelfListner(mobileClient: mobileClient)
         super.init(image: DyteImage(image: ImageProvider.image(named: "icon_video_enabled")), title: "Video On")
         self.setSelected(image: DyteImage(image: ImageProvider.image(named: "icon_video_disabled")), title: "Video off")
-        self.selectedStateTintColor = tokenColor.status.danger
+        self.selectedStateTintColor = dyteSharedTokenColor.status.danger
         self.addTarget(self, action: #selector(onClick(button:)), for: .touchUpInside)
         self.isSelected = !mobileClient.localUser.videoEnabled
         self.dyteSelfListner.observeSelfVideo { [weak self] enabled in

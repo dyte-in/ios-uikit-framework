@@ -11,13 +11,11 @@ import DyteiOSCore
 open class  DyteMoreButtonControlBar: DyteControlBarButton {
     private let meeting: DyteMobileClient
     private let presentingViewController: UIViewController
-    private let viewModel: MeetingViewModel
     private let settingViewControllerCompletion:(()->Void)?
     private var bottomSheet: DyteMoreMenuBottomSheet!
-    public init(mobileClient: DyteMobileClient, presentingViewController: UIViewController, meetingViewModel: MeetingViewModel, settingViewControllerCompletion:(()->Void)? = nil) {
+    public init(mobileClient: DyteMobileClient, presentingViewController: UIViewController, settingViewControllerCompletion:(()->Void)? = nil) {
         self.meeting = mobileClient
         self.settingViewControllerCompletion = settingViewControllerCompletion
-        self.viewModel = meetingViewModel
         self.presentingViewController = presentingViewController
         super.init(image: DyteImage(image: ImageProvider.image(named: "icon_more_tabbar")), title: "More")
         self.addTarget(self, action: #selector(onClick(button:)), for: .touchUpInside)
@@ -42,7 +40,7 @@ open class  DyteMoreButtonControlBar: DyteControlBarButton {
     
     private func createMoreMenu(shown onView: UIView) {
                      
-        self.bottomSheet = DyteMoreMenuBottomSheet(menus: getMenu(), meeting: self.meeting, presentingViewController: self.presentingViewController, meetingViewModel: self.viewModel)
+        self.bottomSheet = DyteMoreMenuBottomSheet(menus: getMenu(), meeting: self.meeting, presentingViewController: self.presentingViewController)
         self.bottomSheet.show()
     }
     
@@ -123,7 +121,7 @@ open class  DyteMoreButtonControlBar: DyteControlBarButton {
         self.bottomSheet?.reload(features: getMenu())
     }
     
-    func hideBottomSheet() {
+    public func hideBottomSheet() {
         self.bottomSheet?.hide()
     }
 }

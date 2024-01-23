@@ -21,24 +21,31 @@ extension ReusableObject {
 }
 
 
-protocol SetTopbar {
+public protocol SetTopbar {
     var topBar: DyteNavigationBar {get}
+    var shouldShowTopBar: Bool {get}
 }
 extension SetTopbar where Self:UIViewController {
     func addTopBar(dismissAnimation: Bool, completion:(()->Void)? = nil) {
-        topBar.setClicks { [weak self] button in
-            guard let self = self else {return}
-            if self.isModal {
-                self.dismiss(animated: dismissAnimation, completion: completion)
-            }else {
-                self.navigationController?.popViewController(animated: dismissAnimation)
-                completion?()
-            }
-        }
         self.view.addSubview(self.topBar)
-        topBar.set(.sameLeadingTrailing(self.view),
-                   .top(self.view),
-                   .height(44))
+        if shouldShowTopBar {
+            topBar.setClicks { [weak self] button in
+                guard let self = self else {return}
+                if self.isModal {
+                    self.dismiss(animated: dismissAnimation, completion: completion)
+                }else {
+                    self.navigationController?.popViewController(animated: dismissAnimation)
+                    completion?()
+                }
+            }
+            topBar.set(.sameLeadingTrailing(self.view),
+                       .top(self.view),
+                       .height(44))
+        } else {
+            topBar.set(.sameLeadingTrailing(self.view),
+                       .top(self.view),
+                       .height(0))
+        }
     }
 }
 

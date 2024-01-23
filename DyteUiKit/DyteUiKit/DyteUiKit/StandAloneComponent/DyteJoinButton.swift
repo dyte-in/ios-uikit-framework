@@ -29,7 +29,7 @@ open class DyteJoinButton: DyteButton {
     @objc open func onClick(button: DyteJoinButton) {
         let userName = meeting.localUser.name
         if userName.trimmingCharacters(in: .whitespaces).isEmpty || userName == "Join as XYZ" {
-            UIUTility.displayAlert(alertTitle: "Error", message: "Name Required")
+            DyteUIUTility.displayAlert(alertTitle: "Error", message: "Name Required")
         } else {
             button.showActivityIndicator()
             self.meeting.joinRoom {[weak self]  in

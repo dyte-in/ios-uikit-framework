@@ -10,6 +10,7 @@ import UIKit
 
 
 class WebinarParticipantViewController: UIViewController, SetTopbar, KeyboardObservable {
+    var shouldShowTopBar: Bool = true
     let tableView = UITableView()
     let viewModel: WebinarParticipantViewControllerModel
     var keyboardObserver: KeyboardObserver?
@@ -83,7 +84,7 @@ class WebinarParticipantViewController: UIViewController, SetTopbar, KeyboardObs
     
     func setUpTableView() {
         self.view.addSubview(tableView)
-        tableView.backgroundColor = tokenColor.background.shade1000
+        tableView.backgroundColor = dyteSharedTokenColor.background.shade1000
         tableView.set(.sameLeadingTrailing(self.view),
                       .below(topBar),
                       .bottom(self.view))

@@ -10,13 +10,11 @@ import DyteiOSCore
 
 public class DyteMoreMenuBottomSheet {
     private let presentingViewController: UIViewController
-    private let viewModel: MeetingViewModel
     private let settingViewControllerCompletion:(()->Void)?
     private let meeting: DyteMobileClient
 
-   init(menus: [MenuType], meeting: DyteMobileClient, presentingViewController: UIViewController, meetingViewModel: MeetingViewModel, settingViewControllerCompletion:(()->Void)? = nil) {
+   init(menus: [MenuType], meeting: DyteMobileClient, presentingViewController: UIViewController, settingViewControllerCompletion:(()->Void)? = nil) {
        self.settingViewControllerCompletion = settingViewControllerCompletion
-       self.viewModel = meetingViewModel
        self.presentingViewController = presentingViewController
        self.meeting = meeting
       
@@ -79,7 +77,7 @@ private extension DyteMoreMenuBottomSheet {
     private func launchPollsScreen() {
         let controller = ShowPollsViewController(dyteMobileClient: self.meeting)
         self.presentingViewController.present(controller, animated: true)
-        Shared.data.setPollViewCount(totalMessage: self.meeting.polls.polls.count)
+        Shared.data.setPollViewCount(totalPolls: self.meeting.polls.polls.count)
     }
     
     private func launchSettingScreen() {
@@ -118,7 +116,7 @@ private extension DyteMoreMenuBottomSheet {
     }
     
     private func onChatTapped() {
-        let controller = ChatViewController(dyteMobileClient: self.meeting, meetingViewModel: self.viewModel)
+        let controller = ChatViewController(dyteMobileClient: self.meeting)
         let navigationController = UINavigationController(rootViewController: controller)
         navigationController.modalPresentationStyle = .fullScreen
         self.presentingViewController.present(navigationController, animated: true, completion: nil)

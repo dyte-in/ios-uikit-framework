@@ -47,8 +47,8 @@ public class DyteTextField: BaseAtomView {
         return textField
     }()
     
-    let lblHeader: DyteText = { return UIUTility.createLabel(text: "", alignment: .left) }()
-    let lblError: DyteText = { return UIUTility.createLabel(text: "", alignment: .left) }()
+    let lblHeader: DyteText = { return DyteUIUTility.createLabel(text: "", alignment: .left) }()
+    let lblError: DyteText = { return DyteUIUTility.createLabel(text: "", alignment: .left) }()
     
     let verticalSpaceTopLabelAndTextField = 8.0
     let verticalSpaceErrorLabel = 4.0
@@ -88,9 +88,9 @@ public class DyteTextField: BaseAtomView {
     }
     
     func createSubViews() {
-        let stackViewTextField = UIUTility.createStackView(axis: .vertical, spacing: verticalSpaceTopLabelAndTextField)
+        let stackViewTextField = DyteUIUTility.createStackView(axis: .vertical, spacing: verticalSpaceTopLabelAndTextField)
         stackViewTextField.addArrangedSubviews(lblHeader, textField)
-        let stackViewTextFieldAndErrorLabel = UIUTility.createStackView(axis: .vertical, spacing: verticalSpaceErrorLabel)
+        let stackViewTextFieldAndErrorLabel = DyteUIUTility.createStackView(axis: .vertical, spacing: verticalSpaceErrorLabel)
         stackViewTextFieldAndErrorLabel.addArrangedSubviews(stackViewTextField, lblError)
         self.addSubview(stackViewTextFieldAndErrorLabel)
         stackViewTextFieldAndErrorLabel.set(.fillSuperView(self))

@@ -53,7 +53,7 @@ public class SearchViewController: UIViewController, KeyboardObservable {
     
     let searchBar = {
         let searchBar = UISearchBar()
-        searchBar.changeText(color: tokenColor.textColor.onBackground.shade700)
+        searchBar.changeText(color: dyteSharedTokenColor.textColor.onBackground.shade700)
         searchBar.searchBarStyle = .minimal
         searchBar.showsCancelButton = true
         return searchBar
@@ -68,7 +68,7 @@ public class SearchViewController: UIViewController, KeyboardObservable {
      
     func setUpView() {
         searchBar.delegate = self
-        self.view.backgroundColor = tokenColor.background.shade1000
+        self.view.backgroundColor = dyteSharedTokenColor.background.shade1000
         self.view.addSubview(searchBar)
         searchBar.set(.top(self.view),
                       .sameLeadingTrailing(self.view))
@@ -80,7 +80,7 @@ public class SearchViewController: UIViewController, KeyboardObservable {
 
     func setUpTableView() {
         self.view.addSubview(tableView)
-        tableView.backgroundColor = tokenColor.background.shade1000
+        tableView.backgroundColor = dyteSharedTokenColor.background.shade1000
         tableView.set(.sameLeadingTrailing(self.view),
                       .below(self.searchBar),
                       .bottom(self.view))

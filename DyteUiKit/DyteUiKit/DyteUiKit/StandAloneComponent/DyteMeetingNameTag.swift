@@ -24,7 +24,7 @@ public class DyteMeetingNameTag: DyteNameTag {
         refresh()
     }
     
-    func refresh() {
+   public func refresh() {
         let name = self.participant.name
         if self.meeting.localUser.userId == self.participant.userId {
             self.lblTitle.text = "\(name) (you)"

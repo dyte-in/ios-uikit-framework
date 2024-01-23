@@ -35,6 +35,13 @@ public protocol DyteUiKitLifeCycle {
 
 }
 
+
+public protocol DyteUIKitFlowCoordinatorDelegate {
+    func showSetUpScreen(completion:()->Void) -> SetupViewControllerDataSource?
+    func showGroupCallMeetingScreen(meeting: DyteMobileClient, completion: @escaping()->Void) -> UIViewController?
+    func showWebinarMeetingScreen(meeting: DyteMobileClient, completion: @escaping()->Void) -> UIViewController?
+}
+
 public class DyteUiKit {
     public enum WebinarAlertButtonType {
         case confirmAndJoin
@@ -47,6 +54,8 @@ public class DyteUiKit {
     public let appTheme: AppTheme
     public let designLibrary: DesignLibrary
     public let notification = DyteNotificationConfig()
+    public let flowDelegate: DyteUIKitFlowCoordinatorDelegate?
+    var completion: (()->Void)!
 
 #if DEBUG
    static let isDebugModeOn = false
@@ -59,15 +68,17 @@ public class DyteUiKit {
             Shared.data.delegate = delegate
         }
     }
-    public  init(meetingInfo: DyteMeetingInfo) {
+    public  init(meetingInfo: DyteMeetingInfo, flowDelegate: DyteUIKitFlowCoordinatorDelegate?) {
         mobileClient = DyteiOSClientBuilder().build()
+        self.flowDelegate = flowDelegate
         designLibrary = DesignLibrary.shared
         appTheme = AppTheme(designTokens: designLibrary)
         configuration = meetingInfo
         configurationV2 = nil
     }
     
-    public init(meetingInfoV2: DyteMeetingInfoV2) {
+    public init(meetingInfoV2: DyteMeetingInfoV2, flowDelegate: DyteUIKitFlowCoordinatorDelegate?) {
+        self.flowDelegate = flowDelegate
         mobileClient = DyteiOSClientBuilder().build()
         designLibrary = DesignLibrary.shared
         appTheme = AppTheme(designTokens: designLibrary)
@@ -75,15 +86,15 @@ public class DyteUiKit {
         configuration = nil
     }
     
-    public func startMeeting(completion:@escaping()->Void) -> SetupViewController {
+    public func startMeeting(completion:@escaping()->Void) -> UIViewController {
         Shared.data.initialise()
         Shared.data.notification = notification
-        if let config = self.configuration {
-            let controller =  SetupViewController(meetingInfo: config, mobileClient: self.mobileClient, completion: completion)
-            return controller
+        self.completion = completion
+        if let viewController = self.flowDelegate?.showSetUpScreen(completion: completion) {
+            viewController.delegate = self
+            return viewController
         } else {
-            let controller =  SetupViewController(meetingInfo:self.configurationV2!, mobileClient: self.mobileClient, completion: completion)
-            return controller
+           return getSetUpViewController(configuration: self.configuration, configurationV2: self.configurationV2, completion: completion)
         }
     }
 }
@@ -99,5 +110,57 @@ extension DyteMobileClient {
     
     func getPendingParticipantCount() -> Int {
         return getWebinarCount() + getWaitlistCount()
+    }
+}
+
+extension DyteUiKit {
+    
+    private func getSetUpViewController(configuration: DyteMeetingInfo?,configurationV2: DyteMeetingInfoV2?, completion:@escaping()->Void) -> SetupViewController {
+        if let config = configuration {
+            let controller =  SetupViewController(meetingInfo: config, mobileClient: self.mobileClient, completion: completion)
+            controller.delegate = self
+            return controller
+        } else {
+            let controller =  SetupViewController(meetingInfo:configurationV2!, mobileClient: self.mobileClient, completion: completion)
+            controller.delegate = self
+            return controller
+        }
+    }
+    
+    private func launchMeetingScreen(on viewController: UIViewController, completion:@escaping()->Void) {
+        Shared.data.delegate?.meetingScreenWillShow()
+        let meetingViewController = getMeetingScreen(meetingType: self.mobileClient.meta.meetingType, completion: completion)
+        meetingViewController.modalPresentationStyle = .fullScreen
+        viewController.present(meetingViewController, animated: true) {
+            Shared.data.delegate?.meetingScreenDidShow()
+        }
+        notificationDelegate?.didReceiveNotification(type: .Joined)
+    }
+    
+    private func getMeetingScreen(meetingType: DyteMeetingType,  completion:@escaping()->Void) -> UIViewController {
+        if mobileClient.meta.meetingType == DyteMeetingType.groupCall {
+            if let viewController = self.flowDelegate?.showGroupCallMeetingScreen(meeting: self.mobileClient, completion: completion) {
+                return viewController
+            }
+            return MeetingViewController(meeting: mobileClient, completion: completion)
+        }
+        else if mobileClient.meta.meetingType == DyteMeetingType.livestream {
+            return LivestreamViewController(dyteMobileClient: mobileClient, completion: completion)
+        }
+        
+        else if mobileClient.meta.meetingType == DyteMeetingType.webinar {
+            if let viewController = self.flowDelegate?.showWebinarMeetingScreen(meeting: self.mobileClient, completion: completion) {
+                return viewController
+            }
+            return WebinarViewController(meeting: mobileClient, completion: completion)
+        }
+        fatalError("Unknown Meeting type not supported")
+    }
+}
+
+extension DyteUiKit : SetupViewControllerDelegate {
+    
+    public func userJoinedMeetingSuccessfully(sender: UIViewController) {
+        launchMeetingScreen(on: sender, completion: self.completion)
     }
 }

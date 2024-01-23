@@ -116,7 +116,8 @@ class StageButtonStateMachine {
 }
 
 extension StageStatus {
-    static func getStageStatus(status: StageStatus? = nil, mobileClient: DyteMobileClient) -> WebinarStageStatus {
+    
+   public static func getStageStatus(status: StageStatus? = nil, mobileClient: DyteMobileClient) -> WebinarStageStatus {
         
         let state = status ?? mobileClient.stage.stageStatus
       
@@ -154,16 +155,25 @@ extension StageStatus {
     }
 }
 
+public protocol DyteStageActionButtonControlBarDataSource {
+    func getImage(for stageStatus: WebinarStageStatus) -> DyteImage?
+    func getTitle(for stageStatus: WebinarStageStatus) -> String?
+    func getAlertView() -> ConfigureWebinerAlertView
+}
 
-class  DyteStageActionButtonControlBar: DyteControlBarButton {
-    
+public protocol ConfigureWebinerAlertView: UIView {
+    var confirmAndJoinButton: DyteButton {get }
+    var cancelButton: DyteButton {get }
+}
+
+public class  DyteStageActionButtonControlBar: DyteControlBarButton {
     let stateMachine: StageButtonStateMachine
     private let mobileClient: DyteMobileClient
     private let selfListner: DyteEventSelfListner
     private let presentingViewController: UIViewController
+    public var dataSource: DyteStageActionButtonControlBarDataSource?
     
-    
-    init(mobileClient: DyteMobileClient, buttonState: WebinarStageStatus, presentingViewController: UIViewController) {
+    public init(mobileClient: DyteMobileClient, buttonState: WebinarStageStatus, presentingViewController: UIViewController) {
         self.mobileClient = mobileClient
         self.presentingViewController = presentingViewController
         self.selfListner = DyteEventSelfListner(mobileClient: mobileClient)
@@ -172,7 +182,7 @@ class  DyteStageActionButtonControlBar: DyteControlBarButton {
         self.addTarget(self, action: #selector(click(button:)), for: .touchUpInside)
     }
     
-   public func addObserver() {
+    public func addObserver() {
         stateMachine.setTransition(){ [weak self] fromState, currentState in
             guard let self = self else {return}
             self.showState(state: currentState)
@@ -180,11 +190,11 @@ class  DyteStageActionButtonControlBar: DyteControlBarButton {
         stateMachine.start()
     }
     
-    func updateButton(stageStatus: StageStatus) {
+    public func updateButton(stageStatus: StageStatus) {
         self.stateMachine.forcedToSet(currentState: StageStatus.getStageStatus(status: stageStatus, mobileClient: self.mobileClient))
     }
     
-    func handleRequestToJoinStage() {
+    public func handleRequestToJoinStage() {
         self.stateMachine.forcedToSet(currentState: .joiningStage)
         self.showAlert(baseController: self.presentingViewController)
     }
@@ -208,28 +218,29 @@ class  DyteStageActionButtonControlBar: DyteControlBarButton {
     private func showState(state: WebinarStageStatus) {
         var image: DyteImage? = nil
         var title: String? = nil
+      
         switch state {
         case .canRequestToJoinStage:
-            image = DyteImage(image: ImageProvider.image(named: "icon_stage_join"))
-            title = "Request"
+            image = self.getImage(state: state, defaultImage: DyteImage(image: ImageProvider.image(named: "icon_stage_join")))
+            title = self.dataSource?.getTitle(for: state) ?? "Request"
         case .requestingToJoinStage:
-            image = DyteImage(image: ImageProvider.image(named: "icon_stage_join"))
-            title = "Requesting..."
+            image = self.getImage(state: state, defaultImage: DyteImage(image: ImageProvider.image(named: "icon_stage_join")))
+            title = self.dataSource?.getTitle(for: state) ?? "Requesting..."
         case .inRequestedStateToJoinStage:
-            image = DyteImage(image: ImageProvider.image(named: "icon_stage_join"))
-            title = "Cancel request"
+            image = self.getImage(state: state, defaultImage: DyteImage(image: ImageProvider.image(named: "icon_stage_join")))
+            title = self.dataSource?.getTitle(for: state) ?? "Cancel request"
         case .canJoinStage:
-            image = DyteImage(image: ImageProvider.image(named: "icon_stage_join"))
-            title = "Join stage"
+            image = self.getImage(state: state, defaultImage: DyteImage(image: ImageProvider.image(named: "icon_stage_join")))
+            title = self.dataSource?.getTitle(for: state) ?? "Join stage"
         case .joiningStage:
-            image = DyteImage(image: ImageProvider.image(named: "icon_stage_join"))
-            title = "Joining..."
+            image = self.getImage(state: state, defaultImage: DyteImage(image: ImageProvider.image(named: "icon_stage_join")))
+            title = self.dataSource?.getTitle(for: state) ?? "Joining..."
         case .alreadyOnStage:
-            image = DyteImage(image: ImageProvider.image(named: "icon_stage_leave"))
-            title = "Leave stage"
+            image = self.getImage(state: state, defaultImage: DyteImage(image: ImageProvider.image(named: "icon_stage_leave")))
+            title = self.dataSource?.getTitle(for: state) ?? "Leave stage"
         case .leavingFromStage:
-            image = DyteImage(image: ImageProvider.image(named: "icon_stage_leave"))
-            title = "Leaving..."
+            image = self.getImage(state: state, defaultImage: DyteImage(image: ImageProvider.image(named: "icon_stage_leave")))
+            title = self.dataSource?.getTitle(for: state) ?? "Leaving..."
         case .viewOnly:
             print("")
         }
@@ -240,14 +251,23 @@ class  DyteStageActionButtonControlBar: DyteControlBarButton {
         }
     }
     
-    private var alert: WebinarAlertView?
-    func showAlert(baseController: UIViewController){
+    private func getImage(state: WebinarStageStatus, defaultImage: DyteImage) -> DyteImage {
+        if let image =  self.dataSource?.getImage(for: state) {
+            print("image returned for stage \(state)")
+            return image
+        }
+        return defaultImage
+    }
+    
+    private var alert: ConfigureWebinerAlertView?
+   
+    func showAlert(baseController: UIViewController) {
         if self.alert == nil {
-            let alert = WebinarAlertView(meetingClient: self.mobileClient, participant: self.mobileClient.localUser)
+            let alert = self.dataSource?.getAlertView() ?? WebinarAlertView(meetingClient: self.mobileClient, participant: self.mobileClient.localUser)
             alert.layer.zPosition = 1.0
             baseController.view.addSubview(alert)
-            alert.btnBottom1.addTarget(self, action: #selector(alertConfirmAndJoinClick(button:)), for: .touchUpInside)
-            alert.btnBottom2.addTarget(self, action: #selector(alertCancelButton(button:)), for: .touchUpInside)
+            alert.confirmAndJoinButton.addTarget(self, action: #selector(alertConfirmAndJoinClick(button:)), for: .touchUpInside)
+            alert.cancelButton.addTarget(self, action: #selector(alertCancelButton(button:)), for: .touchUpInside)
             alert.set(.fillSuperView(baseController.view))
             self.alert = alert
             Shared.data.delegate?.webinarJoinStagePopupDidShow()
@@ -264,14 +284,12 @@ class  DyteStageActionButtonControlBar: DyteControlBarButton {
         removeAlertView()
         Shared.data.delegate?.webinarJoinStagePopupDidHide(click: .confirmAndJoin)
         self.selfListner.joinWebinarStage { success in
-            
         }
     }
     
     @objc open func alertCancelButton(button: DyteJoinButton) {
         removeAlertView()
         Shared.data.delegate?.webinarJoinStagePopupDidHide(click: .cancel)
-
         self.stateMachine.handleEvent(event: .onFail)
     }
     
@@ -285,23 +303,19 @@ class  DyteStageActionButtonControlBar: DyteControlBarButton {
                 
             case .alreadyOnStage:
                 self.stateMachine.handleEvent(event: .onButtonTapped)
-                self.selfListner.leaveWebinarStage { success in
-                    
-                }
+                self.selfListner.leaveWebinarStage { success in }
+                
             case .inRequestedStateToJoinStage:
                 self.stateMachine.handleEvent(event: .onButtonTapped)
-                self.selfListner.cancelRequestForPermissionToJoinWebinarStage { success in
-                    
-                }
+                self.selfListner.cancelRequestForPermissionToJoinWebinarStage { success in }
                 
             case .canRequestToJoinStage:
                 self.stateMachine.handleEvent(event: .onButtonTapped)
-                self.selfListner.requestForPermissionToJoinWebinarStage { success in
-                    
-                }
+                self.selfListner.requestForPermissionToJoinWebinarStage { success in }
                 
             default:
                 print("Not handle case")
             }
     }
 }
+

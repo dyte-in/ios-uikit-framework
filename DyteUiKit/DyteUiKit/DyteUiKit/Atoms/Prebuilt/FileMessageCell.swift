@@ -6,44 +6,44 @@ class FileMessageCell: UITableViewCell {
     
     let grayBoxView: UIView = {
         let view = UIView()
-        view.backgroundColor = tokenColor.background.shade900
+        view.backgroundColor = dyteSharedTokenColor.background.shade900
         return view
     }()
     
     let fileTitleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = tokenColor.textColor.onBackground.shade1000
+        label.textColor = dyteSharedTokenColor.textColor.onBackground.shade1000
         label.numberOfLines = 2
         return label
     }()
     
     let nameLabel: DyteText = {
-        let label = UIUTility.createLabel(alignment: .left)
+        let label = DyteUIUTility.createLabel(alignment: .left)
         label.font = UIFont.boldSystemFont(ofSize: 12)
         return label
     }()
     
     let fileTypeLabel: UILabel = {
         let label = UILabel()
-        label.textColor = tokenColor.textColor.onBackground.shade700
+        label.textColor = dyteSharedTokenColor.textColor.onBackground.shade700
         return label
     }()
     
     let fileSizeLabel: UILabel = {
         let label = UILabel()
-        label.textColor = tokenColor.textColor.onBackground.shade700
+        label.textColor = dyteSharedTokenColor.textColor.onBackground.shade700
         return label
     }()
     
     let dividerView: UIView = {
         let view = UIView()
-        view.backgroundColor = tokenColor.textColor.onBackground.shade600
+        view.backgroundColor = dyteSharedTokenColor.textColor.onBackground.shade600
         return view
     }()
     
     let downloadButton: DyteButton = {
         let button = DyteButton(style: .iconOnly(icon: DyteImage(image: ImageProvider.image(named: "icon_down_arrow"))), dyteButtonState: .active)
-        button.backgroundColor = tokenColor.background.shade800
+        button.backgroundColor = dyteSharedTokenColor.background.shade800
         button.isUserInteractionEnabled = false
         button.tintColor = .white
         // Set additional button properties if needed
@@ -79,8 +79,8 @@ class FileMessageCell: UITableViewCell {
         contentView.backgroundColor = .clear
         self.backgroundColor = .clear
         contentView.addSubview(nameLabel)
-        nameLabel.set(.sameLeadingTrailing(contentView, tokenSpace.space3),
-                      .top(contentView, tokenSpace.space2))
+        nameLabel.set(.sameLeadingTrailing(contentView, dyteSharedTokenSpace.space3),
+                      .top(contentView, dyteSharedTokenSpace.space2))
         // Add grayBoxView to the contentView
         contentView.addSubview(grayBoxView)
         

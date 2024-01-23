@@ -36,6 +36,7 @@ open class  DyteSwitchCameraButtonControlBar: DyteControlBarButton {
     @objc open func onClick(button: DyteControlBarButton) {
         dyteSelfListner.toggleCamera()
     }
+    
     deinit {
         self.dyteSelfListner.clean()
     }

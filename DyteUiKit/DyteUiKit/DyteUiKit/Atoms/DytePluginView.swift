@@ -14,7 +14,7 @@ public class ActiveListView: UIView {
     private let scrollView : UIScrollView = {return UIScrollView()}()
     private let fixButtonBaseView : UIView = {return UIView()}()
     
-    internal var buttons = [ScreenShareTabButton]()
+    public var buttons = [ScreenShareTabButton]()
     internal var fixButtons = [ScreenShareTabButton]()
     let tokenSpace = DesignLibrary.shared.space
     let tokenColor = DesignLibrary.shared.color
@@ -48,7 +48,7 @@ public class ActiveListView: UIView {
     }
     public func setButtons(fixButtons: [ScreenShareTabButton], buttons: [ScreenShareTabButton]) {
         if stackView == nil {
-            stackView = UIUTility.createStackView(axis: .horizontal, spacing: tokenSpace.space2)
+            stackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: tokenSpace.space2)
             scrollView.addSubview(stackView)
             scrollView.addSubview(fixButtonBaseView)
             fixButtonBaseView.set(.leading(scrollView, tokenSpace.space3),
@@ -98,7 +98,7 @@ class ActiveSpeakerPinView: UIView {
     
     private lazy var pinView : UIView = {
         let baseView = UIView()
-        let imageView = UIUTility.createImageView(image: DyteImage(image:ImageProvider.image(named: "icon_pin")))
+        let imageView = DyteUIUTility.createImageView(image: DyteImage(image:ImageProvider.image(named: "icon_pin")))
         baseView.addSubview(imageView)
         imageView.set(.fillSuperView(baseView, spaceToken.space1))
         return baseView
@@ -109,9 +109,9 @@ class ActiveSpeakerPinView: UIView {
         let heightWidth:CGFloat = 30
         if pinView.superview == nil {
             self.addSubview(pinView)
-            pinView.backgroundColor = tokenColor.background.shade900
-            pinView.set(.leading(self, tokenSpace.space3),
-                        .top(self, tokenSpace.space3),
+            pinView.backgroundColor = dyteSharedTokenColor.background.shade900
+            pinView.set(.leading(self, dyteSharedTokenSpace.space3),
+                        .top(self, dyteSharedTokenSpace.space3),
                         .height(heightWidth),
                         .width(heightWidth))
             pinView.layer.cornerRadius = spaceToken.space1
@@ -168,19 +168,19 @@ class ActiveSpeakerPinView: UIView {
     }
 }
 
-public class PluginView: UIView {
+public class DytePluginView: UIView {
     
     public  let activeListView = ActiveListView()
     public  let pluginVideoView: DyteParticipantTileView
     private var clickAction:((ScreenShareTabButton, Bool)-> Void)?
-    private let stackView = UIUTility.createStackView(axis: .vertical, spacing: 0)
+    private let stackView = DyteUIUTility.createStackView(axis: .vertical, spacing: 0)
     private let activeSpeakerView: ActiveSpeakerPinView
     let backgroundColorValue = DesignLibrary.shared.color.background.video
     let borderRadiusType: BorderRadiusToken.RadiusType = AppTheme.shared.cornerRadiusTypePeerView ?? .rounded
     let spaceToken = DesignLibrary.shared.space
-    let syncButton: SyncScreenShareTabButton?
+    public let syncButton: SyncScreenShareTabButton?
     
-    init(videoPeerViewModel: VideoPeerViewModel) {
+    public init(videoPeerViewModel: VideoPeerViewModel) {
         pluginVideoView = DyteParticipantTileView(viewModel: videoPeerViewModel)
         pluginVideoView.nameTag.isHidden = true
         activeSpeakerView = ActiveSpeakerPinView(participant: videoPeerViewModel.participant)
@@ -243,14 +243,14 @@ public class PluginView: UIView {
         self.clickAction?(button, true)
     }
     
-    func selectForAutoSync(button: ScreenShareTabButton) {
+    public func selectForAutoSync(button: ScreenShareTabButton) {
         self.activeListView.scrollToVisible(button: button)
         self.clickAction?(button, false)
     }
     
     private var webView: UIView?
     
-    func show(pluginView view: UIView) {
+    public  func show(pluginView view: UIView) {
         if let constraints = webView?.constraints {
             webView?.removeConstraints(constraints)
         }
@@ -266,12 +266,12 @@ public class PluginView: UIView {
         self.pluginVideoView.viewModel.set(participant: participant)
     }
     
-    func showPinnedView(participant: DyteJoinedMeetingParticipant) {
+    public func showPinnedView(participant: DyteJoinedMeetingParticipant) {
         activeSpeakerView.pinView(show: true)
         showActiveSpeakerOrPinnedView(participant: participant)
     }
     
-    func showActiveSpeakerView(participant: DyteJoinedMeetingParticipant) {
+    public func showActiveSpeakerView(participant: DyteJoinedMeetingParticipant) {
         activeSpeakerView.pinView(show: false)
         showActiveSpeakerOrPinnedView(participant: participant)
     }
@@ -280,7 +280,7 @@ public class PluginView: UIView {
         activeSpeakerView.isHidden = false
     }
     
-    func hideActiveSpeaker() {
+    public  func hideActiveSpeaker() {
         if activeSpeakerView.isHidden {
             return
         }

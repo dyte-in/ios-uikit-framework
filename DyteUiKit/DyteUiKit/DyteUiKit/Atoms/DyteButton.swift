@@ -263,23 +263,23 @@ open class DyteButton: UIButton, BaseAtom {
     }
    
     private func getLabelOnlyView() -> (stackView: BaseStackView, title: DyteText) {
-        let stackView = UIUTility.createStackView(axis: .horizontal, spacing: tokenSpace.space1)
-        let title = UIUTility.createLabel(text: "")
+        let stackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: dyteSharedTokenSpace.space1)
+        let title = DyteUIUTility.createLabel(text: "")
         stackView.addArrangedSubviews(title)
         return (stackView, title)
     }
     
     private func getIconOnlyView(image: DyteImage) -> (stackView: BaseStackView, imageView: UIImageView) {
-        let stackView = UIUTility.createStackView(axis: .horizontal, spacing: tokenSpace.space1)
-        let iconView = UIUTility.createImageView(image: image)
+        let stackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: dyteSharedTokenSpace.space1)
+        let iconView = DyteUIUTility.createImageView(image: image)
         stackView.addArrangedSubviews(iconView)
         return (stackView, iconView)
     }
     
     private func getLabelAndImageOnlyView(dir: IconPlacementDirection = .left) -> (stackView: BaseStackView, title: DyteText , imageView: UIImageView) {
-        let stackView = UIUTility.createStackView(axis: .horizontal, spacing: tokenSpace.space1)
-        let imageView = UIUTility.createImageView(image: DyteImage(image: nil))
-        let title = UIUTility.createLabel(text: "")
+        let stackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: dyteSharedTokenSpace.space1)
+        let imageView = DyteUIUTility.createImageView(image: DyteImage(image: nil))
+        let title = DyteUIUTility.createLabel(text: "")
         if dir == .left {
             stackView.addArrangedSubviews(imageView,title)
         }else if dir == .right {

@@ -74,7 +74,7 @@ class MessageCell: UITableViewCell {
     
     
     let nameLabel: DyteText = {
-        let label = UIUTility.createLabel(alignment: .left)
+        let label = DyteUIUTility.createLabel(alignment: .left)
         label.font = UIFont.boldSystemFont(ofSize: 12)
         return label
     }()
@@ -82,7 +82,7 @@ class MessageCell: UITableViewCell {
     
     let tokenSpace = DesignLibrary.shared.space
     let messageLabel: DyteText = {
-        let label = UIUTility.createLabel(alignment: .left)
+        let label = DyteUIUTility.createLabel(alignment: .left)
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 16)
         return label
@@ -224,7 +224,7 @@ class MessageCell: UITableViewCell {
         nameLabel.set(.sameLeadingTrailing(contentView, tokenSpace.space3),
                       .top(contentView, tokenSpace.space2))
         
-        let stackView = UIUTility.createStackView(axis: .vertical, spacing: tokenSpace.space2)
+        let stackView = DyteUIUTility.createStackView(axis: .vertical, spacing: tokenSpace.space2)
         let baseImageView = UIView()
         baseImageView.addSubview(messageImageView)
         messageImageView.set(.leading(baseImageView),

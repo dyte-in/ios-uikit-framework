@@ -9,8 +9,7 @@ import UIKit
 import DyteiOSCore
 
 
-public class WebinarAlertView: UIView {
-    
+public class WebinarAlertView: UIView, ConfigureWebinerAlertView {
     let baseView = UIView()
     let borderRadiusType: BorderRadiusToken.RadiusType = AppTheme.shared.cornerRadiusTypePeerView ?? .rounded
     private lazy var dyteSelfListner: DyteEventSelfListner = {
@@ -18,7 +17,7 @@ public class WebinarAlertView: UIView {
     }()
     
     let lblTop: DyteText = {
-        let lbl = UIUTility.createLabel(text: "Joining webinar stage" , alignment: .left)
+        let lbl = DyteUIUTility.createLabel(text: "Joining webinar stage" , alignment: .left)
         lbl.numberOfLines = 0
         lbl.font = UIFont.systemFont(ofSize: 16)
         return lbl
@@ -51,7 +50,7 @@ public class WebinarAlertView: UIView {
         button.normalStateTintColor = DesignLibrary.shared.color.textColor.onBackground.shade1000
         button.setImage(ImageProvider.image(named: "icon_video_disabled")?.withRenderingMode(.alwaysTemplate), for: .selected)
         button.selectedStateTintColor = DesignLibrary.shared.color.status.danger
-        button.backgroundColor = tokenColor.background.shade800
+        button.backgroundColor = dyteSharedTokenColor.background.shade800
         return button
     }()
     
@@ -60,49 +59,49 @@ public class WebinarAlertView: UIView {
         button.normalStateTintColor = DesignLibrary.shared.color.textColor.onBackground.shade1000
         button.selectedStateTintColor = DesignLibrary.shared.color.status.danger
         button.setImage(ImageProvider.image(named: "icon_mic_disabled")?.withRenderingMode(.alwaysTemplate), for: .selected)
-        button.backgroundColor = tokenColor.background.shade800
+        button.backgroundColor = dyteSharedTokenColor.background.shade800
         return button
     }()
    
     let lblBottom: DyteText = {
-        let lbl = UIUTility.createLabel(text: "Upon joining the stage, your video & audio as shown above will be visible to all participants.", alignment: .left)
+        let lbl = DyteUIUTility.createLabel(text: "Upon joining the stage, your video & audio as shown above will be visible to all participants.", alignment: .left)
         lbl.font = UIFont.systemFont(ofSize: 12)
         lbl.numberOfLines = 0
         return lbl
     }()
 
-    let btnBottom1: DyteButton = {
-        let button = UIUTility.createButton(text: "Confirm & join stage")
+    public let confirmAndJoinButton: DyteButton = {
+        let button = DyteUIUTility.createButton(text: "Confirm & join stage")
         return button
     }()
     
-    let btnBottom2: DyteButton = {
-        let button = UIUTility.createButton(text: "Cancel")
-        button.backgroundColor = tokenColor.background.shade800
+    public let cancelButton: DyteButton = {
+        let button = DyteUIUTility.createButton(text: "Cancel")
+        button.backgroundColor = dyteSharedTokenColor.background.shade800
         return button
     }()
     
     private func createSubView(baseView: UIView) {
-        let btnStackView = UIUTility.createStackView(axis: .horizontal, spacing: tokenSpace.space6)
+        let btnStackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: dyteSharedTokenSpace.space6)
         btnStackView.addArrangedSubviews(btnMic, btnVideo)
-        baseView.addSubViews(lblTop, selfPeerView, btnStackView, lblBottom, btnBottom1, btnBottom2)
+        baseView.addSubViews(lblTop, selfPeerView, btnStackView, lblBottom, confirmAndJoinButton, cancelButton)
         lblTop.set(.sameLeadingTrailing(baseView),
                    .top(baseView))
         selfPeerView.clipsToBounds = true
         
         selfPeerView.set(UIDevice.current.userInterfaceIdiom == .pad ? .aspectRatio(0.45) : .aspectRatio(0.85),
                          .height(500,.lessThanOrEqual),
-                         .below(lblTop, tokenSpace.space6),
-                      .sameLeadingTrailing(baseView, tokenSpace.space6))
+                         .below(lblTop, dyteSharedTokenSpace.space6),
+                      .sameLeadingTrailing(baseView, dyteSharedTokenSpace.space6))
         
-        btnStackView.set(.below(selfPeerView, tokenSpace.space4),
+        btnStackView.set(.below(selfPeerView, dyteSharedTokenSpace.space4),
                          .centerX(baseView))
         
         lblBottom.set(.sameLeadingTrailing(baseView),
-                      .below(btnStackView, tokenSpace.space6))
-        btnBottom1.set(.below(lblBottom, tokenSpace.space6),
+                      .below(btnStackView, dyteSharedTokenSpace.space6))
+        confirmAndJoinButton.set(.below(lblBottom, dyteSharedTokenSpace.space6),
                        .sameLeadingTrailing(baseView))
-        btnBottom2.set(.below(btnBottom1, tokenSpace.space4),
+        cancelButton.set(.below(confirmAndJoinButton, dyteSharedTokenSpace.space4),
                        .sameLeadingTrailing(baseView),
                        .bottom(baseView))
      }
@@ -115,11 +114,11 @@ public class WebinarAlertView: UIView {
         let alertContentBaseView = UIView()
         baseView.addSubview(alertContentBaseView)
         self.createSubView(baseView: alertContentBaseView)
-        baseView.backgroundColor = tokenColor.background.shade900
-        self.backgroundColor = tokenColor.background.shade1000.withAlphaComponent(0.9)
-        baseView.set(.sameLeadingTrailing(self, tokenSpace.space7),
-                     .centerY(self),.top(self, tokenSpace.space8, .greaterThanOrEqual))
-        alertContentBaseView.set(.fillSuperView(baseView, tokenSpace.space4))
+        baseView.backgroundColor = dyteSharedTokenColor.background.shade900
+        self.backgroundColor = dyteSharedTokenColor.background.shade1000.withAlphaComponent(0.9)
+        baseView.set(.sameLeadingTrailing(self, dyteSharedTokenSpace.space7),
+                     .centerY(self),.top(self, dyteSharedTokenSpace.space8, .greaterThanOrEqual))
+        alertContentBaseView.set(.fillSuperView(baseView, dyteSharedTokenSpace.space4))
     }
     
         @objc func clickMic(button: DyteButton) {

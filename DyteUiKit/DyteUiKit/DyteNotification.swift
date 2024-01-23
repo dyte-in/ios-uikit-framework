@@ -9,10 +9,8 @@ import Foundation
 import AVFAudio
 
 public class DyteNotification {
-
-    var audioPlayer: AVAudioPlayer?
-    
-    func playNotificationSound(type: DyteNotificationType) {
+    public init(){}
+    public func playNotificationSound(type: DyteNotificationType) {
         var resource = ""
         switch type {
         case .Chat(_), .Poll:

@@ -10,8 +10,7 @@ import DyteiOSCore
 import MobileCoreServices
 import UniformTypeIdentifiers
 
-class ChatViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource, NSTextStorageDelegate {
-    
+public class ChatViewController: DyteBaseViewController, NSTextStorageDelegate {
     // MARK: - Properties
     fileprivate var messages: [DyteChatMessage]?
     let messageTableView = UITableView()
@@ -24,24 +23,20 @@ class ChatViewController: BaseViewController, UITableViewDelegate, UITableViewDa
     let sendFileButton = DyteButton(style: .iconOnly(icon: DyteImage(image: ImageProvider.image(named: "icon_chat_add"))), dyteButtonState: .focus)
     let sendImageButton = DyteButton(style: .iconOnly(icon: DyteImage(image: ImageProvider.image(named: "icon_image"))), dyteButtonState: .active)
     let sendMessageButton = DyteButton(style: .iconOnly(icon: DyteImage(image: ImageProvider.image(named: "icon_chat_send"))), dyteButtonState: .active)
-    let meetingViewModel: MeetingViewModel?
     var documentsViewController: DocumentsViewController?
     let imagePicker = UIImagePickerController()
     let backgroundColor = DesignLibrary.shared.color.background.shade1000
     
     let spaceToken = DesignLibrary.shared.space
     let lblNoPollExist: DyteText = {
-        let label = UIUTility.createLabel(text: "No messages! \n\n Chat messages will appear here")
+        let label = DyteUIUTility.createLabel(text: "No messages! \n\n Chat messages will appear here")
         label.accessibilityIdentifier = "No_Chat_Message_Label"
         label.numberOfLines = 0
         return label
     }()
     
-    init(dyteMobileClient: DyteMobileClient, meetingViewModel: MeetingViewModel) {
-        self.meetingViewModel = meetingViewModel
-       
+    override public init(dyteMobileClient: DyteMobileClient) {
         super.init(dyteMobileClient: dyteMobileClient)
-        self.meetingViewModel?.chatDelegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -49,8 +44,9 @@ class ChatViewController: BaseViewController, UITableViewDelegate, UITableViewDa
     }
     
     // MARK: - View Life Cycle
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
+        meeting.addChatEventsListener(chatEventsListener: self)
         self.view.accessibilityIdentifier = "Chat_Screen"
         sendMessageButton.accessibilityIdentifier = "Send_Chat_Button"
         messageTextView.accessibilityIdentifier = "Input_Message_TextView"
@@ -60,21 +56,21 @@ class ChatViewController: BaseViewController, UITableViewDelegate, UITableViewDa
         setUpReconnection(failed: {}, success: {})
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         //load old messages
-        messages = dyteMobileClient.chat.messages
+        messages = meeting.chat.messages
         messageTextView.placeholder = "Message.."
         reloadMessageTableView()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -157,7 +153,7 @@ class ChatViewController: BaseViewController, UITableViewDelegate, UITableViewDa
         let customBarButtonItem = UIBarButtonItem(customView: leftButton)
         navigationItem.leftBarButtonItem = customBarButtonItem
         
-        let label = UIUTility.createLabel(text: "Chat")
+        let label = DyteUIUTility.createLabel(text: "Chat")
         label.font = UIFont.boldSystemFont(ofSize: 18)
         label.textColor = DesignLibrary.shared.color.textColor.onBackground.shade900
         navigationItem.titleView = label
@@ -167,7 +163,7 @@ class ChatViewController: BaseViewController, UITableViewDelegate, UITableViewDa
         sendFileButton.setImage(fileIcon, for: .normal)
         sendFileButton.addTarget(self, action: #selector(menuTapped), for: .touchUpInside)
         view.addSubview(sendFileButton)
-        if self.dyteMobileClient.localUser.permissions.chat.canSendFiles {
+        if self.meeting.localUser.permissions.chat.canSendFiles {
             sendFileButton.set(.width(48))
             sendFileButton.isHidden = false
         } else {
@@ -183,7 +179,7 @@ class ChatViewController: BaseViewController, UITableViewDelegate, UITableViewDa
         
         
         sendMessageButton.set(.width(48))
-        sendMessageButton.backgroundColor = tokenColor.brand.shade500
+        sendMessageButton.backgroundColor = dyteSharedTokenColor.brand.shade500
         sendMessageButton.clipsToBounds = true
         sendMessageButton.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
         view.addSubview(sendMessageButton)
@@ -243,17 +239,74 @@ class ChatViewController: BaseViewController, UITableViewDelegate, UITableViewDa
         moreMenu.show(on: view)
     }
     
+      // MARK: - Actions
+    
+    @objc func goBack() {
+        self.dismiss(animated: true)
+    }
+    
+    @objc func menuTapped() {
+        messageTextView.resignFirstResponder()
+        createMoreMenu()
+    }
+    
+    @objc func addFileButtonTapped() {
+        var filePicker: UIDocumentPickerViewController
+        if #available(iOS 14.0, *) {
+            filePicker = UIDocumentPickerViewController(forOpeningContentTypes: [.pdf, .text, .plainText, .audio, .video, .movie, .image, .livePhoto], asCopy: false)
+        } else {
+            filePicker = UIDocumentPickerViewController(documentTypes: [], in: .import)
+        }
+        messageTextView.resignFirstResponder()
+        filePicker.delegate = self
+        present(filePicker, animated: true, completion: nil)
+    }
+    
+    @objc func addImageButtonTapped() {
+        messageTextView.resignFirstResponder()
+        imagePicker.delegate = self
+        imagePicker.sourceType = .photoLibrary
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    
+    @objc func sendButtonTapped() {
+        if !messageTextView.text.isEmpty {
+            
+            let spacing = CharacterSet.whitespacesAndNewlines
+            let message = messageTextView.text.trimmingCharacters(in: spacing)
+            try?meeting.chat.sendTextMessage(message: message)
+            
+            messageTextView.text = ""
+            messageTextViewHeightConstraint?.constant = 48
+            sendMessageButton.isEnabled = false
+        }
+    }
+    
+    private func reloadMessageTableView() {
+        lblNoPollExist.isHidden = (messages?.count ?? 0) > 0 ? true : false
+        messageTableView.isHidden = !lblNoPollExist.isHidden
+        if (messages?.count ?? 0) > 0 {
+            messageTableView.reloadData(completion: {
+                DispatchQueue.main.async { [weak self] in
+                    let indexPath = IndexPath(row: (self?.messages?.count ?? 1)-1, section: 0)
+                    self?.messageTableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+                }
+            })
+        }
+    }
+}
+
+extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
     // MARK: - UITableViewDelegate, UITableViewDataSource
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messages?.count ?? 0
     }
     
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        
+    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
     }
     
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if (messages?.count ?? 0) > indexPath.row, messages?[indexPath.row].type == .file
         {
             if let cell = tableView.dequeueReusableCell(withIdentifier: "FileMessageCell", for: indexPath) as? FileMessageCell, let msg = messages?[indexPath.row] as? DyteFileMessage {
@@ -309,94 +362,37 @@ class ChatViewController: BaseViewController, UITableViewDelegate, UITableViewDa
         
         return UITableViewCell(frame: .zero)
     }
-    
-    // MARK: - Actions
-    
-    @objc func goBack() {
-        self.dismiss(animated: true)
-    }
-    
-    @objc func menuTapped() {
-        messageTextView.resignFirstResponder()
-        createMoreMenu()
-    }
-    
-    @objc func addFileButtonTapped() {
-        var filePicker: UIDocumentPickerViewController
-        if #available(iOS 14.0, *) {
-            filePicker = UIDocumentPickerViewController(forOpeningContentTypes: [.pdf, .text, .plainText, .audio, .video, .movie, .image, .livePhoto], asCopy: false)
-        } else {
-            filePicker = UIDocumentPickerViewController(documentTypes: [], in: .import)
-        }
-        messageTextView.resignFirstResponder()
-        filePicker.delegate = self
-        present(filePicker, animated: true, completion: nil)
-    }
-    
-    @objc func addImageButtonTapped() {
-        messageTextView.resignFirstResponder()
-        imagePicker.delegate = self
-        imagePicker.sourceType = .photoLibrary
-        present(imagePicker, animated: true, completion: nil)
-    }
-    
-    
-    @objc func sendButtonTapped() {
-        if !messageTextView.text.isEmpty {
-            
-            let spacing = CharacterSet.whitespacesAndNewlines
-            let message = messageTextView.text.trimmingCharacters(in: spacing)
-            try?dyteMobileClient.chat.sendTextMessage(message: message)
-            
-            messageTextView.text = ""
-            messageTextViewHeightConstraint?.constant = 48
-            sendMessageButton.isEnabled = false
-        }
-    }
-    
-    private func reloadMessageTableView() {
-        lblNoPollExist.isHidden = (messages?.count ?? 0) > 0 ? true : false
-        messageTableView.isHidden = !lblNoPollExist.isHidden
-        if (messages?.count ?? 0) > 0 {
-            messageTableView.reloadData(completion: {
-                DispatchQueue.main.async { [weak self] in
-                    let indexPath = IndexPath(row: (self?.messages?.count ?? 1)-1, section: 0)
-                    self?.messageTableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-                }
-            })
-        }
-    }
 }
 
 extension ChatViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let url = info[UIImagePickerController.InfoKey.imageURL] as? URL {
             sendMessageButton.showActivityIndicator()
-            try?self.dyteMobileClient.chat.sendImageMessage(filePath: url.path, fileName: url.lastPathComponent)
+            try?self.meeting.chat.sendImageMessage(filePath: url.path, fileName: url.lastPathComponent)
         }
         dismiss(animated: true, completion: nil)
     }
 }
 
 extension ChatViewController: UIDocumentPickerDelegate {
-    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+    public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let selectedFileURL = urls.first else {
             return
         }
         sendMessageButton.showActivityIndicator()
-        try?self.dyteMobileClient.chat.sendFileMessage(filePath: selectedFileURL.path, fileName: selectedFileURL.lastPathComponent)
+        try?self.meeting.chat.sendFileMessage(filePath: selectedFileURL.path, fileName: selectedFileURL.lastPathComponent)
     }
 }
 
 extension ChatViewController: UITextViewDelegate {
-    func textViewDidBeginEditing(_ textView: UITextView) {
+    public func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.textColor == UIColor.black {
             textView.text = nil
             textView.textColor = .lightGray
         }
     }
-    func textViewDidChange(_ textView: UITextView) {
+    public func textViewDidChange(_ textView: UITextView) {
         let spacing = CharacterSet.whitespacesAndNewlines
         if !textView.text.trimmingCharacters(in: spacing).isEmpty {
             sendMessageButton.isEnabled = true
@@ -416,13 +412,29 @@ extension ChatViewController: UITextViewDelegate {
     }
 }
 
-extension ChatViewController: ChatDelegate {
-    func refreshMessages() {
+extension ChatViewController: DyteChatEventsListener {
+    public func onNewChatMessage(message: DyteChatMessage) {
+        if message.userId != meeting.localUser.userId {
+            var chat = ""
+            if  let textMessage = message as? DyteTextMessage {
+                chat = "\(textMessage.displayName): \(textMessage.message)"
+            }else {
+                if message.type == DyteMessageType.image {
+                    chat = "\(message.displayName): Send you an Image"
+                } else if message.type == DyteMessageType.file {
+                    chat = "\(message.displayName): Send you an File"
+                }
+            }
+            notificationDelegate?.didReceiveNotification(type: .Chat(message:chat))
+        }
+    }
+    
+    public  func onChatUpdates(messages: [DyteChatMessage]) {
         if isOnScreen {
-            meetingViewModel?.clearChatNotification()
+            NotificationCenter.default.post(name: Notification.Name("NotificationAllChatsRead"), object: nil)
         }
         sendMessageButton.hideActivityIndicator()
-        messages = dyteMobileClient.chat.messages
+        self.messages = meeting.chat.messages
         reloadMessageTableView()
     }
 }
@@ -481,9 +493,9 @@ extension UITextView {
         if let label = subviews.compactMap( { $0 as? DyteText }).first {
             return label
         } else {
-            let label = UIUTility.createLabel(alignment: .left)
+            let label = DyteUIUTility.createLabel(alignment: .left)
             label.font = UIFont.boldSystemFont(ofSize: 14)
-            label.textColor = tokenColor.textColor.onBackground.shade700
+            label.textColor = dyteSharedTokenColor.textColor.onBackground.shade700
             label.numberOfLines = 0
             label.font = font
             addSubview(label)

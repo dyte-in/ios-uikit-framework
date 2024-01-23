@@ -9,11 +9,11 @@ import DyteiOSCore
 import UIKit
 
 protocol MeetingDelegate: AnyObject {
-    func onMeetingInitFailed()
+    func onMeetingInitFailed(message: String?)
     func onMeetingInitCompleted()
 }
 
-protocol ChatDelegate {
+public protocol ChatDelegate {
     func refreshMessages()
 }
 
@@ -52,21 +52,21 @@ final class SetupViewModel {
     
     func initialise() {
         if let info = meetingInfo {
-            self.dyteSelfListner.initMeetingV1(info: info) { success in
+            self.dyteSelfListner.initMeetingV1(info: info) { success, message in
                 if success {
                     self.delegate?.onMeetingInitCompleted()
                 }else {
-                    self.delegate?.onMeetingInitFailed()
+                    self.delegate?.onMeetingInitFailed(message: message)
                 }
             }
         }
         
         if let info = meetingInfoV2 {
-            dyteSelfListner.initMeetingV2(info: info) { success in
+            dyteSelfListner.initMeetingV2(info: info) { success, message in
                 if success {
                     self.delegate?.onMeetingInitCompleted()
                 }else {
-                    self.delegate?.onMeetingInitFailed()
+                    self.delegate?.onMeetingInitFailed(message: message)
                 }
             }
         }
