@@ -38,7 +38,9 @@ public class DyteDropdown<Model: PickerCellModel>: UIView {
     private let onClick: (DyteDropdown)->Void
     let heading: String
     private var selectedIndex: Int
-    let options: [Model]
+    var options: [Model]
+    
+    var selectedState: Bool = false
     
     public init(rightImage: DyteImage, heading: String, options: [Model], selectedIndex: UInt = 0, onClick: @escaping(DyteDropdown)->Void) {
         self.iconImage = rightImage
@@ -50,12 +52,22 @@ public class DyteDropdown<Model: PickerCellModel>: UIView {
         setUpView()
     }
     
+    func refresh(selectedIndex: UInt = 0, options: [Model]) {
+        self.selectedIndex = selectedIndex < options.count ? Int(exactly: selectedIndex)! : 0
+        setOptions(options: options)
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
    private func setUpView() {
         createSubViews()
+        setTexts()
+    }
+    
+   private func setOptions(options: [Model]) {
+        self.options = options
         setTexts()
     }
     
@@ -119,6 +131,8 @@ public class DyteDropdown<Model: PickerCellModel>: UIView {
     }
     
     @objc func tapButtonClick() {
+        selectedState = true
         self.onClick(self)
+        
     }
 }

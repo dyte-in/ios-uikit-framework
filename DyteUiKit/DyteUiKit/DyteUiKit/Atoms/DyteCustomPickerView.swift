@@ -56,7 +56,7 @@ class DyteCustomPickerView<Model: PickerModel> : UIView, UIPickerViewDelegate, U
         return pickerView
     }
     
-    let options: [Model.CellModel]
+    var options: [Model.CellModel]
     private let title: String
     private var pickerView: UIPickerView!
     private var toolBar: UIToolbar!
@@ -69,6 +69,7 @@ class DyteCustomPickerView<Model: PickerModel> : UIView, UIPickerViewDelegate, U
     
     var onSelectRow:((DyteCustomPickerView, Int)-> Void)?
     var onCancelButtonClick:((DyteCustomPickerView)-> Void)?
+    var onDoneButtonClick:((DyteCustomPickerView)-> Void)?
 
     init(heading: String = "", list: [Model.CellModel], selectedIndex: UInt) {
         options = list
@@ -84,6 +85,17 @@ class DyteCustomPickerView<Model: PickerModel> : UIView, UIPickerViewDelegate, U
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func refresh(list: [Model.CellModel], selectedIndex: UInt) {
+        options = list
+        if list.count > 0 && selectedIndex >= list.count {
+            self.selectedIndex = UInt(list.count - 1)
+        }else {
+            self.selectedIndex = selectedIndex
+        }
+        self.pickerView.reloadAllComponents()
+        self.pickerView.selectRow(Int(self.selectedIndex), inComponent: 0, animated: true)
     }
     
    private func setUpView() {
@@ -131,6 +143,7 @@ class DyteCustomPickerView<Model: PickerModel> : UIView, UIPickerViewDelegate, U
     
     @objc func doneButtonClick() {
         removePickerView()
+        onDoneButtonClick?(self)
     }
     
     private func removePickerView() {

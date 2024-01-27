@@ -115,6 +115,22 @@ open class DyteTabbarBar: UIView, AdaptableUI {
         self.backgroundColor = appearance.backgroundColor
         self.delegate = delegate
         createViews()
+        NotificationCenter.default.addObserver(self, selector: #selector(onRotationChange), name: UIDevice.orientationDidChangeNotification, object: nil)
+    }
+    
+    deinit {
+       NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
+    }
+    
+    @objc private func onRotationChange() {
+        self.applyConstraintAsPerOrientation()
+        if UIScreen.isLandscape() {
+            self.stackView.axis = .vertical
+            self.setWidth()
+        }else {
+            self.stackView.axis = .horizontal
+            self.setHeight()
+        }
     }
     
    private func createViews() {
@@ -202,18 +218,6 @@ open class DyteTabbarBar: UIView, AdaptableUI {
         
     public func setItemsOrientation(axis: NSLayoutConstraint.Axis) {
         self.stackView.axis = axis
-    }
-    
-    open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        self.applyConstraintAsPerOrientation()
-        if UIScreen.isLandscape() {
-            self.stackView.axis = .vertical
-            self.setWidth()
-        }else {
-            self.stackView.axis = .horizontal
-            self.setHeight()
-        }
     }
 }
 

@@ -7,6 +7,7 @@
 
 import DyteiOSCore
 import UIKit
+import AVFAudio
 
 public class SettingViewController: DyteBaseViewController, SetTopbar {
     public  var shouldShowTopBar: Bool = true
@@ -22,6 +23,7 @@ public class SettingViewController: DyteBaseViewController, SetTopbar {
     
     private var cameraDropDown: DyteDropdown<CameraPickerCellModel>!
     private var speakerDropDown: DyteDropdown<DyteAudioPickerCellModel>!
+    private var audioSelectionView: DyteCustomPickerView<DytePickerModel<DyteAudioPickerCellModel>>?
 
     
     let backgroundColor = DesignLibrary.shared.color.background.shade1000
@@ -54,16 +56,24 @@ public class SettingViewController: DyteBaseViewController, SetTopbar {
         }
          loadSelfVideoView()
          self.view.backgroundColor =  backgroundColor
+        NotificationCenter.default.addObserver(self, selector: #selector(routeChanged(notification:)), name: AVAudioSession.routeChangeNotification, object: nil)
     }
     
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
+    @objc
+    private func routeChanged(notification: Notification) {
+        if self.speakerDropDown != nil {
+            refreshAudioOutputDropDown()
+        }
     }
     
-//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-//        return .portrait
-//    }
+    private func refreshAudioOutputDropDown() {
+        let metaData = self.getSpeakerDropDownData()
+        self.speakerDropDown.refresh(selectedIndex: UInt(metaData.selectedIndex), options: metaData.devicesModel)
+        if self.speakerDropDown.selectedState {
+            self.audioSelectionView?.refresh(list: metaData.devicesModel, selectedIndex: UInt(metaData.selectedIndex))
+        }
+    }
+
     private func setTag(name: String) {
         selfPeerView.viewModel.refreshNameTag()
         selfPeerView.viewModel.refreshInitialName()
@@ -153,15 +163,17 @@ public class SettingViewController: DyteBaseViewController, SetTopbar {
         return cameraDropDown
     }
     
-    private func createAudioDropDown() -> DyteDropdown<DyteAudioPickerCellModel> {
-        let currentAudioSelectedDevice: AudioDeviceType? = self.meeting.localUser.getSelectedAudioDevice()?.type
-        let audioDevices = self.meeting.localUser.getAudioDevices()
-        var deviceModels = [DyteAudioPickerCellModel]()
-        for device in audioDevices {
-            deviceModels.append(DyteAudioPickerCellModel(name: device.type.displayName, deviceType: device.type))
+    private func getSpeakerDropDownData() -> (devicesModel: [DyteAudioPickerCellModel], selectedIndex: Int) {
+        func getDevices() -> [DyteAudioPickerCellModel] {
+            let audioDevices = self.meeting.localUser.getAudioDevices()
+            var deviceModels = [DyteAudioPickerCellModel]()
+            for device in audioDevices {
+                deviceModels.append(DyteAudioPickerCellModel(name: device.type.displayName, deviceType: device.type))
+            }
+            return deviceModels
         }
         
-        func selectedIndex(current: AudioDeviceType?) -> Int {
+        func selectedIndex(current: AudioDeviceType?, deviceModels: [DyteAudioPickerCellModel]) -> Int {
             var count = -1
             for deviceModel in deviceModels {
                 count += 1
@@ -171,12 +183,19 @@ public class SettingViewController: DyteBaseViewController, SetTopbar {
             }
             return count
         }
+        let currentAudioSelectedDevice: AudioDeviceType? = self.meeting.localUser.getSelectedAudioDevice()?.type
+        let devices = getDevices()
+        return (devices, selectedIndex(current: currentAudioSelectedDevice, deviceModels: devices))
+    }
+    private func createAudioDropDown() -> DyteDropdown<DyteAudioPickerCellModel> {
         
-        let speakerDropDown =  DyteDropdown(rightImage: DyteImage(image: ImageProvider.image(named: "icon_angle_arrow_down")), heading: "Speaker", options: deviceModels, selectedIndex: UInt(selectedIndex(current: currentAudioSelectedDevice))) { [weak self] dropDown in
+        let metaData = getSpeakerDropDownData()
+        let speakerDropDown =  DyteDropdown(rightImage: DyteImage(image: ImageProvider.image(named: "icon_angle_arrow_down")), heading: "Speaker (output)", options: metaData.devicesModel, selectedIndex:UInt(metaData.selectedIndex)) { [weak self] dropDown in
             guard let self = self else {return}
-
-            let currentSelectedDevice = self.meeting.localUser.getSelectedAudioDevice()?.type
-            let picker = DyteCustomPickerView.show(model: DytePickerModel(title: dropDown.heading, selectedIndex: UInt(selectedIndex(current: currentSelectedDevice)), cells: dropDown.options), on: self.view)
+            let metaData = getSpeakerDropDownData()
+            let audioDevices = self.meeting.localUser.getAudioDevices()
+            
+            let picker = DyteCustomPickerView.show(model: DytePickerModel(title: dropDown.heading, selectedIndex: UInt(metaData.selectedIndex), cells: dropDown.options), on: self.view)
             picker.onSelectRow = { [weak self] picker, index  in
                 guard let self = self else {return}
                 let currentSelectedDevice = picker.options[index]
@@ -187,6 +206,13 @@ public class SettingViewController: DyteBaseViewController, SetTopbar {
                     }
                 }
             }
+            picker.onDoneButtonClick = { [weak dropDown]  picker in
+                dropDown?.selectedState = false
+            }
+            picker.onCancelButtonClick = {[weak dropDown]  picker in
+                dropDown?.selectedState = false
+            }
+            self.audioSelectionView = picker
         }
         return speakerDropDown
     }

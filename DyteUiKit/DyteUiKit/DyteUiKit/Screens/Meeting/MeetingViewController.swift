@@ -301,8 +301,8 @@ public class MeetingViewController: DyteBaseViewController {
         }
     }
     
-    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
         self.presentedViewController?.dismiss(animated: false)
         bottomBar.moreButton.hideBottomSheet()
         if UIScreen.isLandscape() {
@@ -321,8 +321,9 @@ public class MeetingViewController: DyteBaseViewController {
         
         self.showPluginViewAsPerOrientation(show: false)
         self.setLeftPaddingContraintForBaseContentView()
-        self.refreshMeetingGrid(forRotation: true)
-
+        DispatchQueue.main.async {
+            self.refreshMeetingGrid(forRotation: true)
+        }
     }
 
 }
