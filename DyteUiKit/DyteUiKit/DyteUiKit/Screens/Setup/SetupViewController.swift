@@ -19,7 +19,7 @@ public class MicToggleButton: DyteButton {
     let completion: ((MicToggleButton)->Void)?
     
     private let meeting: DyteMobileClient
-    private let alertController: UIViewController
+    private weak var alertController: UIViewController!
 
     init(meeting: DyteMobileClient, alertController: UIViewController, onClick:((MicToggleButton)->Void)? = nil, appearance: DyteButtonAppearance = AppTheme.shared.buttonAppearance) {
         self.meeting = meeting
@@ -103,7 +103,7 @@ public class VideoToggleButton: DyteButton {
     let completion: ((VideoToggleButton)->Void)?
     
     private let meeting: DyteMobileClient
-    private let alertController: UIViewController
+    private weak var alertController: UIViewController!
     
     init(meeting: DyteMobileClient, alertController: UIViewController, onClick:((VideoToggleButton)->Void)? = nil, appearance: DyteButtonAppearance = AppTheme.shared.buttonAppearance) {
         self.meeting = meeting
@@ -178,7 +178,7 @@ public protocol SetupViewControllerDataSource : UIViewController {
     var delegate: SetupViewControllerDelegate? {get set}
 }
 
-public protocol SetupViewControllerDelegate {
+public protocol SetupViewControllerDelegate: AnyObject {
     func userJoinedMeetingSuccessfully(sender: UIViewController)
 }
 
@@ -188,7 +188,7 @@ public class SetupViewController: DyteBaseViewController, KeyboardObservable, Se
     let baseView: BaseView = BaseView()
     private var selfPeerView: DyteParticipantTileView!
     let borderRadius = DesignLibrary.shared.borderRadius
-    public var delegate: SetupViewControllerDelegate?
+    public weak var delegate: SetupViewControllerDelegate?
     let btnsStackView: BaseStackView = {
         return DyteUIUTility.createStackView(axis: .horizontal, spacing: DesignLibrary.shared.space.space6)
     }()
@@ -266,19 +266,10 @@ public class SetupViewController: DyteBaseViewController, KeyboardObservable, Se
         super.viewDidLoad()
         setupView()
         self.view.backgroundColor = backgroundColor
+       
     }
-    
-    
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-    
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-    }
-    
-    private var viewModel: SetupViewModel!
 
+    private var viewModel: SetupViewModel!
     private var btnStackView: UIStackView!
     private var bottomStackView: UIStackView!
     private func dyteMobileClientInit() {
@@ -381,7 +372,7 @@ extension SetupViewController {
         self.view.addSubview(baseView)
         setUpActivityIndicator(baseView: baseView)
         addConstraintForBaseView()
-        applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
+        applyConstraintAsPerOrientation()
     }
     
     private func addConstraintForBaseView() {
@@ -437,7 +428,7 @@ extension SetupViewController {
         selfPeerView = DyteParticipantTileView(viewModel: VideoPeerViewModel(mobileClient: mobileClient, participant: self.mobileClient.localUser, showSelfPreviewVideo: true))
         
         baseView.addSubview(selfPeerView)
-        
+
         selfPeerView.clipsToBounds = true
         
         let btnStackView = createBtnView()
@@ -451,7 +442,6 @@ extension SetupViewController {
         lblBottom.isHidden = true
         addConstraintForCreatingMeetingSetUpUI()
         applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
-        
     }
     
     private func addConstraintForCreatingMeetingSetUpUI() {
@@ -536,7 +526,7 @@ extension SetupViewController {
             btnMic.isSelected = !info.enableAudio
             btnVideo.isSelected = !info.enableVideo
         }
-        
+
         if let info = self.meetinInfoV2 {
             btnMic.isSelected = !info.enableAudio
             btnVideo.isSelected = !info.enableVideo
@@ -561,7 +551,8 @@ extension SetupViewController {
     }
     
     private func addJoinButton(on view: UIView) -> DyteJoinButton {
-        let joinButton = DyteJoinButton(meeting: self.mobileClient) { button, success in
+        let joinButton = DyteJoinButton(meeting: self.mobileClient) { [weak self] button, success in
+            guard let self = self else {return}
             if success {
                 self.delegate?.userJoinedMeetingSuccessfully(sender: self)
             }

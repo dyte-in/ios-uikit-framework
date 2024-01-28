@@ -52,7 +52,8 @@ final class SetupViewModel {
     
     func initialise() {
         if let info = meetingInfo {
-            self.dyteSelfListner.initMeetingV1(info: info) { success, message in
+            self.dyteSelfListner.initMeetingV1(info: info) { [weak self] success, message in
+                guard let self = self else {return}
                 if success {
                     self.delegate?.onMeetingInitCompleted()
                 }else {
@@ -62,7 +63,9 @@ final class SetupViewModel {
         }
         
         if let info = meetingInfoV2 {
-            dyteSelfListner.initMeetingV2(info: info) { success, message in
+            dyteSelfListner.initMeetingV2(info: info) { [weak self] success, message in
+                guard let self = self else {return}
+
                 if success {
                     self.delegate?.onMeetingInitCompleted()
                 }else {

@@ -55,7 +55,7 @@ public class DyteTextField: BaseAtomView {
     
     var errorLabelValidation: ((String?, DyteTextField) -> Void)?
     
-    var delegate: UITextFieldDelegate? {
+    weak var delegate: UITextFieldDelegate? {
         get {
             return textField.delegate
         }

@@ -8,7 +8,7 @@
 import UIKit
 import DyteiOSCore
 
-public protocol DyteMeetingControlBarDataSource {
+public protocol DyteMeetingControlBarDataSource : AnyObject {
     func getMicControlBarButton(for meeting: DyteMobileClient) ->  DyteControlBarButton?
     func getVideoControlBarButton(for meeting: DyteMobileClient) ->  DyteControlBarButton?
 }
@@ -16,7 +16,7 @@ public protocol DyteMeetingControlBarDataSource {
 
 open class DyteMeetingControlBar: DyteControlBar {
     
-   public var dataSource: DyteMeetingControlBarDataSource? {
+   public weak var dataSource: DyteMeetingControlBarDataSource? {
         didSet {
             if dataSource != nil {
                 addButtons(meeting: self.meeting)

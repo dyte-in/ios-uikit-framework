@@ -159,24 +159,28 @@ open class DyteTabbarBar: UIView, AdaptableUI {
         stackView.set(.fillSuperView(containerView))
        addPortraitConstraintsForContainerView()
        addLandscapeConstraintsForContainerView()
-       applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
+       applyConstraintAsPerOrientation()
     }
     
     private func addPortraitConstraintsForContainerView() {
         containerView.set(.sameLeadingTrailing(self, tokenSpace.space4),
                           .top(self, tokenSpace.space2),
-                          .height(DyteTabbarBar.baseHeight))
+                          .height(DyteTabbarBar.baseHeight),
+                          .bottom(self, tokenSpace.space2,.greaterThanOrEqual))
         portraitConstraints.append(contentsOf: [containerView.get(.leading)!,
                                                 containerView.get(.trailing)!,
                                                 containerView.get(.top)!,
-                                                containerView.get(.height)!])
+                                                containerView.get(.height)!,
+                                                containerView.get(.bottom)!])
     }
     
     private func addLandscapeConstraintsForContainerView() {
         containerView.set(.sameTopBottom(self, tokenSpace.space4),
                           .leading(self, tokenSpace.space2),
+                          .trailing(self, tokenSpace.space2,.greaterThanOrEqual),
                           .width(baseWidthForLandscape))
         landscapeConstraints.append(contentsOf: [containerView.get(.leading)!,
+                                                 containerView.get(.trailing)!,
                                                 containerView.get(.top)!,
                                                 containerView.get(.bottom)!,
                                                  containerView.get(.width)!])

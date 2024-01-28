@@ -73,7 +73,11 @@ public class DyteParticipantTileView: DytePeerView {
     }
    
     private func updateAvatorViewHeightConstraint() {
-        let width = bounds.width * 0.4
+        var width = bounds.height * 0.4
+        if bounds.height > bounds.width {
+            width = bounds.width * 0.4
+        }
+        
         let maxHeightWidth:CGFloat = 100
         let minHeightWidth:CGFloat = 40
   

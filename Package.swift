@@ -5,7 +5,7 @@ let package = Package(
     name: "DyteUiKit",
     platforms: [.iOS(.v13)],
     products: [
-        .library(name: "DyteUiKit", targets: ["DyteUiKit","DyteiOSCore", "WebRTC", "AmazonIVSPlayer"]),
+        .library(name: "DyteUiKit", targets: ["DyteUiKit","DyteiOSCore", "DyteWebRTC", "AmazonIVSPlayer"]),
     ],
     targets: [
         .target(name: "DyteUiKit",
@@ -13,14 +13,14 @@ let package = Package(
                 resources: [.process("Resources/notification_join.mp3"),
                             .process("Resources/notification_message.mp3")]),
         .binaryTarget(
-            name: "WebRTC",
-            url: "https://github.com/jitsi/webrtc/releases/download/v111.0.2/WebRTC.xcframework.zip",
-            checksum: "5033f23040628e76baa3a9c83c28d89e86ce8127a5a83b5b7d077ede24182b07"
+            name: "DyteWebRTC",
+            url: "https://dyte-assets.s3.ap-south-1.amazonaws.com/sdk/ios_core/DyteWebRTC_v0.0.4.zip",
+            checksum: "25318dfb4bd018fde6ed7fd3337d9aa1c62fc8b39ab985c60fa530eb3819e68a"
         ),
          .binaryTarget(
             name: "DyteiOSCore",
-            url: "https://dyte-assets.s3.ap-south-1.amazonaws.com/sdk/ios_core/DyteiOSCore-1.30.2-ebffce74-83d4-44fa-87f7-4cce8b1a36af.xcframework.zip",
-            checksum: "ab7b08cf7d50a18e6a66a8f8ddceab9d44540c132dbdc18c3742e228e1658058"
+            url: "https://dyte-assets.s3.ap-south-1.amazonaws.com/sdk/ios_core/DyteiOSCore-1.31.0-5d1baf39-eced-4637-9445-e1a008e28d4e.xcframework.zip",
+            checksum: "b94673eb952e5abed6537494f97886539fa10b0c1bb7c2d38e74f247041bd92b"
         ),
         .binaryTarget(
             name: "AmazonIVSPlayer",

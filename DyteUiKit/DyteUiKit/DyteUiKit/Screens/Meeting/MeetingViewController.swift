@@ -311,10 +311,12 @@ public class MeetingViewController: DyteBaseViewController {
             bottomBar.moreButton.superview?.isHidden = false
         }
        
-        self.applyConstraintAsPerOrientation {
+        self.applyConstraintAsPerOrientation { [weak self] in
+            guard let self = self else {return}
             self.fullScreenButton.isHidden = true
             self.closefullscreen()
-        } onLandscape: {
+        } onLandscape: { [weak self] in
+            guard let self = self else {return}
             self.fullScreenButton.isSelected = false
             self.fullScreenButton.isHidden = false
         }
@@ -776,7 +778,7 @@ extension MeetingViewController: DyteNotificationDelegate {
             }
             NotificationCenter.default.post(name: Notification.Name("Notify_NewChatArrived"), object: nil, userInfo: nil)
             self.moreButtonBottomBar?.notificationBadge.isHidden = false
-            self.moreButtonBottomBar?.notificationBadge.setBadgeCount(Shared.data.getTotalUnreadCountPollsAndChat(totalMessage:self.meeting.chat.messages.count, totalsPolls: self.meeting.polls.polls.count))
+            self.moreButtonBottomBar?.notificationBadge.setBadgeCount(Shared.data.getTotalUnreadCountPollsAndChat(totalMessage: self.meeting.chat.messages.count, totalsPolls: self.meeting.polls.polls.count))
             
         case .Poll:
             NotificationCenter.default.post(name: Notification.Name("Notify_NewPollArrived"), object: nil, userInfo: nil)
@@ -784,7 +786,7 @@ extension MeetingViewController: DyteNotificationDelegate {
                 viewModel.dyteNotification.playNotificationSound(type: .Poll)
             }
             self.moreButtonBottomBar?.notificationBadge.isHidden = false
-            self.moreButtonBottomBar?.notificationBadge.setBadgeCount(Shared.data.getTotalUnreadCountPollsAndChat(totalMessage:self.meeting.chat.messages.count, totalsPolls: self.meeting.polls.polls.count))
+            self.moreButtonBottomBar?.notificationBadge.setBadgeCount(Shared.data.getTotalUnreadCountPollsAndChat(totalMessage: self.meeting.chat.messages.count, totalsPolls: self.meeting.polls.polls.count))
 
         case .Joined:
             if Shared.data.notification.participantJoined.playSound == true {

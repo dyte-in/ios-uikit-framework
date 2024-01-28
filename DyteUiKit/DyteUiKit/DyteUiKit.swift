@@ -43,6 +43,7 @@ public protocol DyteUIKitFlowCoordinatorDelegate {
 }
 
 public class DyteUiKit {
+    
     public enum WebinarAlertButtonType {
         case confirmAndJoin
         case cancel
@@ -68,7 +69,8 @@ public class DyteUiKit {
             Shared.data.delegate = delegate
         }
     }
-    public  init(meetingInfo: DyteMeetingInfo, flowDelegate: DyteUIKitFlowCoordinatorDelegate?) {
+    
+    public  init(meetingInfo: DyteMeetingInfo, flowDelegate: DyteUIKitFlowCoordinatorDelegate? = nil) {
         mobileClient = DyteiOSClientBuilder().build()
         self.flowDelegate = flowDelegate
         designLibrary = DesignLibrary.shared
@@ -77,7 +79,7 @@ public class DyteUiKit {
         configurationV2 = nil
     }
     
-    public init(meetingInfoV2: DyteMeetingInfoV2, flowDelegate: DyteUIKitFlowCoordinatorDelegate?) {
+    public init(meetingInfoV2: DyteMeetingInfoV2, flowDelegate: DyteUIKitFlowCoordinatorDelegate? = nil) {
         self.flowDelegate = flowDelegate
         mobileClient = DyteiOSClientBuilder().build()
         designLibrary = DesignLibrary.shared
@@ -100,6 +102,7 @@ public class DyteUiKit {
 }
 
 extension DyteMobileClient {
+    
     func getWaitlistCount() -> Int {
         return self.participants.waitlisted.count
     }
