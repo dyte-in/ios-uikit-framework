@@ -451,14 +451,20 @@ extension SetupViewController {
     
     private func addPortraintConstraintForCreateMeetingSetupUI() {
 
-        selfPeerView.set(UIDevice.current.userInterfaceIdiom == .pad ? .aspectRatio(0.45) : .aspectRatio(0.75),
-                         .top(baseView),
-                         .height(500,.lessThanOrEqual),
-                         .sameLeadingTrailing(baseView, spaceToken.space6))
-        portraitConstraints.append(contentsOf: [selfPeerView.get(.aspectRatio)!,
-                                                selfPeerView.get(.top)!,
+        selfPeerView.set(.top(baseView),
+                         .leading(baseView, spaceToken.space6, .greaterThanOrEqual),
+                         .centerX(baseView))
+        
+        
+        let portraitPeerViewWidth =  ConstraintCreator.Constraint.equate(viewAttribute: .width, toView: baseView, toViewAttribute: .width, relation: .equal, constant: 0, multiplier: 0.70).getConstraint(for: selfPeerView)
+        portraitConstraints.append(portraitPeerViewWidth)
+        let portraitPeerViewHeight =  ConstraintCreator.Constraint.equate(viewAttribute: .height, toView: baseView, toViewAttribute: .width, relation: .equal, constant: 0, multiplier: 0.85).getConstraint(for: selfPeerView)
+        portraitConstraints.append(portraitPeerViewHeight)
+
+        
+        portraitConstraints.append(contentsOf: [selfPeerView.get(.top)!,
                                                 selfPeerView.get(.leading)!,
-                                                selfPeerView.get(.trailing)!])
+                                                selfPeerView.get(.centerX)!])
         
         btnStackView.set(.below(selfPeerView, spaceToken.space4),
                          .leading(baseView, 0.0, .greaterThanOrEqual),

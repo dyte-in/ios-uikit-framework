@@ -54,20 +54,24 @@ public class ChatViewController: DyteBaseViewController, NSTextStorageDelegate {
         setupViews()
         addWaitingRoom {}
         setUpReconnection(failed: {}, success: {})
+        loadChatMessages()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+       
     }
     
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        //load old messages
-        messages = meeting.chat.messages
-        messageTextView.placeholder = "Message.."
-        reloadMessageTableView()
+    private func loadChatMessages() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.messages = self.meeting.chat.messages
+            self.messageTextView.placeholder = "Message.."
+            self.reloadMessageTableView()
+        }
     }
     
     public override func viewWillDisappear(_ animated: Bool) {

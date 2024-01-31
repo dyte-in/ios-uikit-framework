@@ -78,6 +78,10 @@ final class SetupViewModel {
     func removeListner() {
         dyteSelfListner.clean()
     }
+    
+    deinit {
+        print("SetupView Model dealloc is calling")
+    }
 }
 
 
