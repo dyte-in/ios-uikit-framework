@@ -229,7 +229,7 @@ open class DyteTabbarBar: UIView, AdaptableUI {
 open class DyteControlBar: DyteTabbarBar {
     public let moreButton: DyteMoreButtonControlBar
     public private(set) var endCallButton: DyteEndMeetingControlBarButton
-    private let presentingViewController: UIViewController
+    private unowned let presentingViewController: UIViewController
     private let meeting: DyteMobileClient
     private let endCallCompletion: (()->Void)?
     

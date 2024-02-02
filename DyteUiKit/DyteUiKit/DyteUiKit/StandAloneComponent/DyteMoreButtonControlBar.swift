@@ -10,7 +10,7 @@ import DyteiOSCore
 
 open class  DyteMoreButtonControlBar: DyteControlBarButton {
     private let meeting: DyteMobileClient
-    private let presentingViewController: UIViewController
+    private unowned let presentingViewController: UIViewController
     private let settingViewControllerCompletion:(()->Void)?
     private var bottomSheet: DyteMoreMenuBottomSheet!
     public init(mobileClient: DyteMobileClient, presentingViewController: UIViewController, settingViewControllerCompletion:(()->Void)? = nil) {

@@ -29,7 +29,10 @@ public class DyteParticipantTileView: DytePeerView {
         let baseView = UIView()
         let imageView = DyteUIUTility.createImageView(image: DyteImage(image:ImageProvider.image(named: "icon_pin")))
         baseView.addSubview(imageView)
-        imageView.set(.fillSuperView(baseView, spaceToken.space1))
+        imageView.set(.leading(baseView, spaceToken.space1, .lessThanOrEqual),
+                      .trailing(baseView, spaceToken.space1, .lessThanOrEqual),
+                      .top(baseView, spaceToken.space1, .lessThanOrEqual),
+                      .bottom(baseView, spaceToken.space1, .lessThanOrEqual))
         return baseView
     }()
     
@@ -55,8 +58,8 @@ public class DyteParticipantTileView: DytePeerView {
         if pinView.superview == nil {
             self.addSubview(pinView)
             pinView.backgroundColor = tokenColor.background.shade900
-            pinView.set(.leading(self, dyteSharedTokenSpace.space3),
-                        .top(self, dyteSharedTokenSpace.space3),
+            pinView.set(.leading(self, dyteSharedTokenSpace.space3, .lessThanOrEqual),
+                        .top(self, dyteSharedTokenSpace.space3, .lessThanOrEqual),
                         .height(0),
                         .width(0))
             pinView.layer.cornerRadius = dyteSharedTokenSpace.space1
@@ -137,7 +140,6 @@ public class DyteParticipantTileView: DytePeerView {
         let newWidth = width - minHeightWidth
         let fontSize = newWidth*(fontFactor/factorWidth) + minFontSize
         nameTag.lblTitle.font = UIFont.systemFont(ofSize: fontSize)
-
     }
 
    
@@ -159,8 +161,8 @@ public class DyteParticipantTileView: DytePeerView {
     nameTag = DyteMeetingNameTag(meeting: self.viewModel.mobileClient, participant: self.viewModel.participant)
     self.addSubview(nameTag)
       
-    nameTag.set(.leading(self, spaceToken.space3),
-                .bottom(self, spaceToken.space3),
+      nameTag.set(.leading(self, spaceToken.space3),
+                  .bottom(self, spaceToken.space3),
                 .trailing(self, spaceToken.space3, .greaterThanOrEqual),
                 .height(0))
 }

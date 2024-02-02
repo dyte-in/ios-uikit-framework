@@ -438,7 +438,7 @@ extension SetupViewController {
         let bottomStackView = createBottomButtonStackView()
         baseView.addSubview(bottomStackView)
         self.bottomStackView = bottomStackView
-
+        print("Meeting Id \(self.meeting.meta.roomName)")
         lblBottom.isHidden = true
         addConstraintForCreatingMeetingSetUpUI()
         applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
@@ -446,7 +446,9 @@ extension SetupViewController {
     
     private func addConstraintForCreatingMeetingSetUpUI() {
         addPortraintConstraintForCreateMeetingSetupUI()
+        setPortraitContraintAsDeactive()
         addLandscapeConstraintForCreateMeetingSetupUI()
+        setLandscapeContraintAsDeactive()
     }
     
     private func addPortraintConstraintForCreateMeetingSetupUI() {
@@ -505,6 +507,7 @@ extension SetupViewController {
                             .centerY(baseView),
                             .width(baseView.frame.width/2 - spaceToken.space6),
                             .trailing(baseView, spaceToken.space6))
+        
         landscapeConstraints.append(contentsOf: [bottomStackView.get(.leading)!,
                                                  bottomStackView.get(.centerY)!,
                                                  bottomStackView.get(.width)!,

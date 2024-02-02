@@ -41,9 +41,11 @@ public class DyteAvatarView: UIView {
         profileImageView.set(.fillSuperView(self))
         initialName.adjustsFontSizeToFitWidth = true
         initialName.font = UIFont.boldSystemFont(ofSize: 30)
-        initialName.set(.sameLeadingTrailing(self, dyteSharedTokenSpace.space1),
+        initialName.set(.leading(self, dyteSharedTokenSpace.space1, .lessThanOrEqual),
+                        .trailing(self, dyteSharedTokenSpace.space1, .lessThanOrEqual),
                         .centerY(self),
                         .height(0))
+
         self.layer.masksToBounds = true
     }
     

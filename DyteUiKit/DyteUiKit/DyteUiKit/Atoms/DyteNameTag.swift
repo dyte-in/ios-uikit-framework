@@ -154,8 +154,11 @@ extension DyteNameTag {
         self.lblSubTitle?.textColor = appearance.subTitleTextColorToken
     }
     
-    private func addConstraints() {
-        baseStackView.set(.fillSuperView(self, appearance.paddings.top, left: appearance.paddings.left, bottom: appearance.paddings.left, right: appearance.paddings.right))
+    private func addConstraints() {    
+        baseStackView.set(.leading(self, appearance.paddings.left),
+                          .trailing(self, appearance.paddings.right),
+                          .top(self, appearance.paddings.top, .lessThanOrEqual),
+                          .bottom(self, appearance.paddings.left, .lessThanOrEqual))
     }
 }
 

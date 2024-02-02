@@ -72,8 +72,15 @@ public protocol AdaptableUI {
 }
 
 public extension AdaptableUI {
-    func setContraintAsDeactive() {
+    func setOrientationContraintAsDeactive() {
+        setPortraitContraintAsDeactive()
+        setLandscapeContraintAsDeactive()
+    }
+    
+    func setPortraitContraintAsDeactive() {
         portraitConstraints.forEach { $0.isActive = false}
+    }
+    func setLandscapeContraintAsDeactive() {
         landscapeConstraints.forEach { $0.isActive = false}
     }
     
@@ -86,7 +93,7 @@ public extension AdaptableUI {
     }
     
     func applyConstraintAsPerOrientation(isLandscape: Bool, onPortait:()->Void = {}, onLandscape:()->Void = {}) {
-        setContraintAsDeactive()
+        setOrientationContraintAsDeactive()
         if isLandscape {
            landscapeConstraints.forEach { $0.isActive = true }
            onLandscape()
