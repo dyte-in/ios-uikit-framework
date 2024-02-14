@@ -65,8 +65,7 @@ open class DyteTabbarBar: UIView, AdaptableUI {
     private var widthLandscapeConstraint: NSLayoutConstraint?
 
    public func setHeight() {
-        self.removeWidthContraint()
-        self.removeHeightContraint()
+       removeHeightWidthConstraint()
         var extra = DyteTabbarBar.defaultBottomAdjustForNonNotch
         if self.superview!.safeAreaInsets.bottom != 0 {
             extra = self.superview!.safeAreaInsets.bottom
@@ -78,7 +77,7 @@ open class DyteTabbarBar: UIView, AdaptableUI {
     
     public func setWidth() {
         var extra = DyteTabbarBar.defaultBottomAdjustForNonNotch
-        if UIScreen.deviceOrientation == .landscapeLeft {
+        if UIScreen.isLandscape() && self.superview!.safeAreaInsets.right != 0 {
             extra = self.superview!.safeAreaInsets.right
         }
         self.setWidth(extra: extra)
@@ -86,22 +85,28 @@ open class DyteTabbarBar: UIView, AdaptableUI {
     
     private func removeHeightContraint() {
         if let constraint = self.heightConstraint {
+            constraint.isActive = false
             self.removeConstraint(constraint)
         }
     }
     
     private func removeWidthContraint() {
         if let constraint = self.widthLandscapeConstraint {
+            constraint.isActive = false
             self.removeConstraint(constraint)
         }
     }
     
     private func setWidth(extra: CGFloat) {
-        self.removeHeightContraint()
-        self.removeWidthContraint()
+        removeHeightWidthConstraint()
         let width = baseWidthForLandscape + extra
         self.widthLandscapeConstraint = self.widthAnchor.constraint(equalToConstant: delegate?.getTabBarWidthForLandscape() ?? width)
         self.widthLandscapeConstraint?.isActive = true
+    }
+    
+    private func removeHeightWidthConstraint() {
+        self.removeHeightContraint()
+        self.removeWidthContraint()
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -122,7 +127,8 @@ open class DyteTabbarBar: UIView, AdaptableUI {
        NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
     }
     
-    @objc private func onRotationChange() {
+    open override func updateConstraints() {
+        super.updateConstraints()
         self.applyConstraintAsPerOrientation()
         if UIScreen.isLandscape() {
             self.stackView.axis = .vertical
@@ -131,6 +137,12 @@ open class DyteTabbarBar: UIView, AdaptableUI {
             self.stackView.axis = .horizontal
             self.setHeight()
         }
+    }
+    
+    @objc func onRotationChange() {
+        self.removeHeightWidthConstraint()
+        self.setOrientationContraintAsDeactive()
+        self.setNeedsUpdateConstraints()
     }
     
    private func createViews() {
@@ -156,17 +168,17 @@ open class DyteTabbarBar: UIView, AdaptableUI {
     }
     
    private func layoutViews() {
-        stackView.set(.fillSuperView(containerView))
+       stackView.set(.fillSuperView(containerView))
        addPortraitConstraintsForContainerView()
        addLandscapeConstraintsForContainerView()
-       applyConstraintAsPerOrientation()
+       applyOnlyConstraintAsPerOrientation()
     }
     
     private func addPortraitConstraintsForContainerView() {
         containerView.set(.sameLeadingTrailing(self, tokenSpace.space4),
                           .top(self, tokenSpace.space2),
                           .height(DyteTabbarBar.baseHeight),
-                          .bottom(self, tokenSpace.space2,.greaterThanOrEqual))
+                          .bottom(self, tokenSpace.space2,.greaterThanOrEqual), isActive: false)
         portraitConstraints.append(contentsOf: [containerView.get(.leading)!,
                                                 containerView.get(.trailing)!,
                                                 containerView.get(.top)!,
@@ -178,7 +190,7 @@ open class DyteTabbarBar: UIView, AdaptableUI {
         containerView.set(.sameTopBottom(self, tokenSpace.space4),
                           .leading(self, tokenSpace.space2),
                           .trailing(self, tokenSpace.space2,.greaterThanOrEqual),
-                          .width(baseWidthForLandscape))
+                          .width(baseWidthForLandscape), isActive: false)
         landscapeConstraints.append(contentsOf: [containerView.get(.leading)!,
                                                  containerView.get(.trailing)!,
                                                 containerView.get(.top)!,
@@ -277,6 +289,11 @@ open class DyteControlBar: DyteTabbarBar {
         return endCallButton
     }
     
+    public func setTabBarButtonTitles(numOfLines: Int) {
+        for button in self.buttons {
+            button.btnTitle?.numberOfLines = numOfLines
+        }
+    }
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

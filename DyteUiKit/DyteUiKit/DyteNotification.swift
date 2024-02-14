@@ -19,7 +19,7 @@ public class DyteNotification {
             resource = "notification_join"
         }
         
-            let frameworkBundle =  Bundle(for: DyteNotification.self)
+        let frameworkBundle =  Bundle.resources
             guard let url = frameworkBundle.url(forResource: resource, withExtension: "mp3") else {return}
             var mySound: SystemSoundID = 0
             AudioServicesCreateSystemSoundID(url as CFURL, &mySound)

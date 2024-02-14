@@ -229,6 +229,19 @@ extension DyteEventSelfListner: DyteStageEventListener {
 }
 
 extension DyteEventSelfListner: DyteSelfEventsListener {
+
+    public func onScreenShareStartFailed(reason: String) {
+        
+    }
+    
+    public func onScreenShareStarted() {
+        
+    }
+    
+    public func onScreenShareStopped() {
+        
+    }
+    
     public func onRoomMessage(type: String, payload: [String : Any]) {
         
     }

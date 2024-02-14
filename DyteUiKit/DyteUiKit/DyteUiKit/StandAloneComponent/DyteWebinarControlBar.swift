@@ -42,6 +42,11 @@ open class DyteWebinarControlBar: DyteControlBar {
         }
     }
     
+    override func onRotationChange() {
+        super.onRotationChange()
+        self.setTabBarButtonTitles(numOfLines: UIScreen.isLandscape() ? 2 : 1)
+    }
+    
     private func getStageStatus() -> WebinarStageStatus {
         let state = self.meeting.stage.stageStatus
         switch state {
@@ -82,6 +87,10 @@ open class DyteWebinarControlBar: DyteControlBar {
     
     private func refreshBar() {
         self.refreshBar(stageStatus: self.getStageStatus())
+        if UIScreen.isLandscape() {
+            self.moreButton.superview?.isHidden = true
+        }
+        self.setTabBarButtonTitles(numOfLines: UIScreen.isLandscape() ? 2 : 1)
     }
     
     private func refreshBar(stageStatus: WebinarStageStatus) {

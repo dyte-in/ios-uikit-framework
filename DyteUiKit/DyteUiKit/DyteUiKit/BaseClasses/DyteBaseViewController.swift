@@ -71,8 +71,15 @@ open class DyteBaseViewController: UIViewController, AdaptableUI {
        }
     }
     
+    open override func updateViewConstraints() {
+        super.updateViewConstraints()
+        self.applyOnlyConstraintAsPerOrientation()
+    }
+    
     open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        applyConstraintAsPerOrientation()
+        self.view.setNeedsUpdateConstraints()
+        setOrientationContraintAsDeactive()
     }
+    
 }

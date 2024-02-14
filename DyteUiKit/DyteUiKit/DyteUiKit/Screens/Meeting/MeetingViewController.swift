@@ -20,6 +20,7 @@ public protocol MeetingViewControllerDataSource {
 }
 
 public class MeetingViewController: DyteBaseViewController {
+    
     private var gridView: GridView<DyteParticipantTileContainerView>!
     let pluginView: DytePluginView
     let gridBaseView = UIView()
@@ -70,7 +71,7 @@ public class MeetingViewController: DyteBaseViewController {
     
     public override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
-        self.topBar.set(.top(self.view, self.view.safeAreaInsets.top))
+        self.topBar.containerView.get(.top)?.constant = self.view.safeAreaInsets.top
         if UIScreen.isLandscape() {
             self.bottomBar.setWidth()
         }else {
@@ -97,6 +98,7 @@ public class MeetingViewController: DyteBaseViewController {
         createTopbar()
         createBottomBar()
         createSubView()
+        applyConstraintAsPerOrientation()
         setInitialsConfiguration()
         setupNotifications()
         self.viewModel.delegate = self
@@ -266,13 +268,8 @@ public class MeetingViewController: DyteBaseViewController {
     private  func addBottomBarConstraint() {
         addPortraitContraintBottombar()
         addLandscapeContraintBottombar()
-        applyConstraintAsPerOrientation()
-        bottomBar.applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape()) {
-            bottomBar.setItemsOrientation(axis: .horizontal)
-            bottomBar.setHeight()
-        } onLandscape: {
-            bottomBar.setItemsOrientation(axis: .vertical)
-            bottomBar.setWidth()
+        if UIScreen.isLandscape() {
+            self.moreButtonBottomBar?.superview?.isHidden = true
         }
     }
     
@@ -282,6 +279,7 @@ public class MeetingViewController: DyteBaseViewController {
         portraitConstraints.append(contentsOf: [self.bottomBar.get(.leading)!,
                                                 self.bottomBar.get(.trailing)!,
                                                 self.bottomBar.get(.bottom)!])
+        setPortraitContraintAsDeactive()
     }
     
     private func addLandscapeContraintBottombar() {
@@ -290,6 +288,7 @@ public class MeetingViewController: DyteBaseViewController {
         landscapeConstraints.append(contentsOf: [self.bottomBar.get(.trailing)!,
                                                  self.bottomBar.get(.top)!,
                                                  self.bottomBar.get(.bottom)!])
+        setLandscapeContraintAsDeactive()
     }
     
     
@@ -341,14 +340,14 @@ private extension MeetingViewController {
         baseContentView.addSubview(pluginBaseView)
         baseContentView.addSubview(gridBaseView)
         pluginBaseView.accessibilityIdentifier = "Grid_Plugin_View"
-        
+
         gridView = GridView(showingCurrently: 9, getChildView: {
             return DyteParticipantTileContainerView()
         })
-        
+
         gridBaseView.addSubview(gridView)
         pluginBaseView.addSubview(pluginView)
-        
+
         pluginView.addSubview(fullScreenButton)
 
         fullScreenButton.set(.trailing(pluginView, dyteSharedTokenSpace.space1),
@@ -358,7 +357,6 @@ private extension MeetingViewController {
         fullScreenButton.isSelected = false
         addPortraitConstraintForSubviews()
         addLandscapeConstraintForSubviews()
-        applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
         showPluginViewAsPerOrientation(show: false)
     }
     
@@ -412,24 +410,24 @@ private extension MeetingViewController {
         portraitConstraints.append(contentsOf: [pluginBaseView.get(.leading)!,
                                                 pluginBaseView.get(.trailing)!,
                                                 pluginBaseView.get(.top)!])
-        
+
         layoutPortraitContraintPluginBaseVariableHeight = NSLayoutConstraint(item: pluginBaseView, attribute: .height, relatedBy: .equal, toItem: baseContentView, attribute: .height, multiplier: 0.7, constant: 0)
         layoutPortraitContraintPluginBaseVariableHeight.isActive = false
-        
+
         layoutContraintPluginBaseZeroHeight = NSLayoutConstraint(item: pluginBaseView, attribute: .height, relatedBy: .equal, toItem: baseContentView, attribute: .height, multiplier: 0.0, constant: 0)
-        
+
         layoutContraintPluginBaseZeroHeight.isActive = false
-        
-        
+
+
         gridBaseView.set(.sameLeadingTrailing(baseContentView),
                          .below(pluginBaseView),
                          .bottom(baseContentView))
-        
+
         portraitConstraints.append(contentsOf: [gridBaseView.get(.leading)!,
                                                 gridBaseView.get(.trailing)!,
                                                 gridBaseView.get(.top)!,
                                                 gridBaseView.get(.bottom)!])
-        
+
         gridView.set(.fillSuperView(gridBaseView))
         portraitConstraints.append(contentsOf: [gridView.get(.leading)!,
                                                 gridView.get(.trailing)!,
@@ -440,6 +438,7 @@ private extension MeetingViewController {
                                                 pluginView.get(.trailing)!,
                                                 pluginView.get(.top)!,
                                                 pluginView.get(.bottom)!])
+        setPortraitContraintAsDeactive()
     }
     
     private func addLandscapeConstraintForSubviews() {
@@ -488,6 +487,7 @@ private extension MeetingViewController {
                                                  pluginView.get(.trailing)!,
                                                  pluginView.get(.top)!,
                                                  pluginView.get(.bottom)!])
+        setLandscapeContraintAsDeactive()
     }
     
     private func createTopbar() {
@@ -497,20 +497,25 @@ private extension MeetingViewController {
         self.topBar = topbar
         addPotraitContraintTopbar()
         addLandscapeContraintTopbar()
-        applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
     }
     
     private func addPotraitContraintTopbar() {
-        self.topBar.set(.sameLeadingTrailing(self.view))
+        self.topBar.set(.sameLeadingTrailing(self.view), .top(self.view))
         portraitConstraints.append(contentsOf: [self.topBar.get(.leading)!,
-                                                self.topBar.get(.trailing)!])
+                                                self.topBar.get(.trailing)!,
+                                                self.topBar.get(.top)!])
+        setPortraitContraintAsDeactive()
     }
     
     private func addLandscapeContraintTopbar() {
+        self.topBar.set(.sameLeadingTrailing(self.view) , .top(self.view))
+
         self.topBar.set(.height(0))
         landscapeConstraints.append(contentsOf: [self.topBar.get(.leading)!,
                                                  self.topBar.get(.trailing)!,
+                                                 self.topBar.get(.top)!,
                                                  self.topBar.get(.height)!])
+        setLandscapeContraintAsDeactive()
     }
 }
 
@@ -797,7 +802,6 @@ extension MeetingViewController: DyteNotificationDelegate {
                 viewModel.dyteNotification.playNotificationSound(type: .Leave)
             }
         }
-        
     }
     
     @objc
@@ -856,11 +860,33 @@ extension MeetingViewController: DyteLiveStreamEventsListener {
     public func onViewerCountUpdated(count: Int32) {
         
     }
-    
-    
 }
+
+extension MeetingViewController: DyteChatEventsListener {
+    public func onChatUpdates(messages: [DyteChatMessage]) {
+        
+    }
+    
+    public func onNewChatMessage(message: DyteChatMessage) {
+        if message.userId != meeting.localUser.userId {
+            var chat = ""
+            if  let textMessage = message as? DyteTextMessage {
+                chat = "\(textMessage.displayName): \(textMessage.message)"
+            }else {
+                if message.type == DyteMessageType.image {
+                    chat = "\(message.displayName): Send you an Image"
+                } else if message.type == DyteMessageType.file {
+                    chat = "\(message.displayName): Send you an File"
+                }
+            }
+            notificationDelegate?.didReceiveNotification(type: .Chat(message:chat))
+        }
+    }
+}
+
 extension MeetingViewController {
     func setupNotifications() {
+        meeting.addChatEventsListener(chatEventsListener: self)
         NotificationCenter.default.addObserver(self, selector: #selector(self.clearChatNotification), name: Notification.Name("NotificationAllChatsRead"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.onEndMettingForAllButtonPressed), name: DyteLeaveDialog.onEndMeetingForAllButtonPress, object: nil)
     }

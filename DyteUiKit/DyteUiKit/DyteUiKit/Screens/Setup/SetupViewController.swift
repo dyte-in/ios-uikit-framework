@@ -238,7 +238,8 @@ public class SetupViewController: DyteBaseViewController, KeyboardObservable, Se
     private let mobileClient: DyteMobileClient
     private var waitingRoomView: WaitingRoomView?
     private let activityIndicator = UIActivityIndicatorView(style: .large)
-    
+    private let peerViewBaseView = UIView()
+
     
     public init(meetingInfo: DyteMeetingInfo, mobileClient: DyteMobileClient, baseUrl: String? = nil, completion:@escaping()->Void) {
         self.meetinInfo = meetingInfo
@@ -377,7 +378,9 @@ extension SetupViewController {
     
     private func addConstraintForBaseView() {
         addPortaitConstraintsForBaseView()
+        setPortraitContraintAsDeactive()
         addLandscapeConstraintForBaseView()
+        setLandscapeContraintAsDeactive()
     }
     
     private func addPortaitConstraintsForBaseView() {
@@ -391,14 +394,14 @@ extension SetupViewController {
     }
     
     private func addLandscapeConstraintForBaseView() {
-        baseView.set(.leading(self.view, spaceToken.space8),
-                     .trailing(self.view, spaceToken.space8),
+        baseView.set(.leading(self.view, spaceToken.space8, .greaterThanOrEqual),
+                     .centerX(self.view),
                      .bottom(self.view, spaceToken.space8),
                      .top(self.view, spaceToken.space8))
         landscapeConstraints.append(contentsOf: [baseView.get(.top)!,
                                                  baseView.get(.bottom)!,
                                                  baseView.get(.leading)!,
-                                                 baseView.get(.trailing)!])
+                                                 baseView.get(.centerX)!])
     }
     
     private func setUpActivityIndicator(baseView: UIView) {
@@ -425,23 +428,25 @@ extension SetupViewController {
     
     private func createMeetingSetupUI() {
         activityIndicator.stopAnimating()
+        baseView.addSubview(peerViewBaseView)
+
         selfPeerView = DyteParticipantTileView(viewModel: VideoPeerViewModel(mobileClient: mobileClient, participant: self.mobileClient.localUser, showSelfPreviewVideo: true))
         
-        baseView.addSubview(selfPeerView)
+        peerViewBaseView.addSubview(selfPeerView)
 
         selfPeerView.clipsToBounds = true
         
         let btnStackView = createBtnView()
-        baseView.addSubview(btnStackView)
+        peerViewBaseView.addSubview(btnStackView)
         self.btnStackView = btnStackView
        
         let bottomStackView = createBottomButtonStackView()
         baseView.addSubview(bottomStackView)
         self.bottomStackView = bottomStackView
-        print("Meeting Id \(self.meeting.meta.roomName)")
+
         lblBottom.isHidden = true
         addConstraintForCreatingMeetingSetUpUI()
-        applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
+        applyConstraintAsPerOrientation()
     }
     
     private func addConstraintForCreatingMeetingSetUpUI() {
@@ -452,11 +457,21 @@ extension SetupViewController {
     }
     
     private func addPortraintConstraintForCreateMeetingSetupUI() {
-
-        selfPeerView.set(.top(baseView),
-                         .leading(baseView, spaceToken.space6, .greaterThanOrEqual),
-                         .centerX(baseView))
+        peerViewBaseView.set(.top(baseView),
+                         .sameLeadingTrailing(baseView))
         
+        portraitConstraints.append(contentsOf: [peerViewBaseView.get(.top)!,
+                                                peerViewBaseView.get(.leading)!,
+                                                peerViewBaseView.get(.trailing)!])
+        
+        
+        selfPeerView.set(.top(peerViewBaseView),
+                         .leading(peerViewBaseView, spaceToken.space6, .greaterThanOrEqual),
+                         .centerX(peerViewBaseView))
+        
+        portraitConstraints.append(contentsOf: [selfPeerView.get(.top)!,
+                                                selfPeerView.get(.leading)!,
+                                                selfPeerView.get(.centerX)!])
         
         let portraitPeerViewWidth =  ConstraintCreator.Constraint.equate(viewAttribute: .width, toView: baseView, toViewAttribute: .width, relation: .equal, constant: 0, multiplier: 0.70).getConstraint(for: selfPeerView)
         portraitConstraints.append(portraitPeerViewWidth)
@@ -464,18 +479,17 @@ extension SetupViewController {
         portraitConstraints.append(portraitPeerViewHeight)
 
         
-        portraitConstraints.append(contentsOf: [selfPeerView.get(.top)!,
-                                                selfPeerView.get(.leading)!,
-                                                selfPeerView.get(.centerX)!])
-        
+
         btnStackView.set(.below(selfPeerView, spaceToken.space4),
-                         .leading(baseView, 0.0, .greaterThanOrEqual),
-                         .centerX(baseView))
+                         .leading(peerViewBaseView, 0.0, .greaterThanOrEqual),
+                         .centerX(peerViewBaseView),
+                         .bottom(peerViewBaseView))
         portraitConstraints.append(contentsOf: [btnStackView.get(.top)!,
                                                 btnStackView.get(.centerX)!,
-                                                btnStackView.get(.leading)!])
+                                                btnStackView.get(.leading)!,
+                                                btnStackView.get(.bottom)!])
 
-        bottomStackView.set(.below(btnStackView, spaceToken.space6),
+        bottomStackView.set(.below(peerViewBaseView, spaceToken.space6),
                             .sameLeadingTrailing(baseView),
                             .bottom(baseView))
         portraitConstraints.append(contentsOf: [bottomStackView.get(.top)!,
@@ -487,32 +501,45 @@ extension SetupViewController {
     
     private func addLandscapeConstraintForCreateMeetingSetupUI() {
 
-        let equalWidthConstraintPeerView =  ConstraintCreator.Constraint.equate(viewAttribute: .width, toView: baseView, toViewAttribute: .width, relation: .equal, constant: 10, multiplier: 0.5).getConstraint(for: selfPeerView)
-        selfPeerView.set(.top(baseView),
-                         .leading(baseView, spaceToken.space6))
+        let equalWidthConstraintPeerView =  ConstraintCreator.Constraint.equate(viewAttribute: .width, toView: baseView, toViewAttribute: .height, relation: .equal, constant: 0, multiplier: 0.8).getConstraint(for: selfPeerView)
+        landscapeConstraints.append(equalWidthConstraintPeerView)
+        
+        let equalHeightConstraintPeerView =  ConstraintCreator.Constraint.equate(viewAttribute: .height, toView: baseView, toViewAttribute: .height, relation: .equal, constant: 0, multiplier: 0.6).getConstraint(for: selfPeerView)
+        landscapeConstraints.append(equalHeightConstraintPeerView)
+       
+        peerViewBaseView.set(.top(baseView, 0, .greaterThanOrEqual),
+                         .leading(baseView),
+                         .centerY(baseView))
+                
+        landscapeConstraints.append(contentsOf: [peerViewBaseView.get(.top)!,
+                                                 peerViewBaseView.get(.leading)!,
+                                                 peerViewBaseView.get(.centerY)!])
+       
+        selfPeerView.set(.top(peerViewBaseView),
+                         .sameLeadingTrailing(peerViewBaseView))
                 
         landscapeConstraints.append(contentsOf: [selfPeerView.get(.top)!,
-                                                 equalWidthConstraintPeerView,
-                                                 selfPeerView.get(.leading)!])
-        
+                                                 selfPeerView.get(.leading)!,
+                                                 selfPeerView.get(.trailing)!])
+
         btnStackView.set(.below(selfPeerView, spaceToken.space4),
                          .centerX(selfPeerView),
-                         .bottom(baseView, spaceToken.space6))
+                         .bottom(peerViewBaseView, spaceToken.space8))
+       
         landscapeConstraints.append(contentsOf: [btnStackView.get(.top)!,
                                                  btnStackView.get(.centerX)!,
                                                  btnStackView.get(.bottom)!])
         
         // Right part
-        bottomStackView.set(.after(selfPeerView, spaceToken.space6),
+        bottomStackView.set(.after(peerViewBaseView, spaceToken.space6),
                             .centerY(baseView),
-                            .width(baseView.frame.width/2 - spaceToken.space6),
                             .trailing(baseView, spaceToken.space6))
-        
+        let equalWidthBottomStackView =  ConstraintCreator.Constraint.equate(viewAttribute: .width, toView: selfPeerView, toViewAttribute: .height, relation: .equal, constant: 0, multiplier: 1.0).getConstraint(for: bottomStackView)
+        equalWidthBottomStackView.priority = .defaultHigh
+        landscapeConstraints.append(equalWidthBottomStackView)
         landscapeConstraints.append(contentsOf: [bottomStackView.get(.leading)!,
                                                  bottomStackView.get(.centerY)!,
-                                                 bottomStackView.get(.width)!,
                                                  bottomStackView.get(.trailing)!])
-        
     }
     
     private func setupButtonActions() {

@@ -17,7 +17,8 @@ open class DyteMeetingHeaderView: UIView {
     private let tokenTextColorToken = DesignLibrary.shared.color.textColor
     private let tokenSpace = DesignLibrary.shared.space
     private let backgroundColorValue = DesignLibrary.shared.color.background.shade900
-   
+    private  let containerView = UIView()
+
     public lazy var lblSubtitle: DyteParticipantCountView = {
         let label = DyteParticipantCountView(meeting: self.meeting)
         label.textAlignment = .left
@@ -31,61 +32,76 @@ open class DyteMeetingHeaderView: UIView {
     }()
     
    private lazy var recordingView: DyteRecordingView = {
-       let view = DyteRecordingView(meeting: self.meeting, title: "Rec", image: nil, appearance: AppTheme.shared.recordingViewAppearance)
+        let view = DyteRecordingView(meeting: self.meeting, title: "Rec", image: nil, appearance: AppTheme.shared.recordingViewAppearance)
         view.isHidden = true
         return view
     }()
     
-   
     private let meeting: DyteMobileClient
     
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-   public init(meeting: DyteMobileClient) {
+    public func setContentTop(offset: CGFloat) {
+        self.containerView.get(.top)?.constant = offset
+    }
+  
+    public init(meeting: DyteMobileClient) {
         self.meeting = meeting
         super.init(frame: .zero)
         self.backgroundColor = backgroundColorValue
         createSubViews()
         self.nextPreviousButtonView.isHidden = true
         if meeting.recording.recordingState == .recording || meeting.recording.recordingState == .starting {
-            self.recordingView.meetingRecording(start: true)
+            // I have to use DispatchQueue here because recording view didn't blink, and by doing so its start working
+            DispatchQueue.main.async {
+                self.recordingView.meetingRecording(start: true)
+            }
         }else if meeting.recording.recordingState == .stopping {
             self.recordingView.meetingRecording(start: false)
         }
     }
 
     private func createSubViews() {
-         let stackView = DyteUIUTility.createStackView(axis: .vertical, spacing: 4)
-         self.addSubview(stackView)
-         let title = DyteMeetingTitle(meeting: self.meeting)
-         let stackViewSubTitle = DyteUIUTility.createStackView(axis: .horizontal, spacing: 4)
-         stackViewSubTitle.addArrangedSubviews(lblSubtitle,clockView)
-         stackView.addArrangedSubviews(title,stackViewSubTitle)
-         self.addSubview(recordingView)
-             
-        let nextPreviouStackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: tokenSpace.space2)
-        self.addSubview(nextPreviouStackView)
+        self.addSubview(containerView)
+        containerView.set(.sameTopBottom(self, 0, .lessThanOrEqual))
+        containerView.set(.sameLeadingTrailing(self, 0, .lessThanOrEqual))
+        createSubview(containerView: containerView)
+    }
+    
+    private func createSubview(containerView: UIView) {
+        let stackView = DyteUIUTility.createStackView(axis: .vertical, spacing: 4)
+        containerView.addSubview(stackView)
        
-        stackView.set(.leading(self, tokenSpace.space3),
-                     .sameTopBottom(self, tokenSpace.space2))
-        recordingView.set(.centerY(self),
-                          .top(self, tokenSpace.space1, .greaterThanOrEqual),
-                          .after(stackView, tokenSpace.space3))
+        let title = DyteMeetingTitle(meeting: self.meeting)
+        let stackViewSubTitle = DyteUIUTility.createStackView(axis: .horizontal, spacing: 4)
+        stackViewSubTitle.addArrangedSubviews(lblSubtitle,clockView)
+        stackView.addArrangedSubviews(title,stackViewSubTitle)
+        containerView.addSubview(recordingView)
+            
+       let nextPreviouStackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: tokenSpace.space2)
+        containerView.addSubview(nextPreviouStackView)
+      
+       stackView.set(.leading(containerView, tokenSpace.space3),
+                    .sameTopBottom(containerView, tokenSpace.space2))
+       recordingView.set(.centerY(containerView),
+                         .top(containerView, tokenSpace.space1, .greaterThanOrEqual),
+                         .after(stackView, tokenSpace.space3))
+        recordingView.get(.top)?.priority = .defaultLow
+       nextPreviouStackView.set(.after(recordingView,tokenSpace.space3, .greaterThanOrEqual),
+                          .trailing(containerView,tokenSpace.space3),
+                          .centerY(containerView),
+                          .top(containerView,tokenSpace.space1,.greaterThanOrEqual))
+        nextPreviouStackView.get(.top)?.priority = .defaultLow
 
-        nextPreviouStackView.set(.after(recordingView,tokenSpace.space3, .greaterThanOrEqual),
-                           .trailing(self,tokenSpace.space3),
-                           .centerY(self),
-                           .top(self,tokenSpace.space1,.greaterThanOrEqual))
-  
-         let cameraSwitchButton = DyteSwitchCameraButtonControlBar(mobileClient: self.meeting)
-         cameraSwitchButton.backgroundColor = self.backgroundColor
-         nextPreviouStackView.addArrangedSubviews(nextPreviousButtonView, cameraSwitchButton)
-        
-         self.nextPreviousButtonView.previousButton.addTarget(self, action: #selector(clickPrevious(button:)), for: .touchUpInside)
-         self.nextPreviousButtonView.nextButton.addTarget(self, action: #selector(clickNext(button:)), for: .touchUpInside)
-     }
+        let cameraSwitchButton = DyteSwitchCameraButtonControlBar(mobileClient: self.meeting)
+        cameraSwitchButton.backgroundColor = self.backgroundColor
+        nextPreviouStackView.addArrangedSubviews(nextPreviousButtonView, cameraSwitchButton)
+       
+        self.nextPreviousButtonView.previousButton.addTarget(self, action: #selector(clickPrevious(button:)), for: .touchUpInside)
+        self.nextPreviousButtonView.nextButton.addTarget(self, action: #selector(clickNext(button:)), for: .touchUpInside)
+    }
     
     @objc private func clickPrevious(button: DyteControlBarButton) {
         button.showActivityIndicator()

@@ -35,6 +35,17 @@ public class ChatViewController: DyteBaseViewController, NSTextStorageDelegate {
         return label
     }()
     
+    let activityIndicator = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.hidesWhenStopped = true
+        indicator.color = DesignLibrary.shared.color.brand.shade500
+        indicator.startAnimating()
+        return indicator
+    }()
+    
+    var viewDidAppear = false
+    var messageLoaded = false
+
     override public init(dyteMobileClient: DyteMobileClient) {
         super.init(dyteMobileClient: dyteMobileClient)
     }
@@ -61,16 +72,32 @@ public class ChatViewController: DyteBaseViewController, NSTextStorageDelegate {
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-        
-       
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        viewDidAppear = true
+        loadMessageToUI()
     }
     
     private func loadChatMessages() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            self.messages = self.meeting.chat.messages
-            self.messageTextView.placeholder = "Message.."
-            self.reloadMessageTableView()
+        self.view.addSubview(self.activityIndicator)
+        self.activityIndicator.set(.centerView(self.view))
+        DispatchQueue.global().asyncAfter(deadline: .now() + 0.01) { [weak self] in
+                guard let self = self else { return }
+                self.messages = self.meeting.chat.messages
+                self.messageLoaded = true
+                self.loadMessageToUI()
+        }
+    }
+    
+    private func loadMessageToUI() {
+        DispatchQueue.main.async {
+            if self.viewDidAppear && self.messageLoaded {
+                self.messageTextView.placeholder = "Message.."
+                self.reloadMessageTableView()
+                self.activityIndicator.stopAnimating()
+            }
         }
     }
     
@@ -117,7 +144,6 @@ public class ChatViewController: DyteBaseViewController, NSTextStorageDelegate {
     
     // MARK: - Setup Views
     func setupViews() {
-        
         // configure messageTableView
         messageTableView.backgroundColor = backgroundColor
         messageTableView.separatorStyle = .none
@@ -418,19 +444,7 @@ extension ChatViewController: UITextViewDelegate {
 
 extension ChatViewController: DyteChatEventsListener {
     public func onNewChatMessage(message: DyteChatMessage) {
-        if message.userId != meeting.localUser.userId {
-            var chat = ""
-            if  let textMessage = message as? DyteTextMessage {
-                chat = "\(textMessage.displayName): \(textMessage.message)"
-            }else {
-                if message.type == DyteMessageType.image {
-                    chat = "\(message.displayName): Send you an Image"
-                } else if message.type == DyteMessageType.file {
-                    chat = "\(message.displayName): Send you an File"
-                }
-            }
-            notificationDelegate?.didReceiveNotification(type: .Chat(message:chat))
-        }
+       
     }
     
     public  func onChatUpdates(messages: [DyteChatMessage]) {

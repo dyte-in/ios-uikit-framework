@@ -119,7 +119,7 @@ public class DyteParticipantTileView: DytePeerView {
         }
     }
     private func updateNameTagViewHeightConstraint() {
-        var width = bounds.height * 0.1
+        var height = bounds.height * 0.15
         let maxHeightWidth:CGFloat = 36
         let minHeightWidth:CGFloat = 20
         let maxFontSize = 16.0
@@ -128,16 +128,19 @@ public class DyteParticipantTileView: DytePeerView {
         let fontFactor = maxFontSize - minFontSize
         
         
-        if width > maxHeightWidth ||  width < minHeightWidth {
-            if width > maxHeightWidth {
-                width = maxHeightWidth
+        if height > maxHeightWidth ||  height < minHeightWidth {
+            if height > maxHeightWidth {
+                height = maxHeightWidth
             }
-            if width < minHeightWidth {
-                width = minHeightWidth
+            if height < minHeightWidth {
+                height = minHeightWidth
             }
         }
-        nameTag.get(.height)?.constant = width
-        let newWidth = width - minHeightWidth
+        if nameTag.get(.height) == nil {
+            nameTag.set(.height(height))
+        }
+        nameTag.get(.height)?.constant = height
+        let newWidth = height - minHeightWidth
         let fontSize = newWidth*(fontFactor/factorWidth) + minFontSize
         nameTag.lblTitle.font = UIFont.systemFont(ofSize: fontSize)
     }
@@ -163,8 +166,7 @@ public class DyteParticipantTileView: DytePeerView {
       
       nameTag.set(.leading(self, spaceToken.space3),
                   .bottom(self, spaceToken.space3),
-                .trailing(self, spaceToken.space3, .greaterThanOrEqual),
-                .height(0))
+                .trailing(self, spaceToken.space3, .greaterThanOrEqual))
 }
     
    private func updateView() {

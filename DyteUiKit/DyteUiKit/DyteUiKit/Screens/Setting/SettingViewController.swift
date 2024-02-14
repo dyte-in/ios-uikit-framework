@@ -39,7 +39,7 @@ public class SettingViewController: DyteBaseViewController, SetTopbar {
     
     public override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
-        topBar.set(.top(self.view, self.view.safeAreaInsets.top))
+        topBar.get(.top)?.constant = self.view.safeAreaInsets.top
     }
     
     required init?(coder: NSCoder) {
@@ -48,13 +48,14 @@ public class SettingViewController: DyteBaseViewController, SetTopbar {
     
     public override func viewDidLoad() {
          super.viewDidLoad()
+         self.addTopBar(dismissAnimation: true) { [weak self] in
+           guard  let self = self else {return}
+           self.completion?()
+         }
          createSubviews()
          applyConstraintAsPerOrientation()
          self.setTag(name: nameTagTitle)
-         self.addTopBar(dismissAnimation: true) { [weak self] in
-            guard  let self = self else {return}
-            self.completion?()
-        }
+        
          loadSelfVideoView()
          self.view.backgroundColor =  backgroundColor
         NotificationCenter.default.addObserver(self, selector: #selector(routeChanged(notification:)), name: AVAudioSession.routeChangeNotification, object: nil)
@@ -82,12 +83,12 @@ public class SettingViewController: DyteBaseViewController, SetTopbar {
     
     private func createSubviews() {
         self.view.addSubview(baseView)
+        baseView.accessibilityIdentifier = "ContainerView"
         
-              
         func addPortraitConstraintToBaseView() {
-            baseView.set(.leading(self.view , spaceToken.space8, .greaterThanOrEqual),
+            baseView.set(.leading(self.view , spaceToken.space2, .greaterThanOrEqual),
                          .centerView(self.view),
-                         .top(self.view, spaceToken.space8, .greaterThanOrEqual))
+                         .below(self.topBar, spaceToken.space4, .greaterThanOrEqual))
            
             portraitConstraints.append(contentsOf: [ baseView.get(.top)!,
                                                      baseView.get(.centerX)!,
@@ -97,7 +98,9 @@ public class SettingViewController: DyteBaseViewController, SetTopbar {
         }
         
         func addLandscapeConstraintToBaseView() {
-            baseView.set(.fillSuperView( self.view, spaceToken.space8))
+            baseView.set(.sameLeadingTrailing( self.view, spaceToken.space8),
+                         .below(self.topBar),
+                         .bottom(self.view))
             landscapeConstraints.append(contentsOf: [ baseView.get(.top)!,
                                                      baseView.get(.bottom)!,
                                                      baseView.get(.leading)!,
@@ -112,6 +115,7 @@ public class SettingViewController: DyteBaseViewController, SetTopbar {
         baseView.addSubview(selfPeerView)
         
         selfPeerView.clipsToBounds = true
+        selfPeerView.accessibilityIdentifier = "SelfPeerView"
         
         func addPortraitConstraintToPeerView() {
             let equalWidthConstraintPeerView =  ConstraintCreator.Constraint.equate(viewAttribute: .width, toView: self.view, toViewAttribute: .width, relation: .equal, constant: 0, multiplier: 0.7).getConstraint(for: selfPeerView)
@@ -131,17 +135,16 @@ public class SettingViewController: DyteBaseViewController, SetTopbar {
         
         
         func addLandscapeConstraintToPeerView() {
-            let equalWidthConstraintPeerViewLandscape =  ConstraintCreator.Constraint.equate(viewAttribute: .width, toView: self.view, toViewAttribute: .width, relation: .equal, constant: 0, multiplier: 0.4).getConstraint(for: selfPeerView)
-            
-            let equalHeightConstraintPeerViewLandscape =  ConstraintCreator.Constraint.equate(viewAttribute: .height, toView: self.view, toViewAttribute: .height, relation: .equal, constant: 0, multiplier: 0.6).getConstraint(for: selfPeerView)
-            
+            let equalWidthConstraintPeerViewLandscape =  ConstraintCreator.Constraint.equate(viewAttribute: .width, toView: self.baseView, toViewAttribute: .width, relation: .equal, constant: 0, multiplier: 0.5).getConstraint(for: selfPeerView)
+            landscapeConstraints.append(equalWidthConstraintPeerViewLandscape)
+            let equalHeightConstraintPeerViewLandscape =  ConstraintCreator.Constraint.equate(viewAttribute: .height, toView: self.baseView, toViewAttribute: .height, relation: .equal, constant: 0, multiplier: 0.7).getConstraint(for: selfPeerView)
+            landscapeConstraints.append(equalHeightConstraintPeerViewLandscape)
+
             selfPeerView.set(.top(baseView, spaceToken.space6, .greaterThanOrEqual),
                              .leading(baseView, spaceToken.space6),
                              .centerY(baseView))
             
-            landscapeConstraints.append(contentsOf: [equalWidthConstraintPeerViewLandscape,
-                                                     equalHeightConstraintPeerViewLandscape,
-                                                     selfPeerView.get(.top)!,
+            landscapeConstraints.append(contentsOf: [selfPeerView.get(.top)!,
                                                      selfPeerView.get(.leading)!,
                                                      selfPeerView.get(.centerY)!])
             setLandscapeContraintAsDeactive()
@@ -152,81 +155,78 @@ public class SettingViewController: DyteBaseViewController, SetTopbar {
         let btnStackView = createDropdownStackView()
         let wrapperView = btnStackView.wrapperView()
         wrapperView.addSubview(btnStackView)
-        
+        btnStackView.accessibilityIdentifier = "btnStackView"
+        wrapperView.accessibilityIdentifier = "wrapperView_btnStackView"
+
         baseView.addSubview(wrapperView)
-       
-        
+
+
         func addPortraitConstraintToBtnStackView() {
-            
+
+            let equalHeightConstraintBtnStackViewPortrait =  ConstraintCreator.Constraint.equate(viewAttribute: .width, toView: selfPeerView, toViewAttribute: .width, relation: .equal, constant: 0, multiplier: 0.7).getConstraint(for: btnStackView)
+            portraitConstraints.append(equalHeightConstraintBtnStackViewPortrait)
             wrapperView.set(.below(selfPeerView, spaceToken.space4),
-                             .sameLeadingTrailing(baseView),
-                             .bottom(baseView))
+                            .sameLeadingTrailing(baseView),
+                            .bottom(baseView))
             portraitConstraints.append(contentsOf: [ wrapperView.get(.top)!,
                                                      wrapperView.get(.bottom)!,
                                                      wrapperView.get(.leading)!,
                                                      wrapperView.get(.trailing)!])
-   
-            let equalHeightConstraintBtnStackViewPortrait =  ConstraintCreator.Constraint.equate(viewAttribute: .width, toView: selfPeerView, toViewAttribute: .width, relation: .greaterThanOrEqual, constant: 0, multiplier: 0.7).getConstraint(for: btnStackView)
 
-            
             btnStackView.set(.top(wrapperView, 0, .greaterThanOrEqual),
                 .leading(wrapperView, 0, .greaterThanOrEqual),
                              .centerView(wrapperView))
-            portraitConstraints.append(contentsOf: [ equalHeightConstraintBtnStackViewPortrait,
+
+            portraitConstraints.append(contentsOf: [
                                                      btnStackView.get(.top)!,
                                                      btnStackView.get(.centerX)!,
                                                      btnStackView.get(.leading)!,
                                                      btnStackView.get(.centerY)!])
             setPortraitContraintAsDeactive()
         }
-        
+
         func addLandscapeConstraintToBtnStackView() {
+            let equalHeightConstraintBtnStackViewPortrait =  ConstraintCreator.Constraint.equate(viewAttribute: .width, toView: selfPeerView, toViewAttribute: .width, relation: .equal, constant: 0, multiplier: 0.7).getConstraint(for: btnStackView)
+            landscapeConstraints.append(equalHeightConstraintBtnStackViewPortrait)
+
             btnStackView.set(.centerX(wrapperView),
                              .centerY(wrapperView),
                              .top(wrapperView, 0, .greaterThanOrEqual),
                              .leading(wrapperView, 0, .greaterThanOrEqual))
-            
+
             landscapeConstraints.append(contentsOf: [ btnStackView.get(.top)!,
                                                       btnStackView.get(.centerX)!,
                                                       btnStackView.get(.centerY)!,
                                                       btnStackView.get(.leading)!])
-        
-            
+
+
             wrapperView.set(.top(baseView, spaceToken.space4),
                              .bottom(baseView,spaceToken.space4),
                              .after(selfPeerView,spaceToken.space4),
                             .trailing(baseView, spaceToken.space4))
-            
-            
-            let equalHeightConstraintBtnStackViewLandscape =  ConstraintCreator.Constraint.equate(viewAttribute: .width, toView: selfPeerView, toViewAttribute: .height, relation: .greaterThanOrEqual, constant: 0, multiplier: 0.8).getConstraint(for: btnStackView)
-            
-            landscapeConstraints.append(contentsOf: [ equalHeightConstraintBtnStackViewLandscape,
-                                                      wrapperView.get(.top)!,
+
+
+            landscapeConstraints.append(contentsOf: [ wrapperView.get(.top)!,
                                                       wrapperView.get(.bottom)!,
                                                       wrapperView.get(.trailing)!,
                                                       wrapperView.get(.leading)!])
             setLandscapeContraintAsDeactive()
         }
-        
+
         addPortraitConstraintToBtnStackView()
         addLandscapeConstraintToBtnStackView()
     }
     
     private  func createDropdownStackView() -> BaseStackView {
         let stackView = DyteUIUTility.createStackView(axis: .vertical, spacing: spaceToken.space4)
-        createDropDowns()
+        
         if meeting.localUser.permissions.media.canPublishVideo && meeting.localUser.videoEnabled {
+            self.cameraDropDown = createCameraDropDown()
             stackView.addArrangedSubviews(cameraDropDown)
         }
-        
-        stackView.addArrangedSubviews(speakerDropDown)
-
-        return stackView
-    }
-    
-    private func createDropDowns() {
-        self.cameraDropDown = createCameraDropDown()
         self.speakerDropDown = createAudioDropDown()
+        stackView.addArrangedSubviews(speakerDropDown)
+        return stackView
     }
     
     private func createCameraDropDown() -> DyteDropdown<CameraPickerCellModel> {

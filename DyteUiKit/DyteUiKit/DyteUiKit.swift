@@ -108,7 +108,7 @@ extension DyteMobileClient {
     }
     
     func getWebinarCount() -> Int {
-        return 0
+        return self.stage.accessRequests.count
     }
     
     func getPendingParticipantCount() -> Int {

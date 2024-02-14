@@ -88,12 +88,11 @@ public extension AdaptableUI {
         applyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
     }
     
-    func applyConstraintAsPerOrientation(isLandscape: Bool) {
-        applyConstraintAsPerOrientation(isLandscape: isLandscape, onPortait: {}, onLandscape: {})
+    func applyOnlyConstraintAsPerOrientation() {
+        applyOnlyConstraintAsPerOrientation(isLandscape: UIScreen.isLandscape())
     }
     
-    func applyConstraintAsPerOrientation(isLandscape: Bool, onPortait:()->Void = {}, onLandscape:()->Void = {}) {
-        setOrientationContraintAsDeactive()
+    private func applyOnlyConstraintAsPerOrientation(isLandscape: Bool, onPortait:()->Void = {}, onLandscape:()->Void = {}) {
         if isLandscape {
            landscapeConstraints.forEach { $0.isActive = true }
            onLandscape()
@@ -101,6 +100,15 @@ public extension AdaptableUI {
            portraitConstraints.forEach { $0.isActive = true }
            onPortait()
        }
+    }
+    
+    func applyConstraintAsPerOrientation(isLandscape: Bool) {
+        applyConstraintAsPerOrientation(isLandscape: isLandscape, onPortait: {}, onLandscape: {})
+    }
+    
+    func applyConstraintAsPerOrientation(isLandscape: Bool, onPortait:()->Void = {}, onLandscape:()->Void = {}) {
+        setOrientationContraintAsDeactive()
+        applyOnlyConstraintAsPerOrientation(isLandscape: isLandscape, onPortait: onPortait, onLandscape: onLandscape)
     }
     
     func applyConstraintAsPerOrientation(onPortait:()->Void = {}, onLandscape:()->Void = {}) {

@@ -36,8 +36,7 @@ open class DyteJoinButton: DyteButton {
                    guard let self = self else {return}
                    button.hideActivityIndicator()
                    self.completion?(button,true)
-            } onRoomJoinFailed: {
-                [weak self]  in
+            } onRoomJoinFailed: { [weak self]  in
                        guard let self = self else {return}
                        button.hideActivityIndicator()
                        self.completion?(button,false)

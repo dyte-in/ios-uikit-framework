@@ -56,7 +56,9 @@ public class DyteNameTag : BaseAtomView {
     }
     
     private let baseStackView: BaseStackView = {
-        return DyteUIUTility.createStackView(axis: .horizontal, spacing: 4.0)
+        let stackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: 4.0)
+        stackView.alignment = .center
+        return stackView
     }()
     
     public var lblTitle: DyteText = {
@@ -69,6 +71,8 @@ public class DyteNameTag : BaseAtomView {
     
     public var imageView: BaseImageView = {
         let imageView = BaseImageView()
+        imageView.setContentCompressionResistancePriority(.required, for: .horizontal)
+        imageView.setContentCompressionResistancePriority(.required, for: .vertical)
         return imageView
     }()
     
@@ -78,9 +82,26 @@ public class DyteNameTag : BaseAtomView {
     }
     
     private func updateImageViewConstraints() {
-        let width: CGFloat = self.frame.height - (appearance.paddings.top + appearance.paddings.bottom)
-        imageView.get(.width)?.constant = width
-        imageView.get(.height)?.constant = width
+        let imageheightLeft: CGFloat = self.frame.height - (appearance.paddings.top + appearance.paddings.bottom)
+        let originalHeight: CGFloat = appearance.paddings.top + appearance.paddings.bottom + self.imageView.intrinsicContentSize.height
+        let imageViewNaturalHeight = imageView.intrinsicContentSize.height
+        var newHeight = imageViewNaturalHeight
+
+        if imageheightLeft < imageViewNaturalHeight {
+            //New height is less than the original height required
+            newHeight = (imageViewNaturalHeight/originalHeight)*imageheightLeft
+        }
+        
+        if imageView.get(.width) == nil {
+            imageView.set(.width(newHeight))
+        }
+        if imageView.get(.height) == nil {
+            imageView.set(.height(newHeight))
+        }
+        imageView.get(.width)?.constant = newHeight
+        imageView.get(.height)?.constant = newHeight
+
+       
     }
     
     private var lableStackView: BaseStackView = {
@@ -128,10 +149,7 @@ extension DyteNameTag {
         let wrappedImageView = imageView.wrapperView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.set(
-            .width(0),
-            .height(0),
-            .fillSuperView(wrappedImageView))
+        imageView.set(.fillSuperView(wrappedImageView))
         baseStackView.addArrangedSubview(wrappedImageView)
         baseStackView.addArrangedSubview(lableStackView)
         lableStackView.addArrangedSubview(lblTitle)
@@ -157,8 +175,8 @@ extension DyteNameTag {
     private func addConstraints() {    
         baseStackView.set(.leading(self, appearance.paddings.left),
                           .trailing(self, appearance.paddings.right),
-                          .top(self, appearance.paddings.top, .lessThanOrEqual),
-                          .bottom(self, appearance.paddings.left, .lessThanOrEqual))
+                          .top(self, appearance.paddings.top,.lessThanOrEqual),
+                          .bottom(self, appearance.paddings.left,.lessThanOrEqual))
     }
 }
 

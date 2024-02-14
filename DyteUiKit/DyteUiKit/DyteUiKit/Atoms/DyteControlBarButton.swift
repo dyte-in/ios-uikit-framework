@@ -41,7 +41,7 @@ open class DyteControlBarButton: UIButton {
     public var normalStateTintColor: UIColor
 
     private var btnImageView: UIImageView?
-    private var btnTitle: DyteText?
+    var btnTitle: DyteText?
     private var baseActivityIndicatorView: BaseIndicatorView?
     private var previousTitle: String?
 
@@ -140,7 +140,6 @@ open class DyteControlBarButton: UIButton {
         let imageView = DyteUIUTility.createImageView(image: self.normalImage)
         let title = DyteUIUTility.createLabel(text: self.normalTitle)
         title.font = UIFont.systemFont(ofSize: 12)
-        title.numberOfLines = 1
         title.minimumScaleFactor = 0.7
         title.adjustsFontSizeToFitWidth = true
         stackView.addArrangedSubviews(imageView,title)

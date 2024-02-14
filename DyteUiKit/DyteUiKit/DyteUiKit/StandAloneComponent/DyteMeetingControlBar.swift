@@ -26,10 +26,16 @@ open class DyteMeetingControlBar: DyteControlBar {
     
     private let meeting: DyteMobileClient
     
-   public override init(meeting: DyteMobileClient, delegate: DyteTabBarDelegate?, presentingViewController: UIViewController, appearance: DyteControlBarAppearance = DyteControlBarAppearanceModel(), settingViewControllerCompletion:(()->Void)? = nil, onLeaveMeetingCompletion: (()->Void)? = nil) {
+    public override init(meeting: DyteMobileClient, delegate: DyteTabBarDelegate?, presentingViewController: UIViewController, appearance: DyteControlBarAppearance = DyteControlBarAppearanceModel(), settingViewControllerCompletion:(()->Void)? = nil, onLeaveMeetingCompletion: (()->Void)? = nil) {
         self.meeting = meeting
         super.init(meeting: meeting, delegate: delegate, presentingViewController: presentingViewController, appearance: appearance, settingViewControllerCompletion: settingViewControllerCompletion, onLeaveMeetingCompletion: onLeaveMeetingCompletion)
-       addButtons(meeting: meeting)
+        addButtons(meeting: meeting)
+        self.setTabBarButtonTitles(numOfLines: UIScreen.isLandscape() ? 2 : 1)
+    }
+    
+    override func onRotationChange() {
+        super.onRotationChange()
+        self.setTabBarButtonTitles(numOfLines: UIScreen.isLandscape() ? 2 : 1)
     }
     
     private func addButtons(meeting: DyteMobileClient) {

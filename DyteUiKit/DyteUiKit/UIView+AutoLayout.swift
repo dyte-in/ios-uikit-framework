@@ -310,9 +310,9 @@ internal class ConstraintCreator: NSObject {
     ////Param - view - the view to align leading and trailing anchors with
     ////Param - constant - the constant to be applied while aligning views
     ////Returns - ConstraintCreator Object with suitable constraints
-    internal static func sameLeadingTrailing(_ view: UIView, _ constant: CGFloat = 0) -> ConstraintCreator {
+    internal static func sameLeadingTrailing(_ view: UIView, _ constant: CGFloat = 0, _ relation: NSLayoutConstraint.Relation = .equal) -> ConstraintCreator {
         
-        return ConstraintCreator(constraints: ConstraintCreator.leading(view, constant).constraints +  ConstraintCreator.trailing(view, constant).constraints)
+        return ConstraintCreator(constraints: ConstraintCreator.leading(view, constant, relation).constraints +  ConstraintCreator.trailing(view, constant, relation).constraints)
     }
     
     //Use this method to align the top and bottom anchors of a view
@@ -449,10 +449,10 @@ internal extension UIView {
     //This function is used to add constraints to a view, and this in turn calls
     //another private function of the same name.
     ////Param - An array of "ConstraintCreator" objects
-    func set(_ constraints: ConstraintCreator...) {
+    func set(_ constraints: ConstraintCreator..., isActive: Bool = true) {
         constraints.forEach { constraintCreator in
             let allConstraints = constraintCreator.constraints
-            allConstraints.forEach { self.set($0) }
+            allConstraints.forEach { self.set($0,isActive: isActive) }
         }
     }
     
@@ -491,7 +491,7 @@ fileprivate extension UIView {
     
     //This function is used to add constraints to a view
     ////Param - A array of Constraint object
-    private func set(_ constraint: ConstraintCreator.Constraint) {
+    private func set(_ constraint: ConstraintCreator.Constraint, isActive: Bool) {
         let nsLayoutConstraint = constraint.getConstraint(for: self)
         
         guard let view = nsLayoutConstraint.firstItem as? UIView else {
@@ -573,7 +573,7 @@ fileprivate extension UIView {
         view.translatesAutoresizingMaskIntoConstraints = false
         
         if (validate(constraint: nsLayoutConstraint)) {
-            nsLayoutConstraint.isActive = true
+                nsLayoutConstraint.isActive = isActive
         }
     }
     

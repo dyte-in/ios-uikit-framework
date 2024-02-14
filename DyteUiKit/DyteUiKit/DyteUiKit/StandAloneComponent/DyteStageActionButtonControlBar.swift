@@ -249,6 +249,10 @@ public class  DyteStageActionButtonControlBar: DyteControlBarButton {
         if (state == .requestingToJoinStage || state == .leavingFromStage || state == .joiningStage) && title != nil {
             self.showActivityIndicator(title: title!)
         }
+        
+        if (state == .alreadyOnStage) {
+            self.isSelected = true
+        }
     }
     
     private func getImage(state: WebinarStageStatus, defaultImage: DyteImage) -> DyteImage {
@@ -272,7 +276,6 @@ public class  DyteStageActionButtonControlBar: DyteControlBarButton {
             self.alert = alert
             Shared.data.delegate?.webinarJoinStagePopupDidShow()
         }
-       
     }
     
     private func removeAlertView() {
