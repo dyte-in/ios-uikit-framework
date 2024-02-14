@@ -17,7 +17,7 @@ open class DyteMeetingHeaderView: UIView {
     private let tokenTextColorToken = DesignLibrary.shared.color.textColor
     private let tokenSpace = DesignLibrary.shared.space
     private let backgroundColorValue = DesignLibrary.shared.color.background.shade900
-    private  let containerView = UIView()
+    let containerView = UIView()
 
     public lazy var lblSubtitle: DyteParticipantCountView = {
         let label = DyteParticipantCountView(meeting: self.meeting)
