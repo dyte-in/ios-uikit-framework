@@ -346,6 +346,7 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
                 cell.fileTypeLabel.text = (URL(fileURLWithPath: msg.name).pathExtension).uppercased()
                 if let fileURL = URL(string: msg.link) {
                     cell.downloadButtonAction = { [weak self] in
+                        self?.messageTextView.resignFirstResponder()
                         DispatchQueue.main.async {
                             cell.downloadButton.showActivityIndicator()
                         }
@@ -364,11 +365,11 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
             }
             
         } else if messages?[indexPath.row].type == .image {
-            
             if let cell = tableView.dequeueReusableCell(withIdentifier: "MessageCell", for: indexPath) as? MessageCell, let msg = messages?[indexPath.row] as? DyteImageMessage {
                 if let fileURL = URL(string: msg.link) {
                     cell.message = messages?[indexPath.row]
                     cell.downloadButtonAction = { [weak self] in
+                        self?.messageTextView.resignFirstResponder()
                         DispatchQueue.main.async {
                             cell.downloadButton.showActivityIndicator()
                         }

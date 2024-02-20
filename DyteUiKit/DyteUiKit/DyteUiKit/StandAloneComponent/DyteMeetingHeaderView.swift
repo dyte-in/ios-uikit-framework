@@ -101,6 +101,12 @@ open class DyteMeetingHeaderView: UIView {
        
         self.nextPreviousButtonView.previousButton.addTarget(self, action: #selector(clickPrevious(button:)), for: .touchUpInside)
         self.nextPreviousButtonView.nextButton.addTarget(self, action: #selector(clickNext(button:)), for: .touchUpInside)
+        
+        if ((meeting.localUser.mediaRoomType == DyteMediaRoomType.hive && 
+             meeting.meta.meetingType == DyteMeetingType.webinar) || 
+            meeting.participants.pageCount == 1) {
+            nextPreviouStackView.isHidden = true
+        } 
     }
     
     @objc private func clickPrevious(button: DyteControlBarButton) {
