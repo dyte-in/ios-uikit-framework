@@ -220,7 +220,7 @@ public class SettingViewController: DyteBaseViewController, SetTopbar {
     private  func createDropdownStackView() -> BaseStackView {
         let stackView = DyteUIUTility.createStackView(axis: .vertical, spacing: spaceToken.space4)
         
-        if meeting.localUser.permissions.media.canPublishVideo && meeting.localUser.videoEnabled {
+        if meeting.localUser.videoEnabled {
             self.cameraDropDown = createCameraDropDown()
             stackView.addArrangedSubviews(cameraDropDown)
         }

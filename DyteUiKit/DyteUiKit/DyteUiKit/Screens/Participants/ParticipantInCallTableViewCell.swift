@@ -56,10 +56,7 @@ extension ParticipantInCallTableViewCell: ConfigureView {
     
     func configure(model: ParticipantInCallTableViewCellModel) {
         viewModel = model
-        widthConstraint.constant = 0.0
-        self.profileImageView.setImage(image: model.image) {[unowned self] _ in
-            self.widthConstraint.constant = profileImageWidth
-        }
+        self.profileAvatarView.set(participant: model.participantUpdateEventListner.participant)
         self.audioButton.isSelected = !model.participantUpdateEventListner.participant.audioEnabled
         self.videoButton.isSelected = !model.participantUpdateEventListner.participant.videoEnabled
         self.nameLabel.text = model.title

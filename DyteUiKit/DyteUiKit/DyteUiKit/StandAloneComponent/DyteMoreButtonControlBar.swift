@@ -79,11 +79,9 @@ open class  DyteMoreButtonControlBar: DyteControlBarButton {
             menus.append(.poll(notificationMessage: count > 0 ? "\(count)" : ""))
         }
        
-        
+        menus.append(.settings)
+
         let mediaPermission = self.meeting.localUser.permissions.media
-        if mediaPermission.canPublishAudio || mediaPermission.canPublishVideo {
-            menus.append(.settings)
-        }
         
         let chatPermission = self.meeting.localUser.permissions.chat
         if chatPermission.canSendFiles || chatPermission.canSendText {

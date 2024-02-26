@@ -316,10 +316,6 @@ extension SetupViewController: MeetingDelegate {
             btnVideo.isHidden = true
         }
 
-        if mediaPermission.canPublishAudio == false && mediaPermission.canPublishVideo == false {
-            btnSetting.isHidden = true
-        }
-
         loadSelfVideoView()
     }
     

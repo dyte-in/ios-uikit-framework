@@ -14,8 +14,10 @@ public class DyteParticipantCountView: DyteText {
     init(meeting: DyteMobileClient, appearance: DyteTextAppearance = AppTheme.shared.participantCountAppearance) {
         self.meeting = meeting
         super.init(appearance: appearance)
-        self.text = self.meeting.meta.meetingTitle
+        self.text = ""
         self.meeting.addParticipantEventsListener(participantEventsListener: self)
+        self.meeting.addMeetingRoomEventsListener(meetingRoomEventsListener: self)
+        update()
     }
     
     required init?(coder: NSCoder) {
@@ -32,6 +34,79 @@ public class DyteParticipantCountView: DyteText {
             self.text = "\(self.meeting.participants.joined.count) participants"
         }
     }
+    
+}
+
+extension DyteParticipantCountView: DyteMeetingRoomEventsListener {
+    
+    public func onActiveTabUpdate(id: String, tabType: ActiveTabType) {
+        
+    }
+    
+    public func onMeetingInitCompleted() {
+        
+    }
+    
+    public func onMeetingInitFailed(exception: KotlinException) {
+        
+    }
+    
+    public func onMeetingInitStarted() {
+        
+    }
+    
+    public func onMeetingRoomJoinCompleted() {
+        
+    }
+    
+    public func onMeetingRoomJoinFailed(exception: KotlinException) {
+        
+    }
+    
+    public func onMeetingRoomJoinStarted() {
+        
+    }
+    
+    public func onMeetingRoomLeaveCompleted() {
+        
+    }
+    
+    public func onMeetingRoomLeaveStarted() {
+        
+    }
+    
+    public func onConnectedToMeetingRoom() {
+        
+    }
+    
+    public func onConnectingToMeetingRoom() {
+        
+    }
+    
+    public func onDisconnectedFromMeetingRoom() {
+        
+    }
+    
+    public func onMeetingRoomConnectionFailed() {
+        
+    }
+    
+    public func onMeetingRoomDisconnected() {
+        
+    }
+    
+    public func onMeetingRoomReconnectionFailed() {
+        
+    }
+    
+    public func onReconnectedToMeetingRoom() {
+        update()
+    }
+    
+    public func onReconnectingToMeetingRoom() {
+        
+    }
+    
     
 }
 

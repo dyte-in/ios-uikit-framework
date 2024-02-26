@@ -16,7 +16,13 @@ public class DyteAvatarView: UIView {
         return imageView
     }()
     private let initialName: DyteText = DyteUIUTility.createLabel(text: "")
-    private var participant: DyteMeetingParticipant
+    private var participant: DyteMeetingParticipant?
+    
+    public init() {
+        super.init(frame: .zero)
+        self.createSubView()
+        refresh()
+    }
     
     public init(participant: DyteMeetingParticipant) {
         self.participant = participant
@@ -41,11 +47,12 @@ public class DyteAvatarView: UIView {
         profileImageView.set(.fillSuperView(self))
         initialName.adjustsFontSizeToFitWidth = true
         initialName.font = UIFont.boldSystemFont(ofSize: 30)
-        initialName.set(.leading(self, dyteSharedTokenSpace.space1, .lessThanOrEqual),
-                        .trailing(self, dyteSharedTokenSpace.space1, .lessThanOrEqual),
+        initialName.set(.leading(self, dyteSharedTokenSpace.space1),
+                        .trailing(self, dyteSharedTokenSpace.space1),
                         .centerY(self),
                         .height(0))
-
+        initialName.get(.leading)?.priority = .defaultHigh
+        initialName.get(.trailing)?.priority = .defaultHigh
         self.layer.masksToBounds = true
     }
     
@@ -67,16 +74,23 @@ public class DyteAvatarView: UIView {
         }
         self.layer.cornerRadius = bounds.width/2.0
     }
+    
     public override func layoutSubviews() {
         super.layoutSubviews()
         updateInitialNameConstraints()
     }
     
     public func refresh() {
-        if let path = participant.picture {
-            self.showImage(path: path)
+        if let participant = self.participant {
+            if let path = participant.picture {
+                self.showImage(path: path)
+            }
+            self.setInitials(name: participant.name)
         }
-        self.setInitials(name: participant.name)
+    }
+    
+    func setInitialName(font: UIFont) {
+        self.initialName.font = font
     }
     
     private func showImage(path: String) {

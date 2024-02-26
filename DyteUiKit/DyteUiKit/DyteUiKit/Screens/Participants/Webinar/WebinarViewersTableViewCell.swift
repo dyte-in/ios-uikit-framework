@@ -38,10 +38,7 @@ extension WebinarViewersTableViewCell: ConfigureView {
     
     func configure(model: WebinarViewersTableViewCellModel) {
         viewModel = model
-        widthConstraint.constant = 0.0
-        self.profileImageView.setImage(image: model.image) {[unowned self] _ in
-            self.widthConstraint.constant = profileImageWidth
-        }
+        self.profileAvatarView.set(participant: model.participantUpdateEventListner.participant)
         self.nameLabel.text = model.title
         self.cellSeparatorBottom.isHidden = !model.showBottomSeparator
         self.cellSeparatorTop.isHidden = !model.showTopSeparator

@@ -286,10 +286,10 @@ private extension LivestreamViewController {
             message = "\(pending)"
         }
         
+        menus.append(.settings)
+
         let mediaPermission = self.dyteMobileClient.localUser.permissions.media
-        if mediaPermission.canPublishAudio || mediaPermission.canPublishVideo {
-            menus.append(.settings)
-        }
+       
         
         let chatCount = dyteMobileClient.chat.messages.count
         menus.append(contentsOf: [.chat(notificationMessage: chatCount > 0 ? "\(chatCount)" : ""), .particpants(notificationMessage: message), .cancel])

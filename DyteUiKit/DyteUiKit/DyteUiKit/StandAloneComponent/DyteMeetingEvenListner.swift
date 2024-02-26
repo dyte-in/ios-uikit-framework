@@ -17,7 +17,9 @@ class DyteMeetingEventListner  {
     private var selfLeaveStateCompletion:((Bool)->Void)?
     private var participantLeaveStateCompletion:((DyteMeetingParticipant)->Void)?
     private var participantJoinStateCompletion:((DyteMeetingParticipant)->Void)?
-    
+    private var participantPinnedStateCompletion:((DyteMeetingParticipant)->Void)?
+    private var participantUnPinnedStateCompletion:((DyteMeetingParticipant)->Void)?
+
     var dyteMobileClient: DyteMobileClient
     
     init(mobileClient: DyteMobileClient) {
@@ -54,12 +56,21 @@ class DyteMeetingEventListner  {
         self.dyteMobileClient.leaveRoom() 
     }
     
+    
     public func observeParticipantJoin(update:@escaping(_ participant: DyteMeetingParticipant)->Void) {
         participantJoinStateCompletion = update
     }
     
     public func observeParticipantLeave(update:@escaping(_ participant: DyteMeetingParticipant)->Void) {
         participantLeaveStateCompletion = update
+    }
+    
+    public func observeParticipantPinned(update:@escaping(_ participant: DyteMeetingParticipant)->Void) {
+        participantPinnedStateCompletion = update
+    }
+    
+    public func observeParticipantUnPinned(update:@escaping(_ participant: DyteMeetingParticipant)->Void) {
+        participantUnPinnedStateCompletion = update
     }
     
     deinit{
@@ -127,11 +138,11 @@ extension DyteMeetingEventListner: DyteParticipantEventsListener {
     }
     
     func onParticipantPinned(participant: DyteJoinedMeetingParticipant) {
-        
+        self.participantPinnedStateCompletion?(participant)
     }
     
     func onParticipantUnpinned(participant: DyteJoinedMeetingParticipant) {
-        
+        self.participantUnPinnedStateCompletion?(participant)
     }
     
     func onActiveParticipantsChanged(active: [DyteJoinedMeetingParticipant]) {

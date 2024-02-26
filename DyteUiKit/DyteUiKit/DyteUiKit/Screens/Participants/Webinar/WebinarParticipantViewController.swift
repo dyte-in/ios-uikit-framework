@@ -167,6 +167,7 @@ extension WebinarParticipantViewController: UITableViewDataSource {
                     }
                 }
             }
+            cell.setPinView(isHidden: !cell.model.participantUpdateEventListner.participant.isPinned)
            
         }
         else if let cell = cell as? ParticipantWaitingTableViewCell {
@@ -180,6 +181,8 @@ extension WebinarParticipantViewController: UITableViewDataSource {
                 button.showActivityIndicator()
                 self.viewModel.waitlistEventListner.acceptWaitingRequest(participant: cell.model.participant)
             }
+            cell.setPinView(isHidden: true)
+
         }
         else if let cell = cell as? WebinarViewersTableViewCell {
             cell.buttonMoreClick = { [weak self] button in
@@ -190,6 +193,7 @@ extension WebinarParticipantViewController: UITableViewDataSource {
                     }
                 }
             }
+            cell.setPinView(isHidden: !cell.model.participantUpdateEventListner.participant.isPinned)
         }
         
         else if let cell = cell as? OnStageWaitingRequestTableViewCell {
@@ -207,6 +211,8 @@ extension WebinarParticipantViewController: UITableViewDataSource {
                 button.hideActivityIndicator()
                 self.reloadScreen()
             }
+            cell.setPinView(isHidden: !cell.model.participant.isPinned)
+
         } else if let cell = cell as? AcceptButtonJoinStageRequestTableViewCell {
             cell.buttonClick = { [weak self] button in
                 guard let self = self else {return}

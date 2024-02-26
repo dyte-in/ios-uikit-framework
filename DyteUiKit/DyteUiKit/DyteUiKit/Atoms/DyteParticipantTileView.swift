@@ -29,10 +29,14 @@ public class DyteParticipantTileView: DytePeerView {
         let baseView = UIView()
         let imageView = DyteUIUTility.createImageView(image: DyteImage(image:ImageProvider.image(named: "icon_pin")))
         baseView.addSubview(imageView)
-        imageView.set(.leading(baseView, spaceToken.space1, .lessThanOrEqual),
-                      .trailing(baseView, spaceToken.space1, .lessThanOrEqual),
-                      .top(baseView, spaceToken.space1, .lessThanOrEqual),
-                      .bottom(baseView, spaceToken.space1, .lessThanOrEqual))
+        imageView.set(.leading(baseView, spaceToken.space1),
+                      .trailing(baseView, spaceToken.space1),
+                      .top(baseView, spaceToken.space1),
+                      .bottom(baseView, spaceToken.space1))
+        imageView.get(.leading)?.priority = .defaultHigh
+        imageView.get(.trailing)?.priority = .defaultHigh
+        imageView.get(.top)?.priority = .defaultHigh
+        imageView.get(.bottom)?.priority = .defaultHigh
         return baseView
     }()
     
@@ -46,6 +50,7 @@ public class DyteParticipantTileView: DytePeerView {
         initialiseView()
         updateView()
         registerUpdates()
+        nameTag.backgroundColor = nameTag.backgroundColor?.withAlphaComponent(0.6)
     }
     
     public convenience init(mobileClient: DyteMobileClient, participant: DyteJoinedMeetingParticipant, isForLocalUser: Bool, showScreenShareVideoView: Bool = false) {
@@ -57,7 +62,7 @@ public class DyteParticipantTileView: DytePeerView {
 
         if pinView.superview == nil {
             self.addSubview(pinView)
-            pinView.backgroundColor = tokenColor.background.shade900
+            pinView.backgroundColor = tokenColor.background.shade900.withAlphaComponent(0.6)
             pinView.set(.leading(self, dyteSharedTokenSpace.space3, .lessThanOrEqual),
                         .top(self, dyteSharedTokenSpace.space3, .lessThanOrEqual),
                         .height(0),
@@ -119,15 +124,17 @@ public class DyteParticipantTileView: DytePeerView {
         }
     }
     private func updateNameTagViewHeightConstraint() {
-        var height = bounds.height * 0.15
+        var height = bounds.height * 0.12
         let maxHeightWidth:CGFloat = 36
-        let minHeightWidth:CGFloat = 20
+        let minHeightWidth:CGFloat = 18
         let maxFontSize = 16.0
-        let minFontSize = 10.0
+        let minFontSize = 9.0
         let factorWidth = maxHeightWidth - minHeightWidth
         let fontFactor = maxFontSize - minFontSize
-        
-        
+        let maxLeadingBottom = spaceToken.space3
+        let minLeadingBottom = spaceToken.space1
+        let leadingBottomFactor = maxLeadingBottom - minLeadingBottom
+
         if height > maxHeightWidth ||  height < minHeightWidth {
             if height > maxHeightWidth {
                 height = maxHeightWidth
@@ -140,9 +147,16 @@ public class DyteParticipantTileView: DytePeerView {
             nameTag.set(.height(height))
         }
         nameTag.get(.height)?.constant = height
+       
+
         let newWidth = height - minHeightWidth
         let fontSize = newWidth*(fontFactor/factorWidth) + minFontSize
+        let leadingBottomSpace = newWidth*(leadingBottomFactor/factorWidth) + minLeadingBottom
         nameTag.lblTitle.font = UIFont.systemFont(ofSize: fontSize)
+        nameTag.get(.leading)?.constant = leadingBottomSpace
+        nameTag.get(.bottom)?.constant = -leadingBottomSpace
+        pinView.get(.leading)?.constant = leadingBottomSpace
+        pinView.get(.top)?.constant = leadingBottomSpace
     }
 
    

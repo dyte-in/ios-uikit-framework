@@ -549,7 +549,7 @@ extension MeetingViewController : MeetingViewModelDelegate {
     }
     
     func pinnedChanged(participant: DyteMeetingParticipant) {
-        
+        updatePin(show: true, participant: participant)
     }
     
     func activeSpeakerRemoved() {

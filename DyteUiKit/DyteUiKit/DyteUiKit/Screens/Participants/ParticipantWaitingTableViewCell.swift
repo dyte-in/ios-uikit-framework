@@ -65,10 +65,7 @@ extension OnStageWaitingRequestTableViewCell: ConfigureView {
     
     func configure(model: OnStageParticipantWaitingRequestTableViewCellModel) {
         viewModel = model
-        widthConstraint.constant = 0.0
-        self.profileImageView.setImage(image: model.image) {[unowned self] _ in
-            self.widthConstraint.constant = profileImageWidth
-        }
+        self.profileAvatarView.set(participant: model.participant)
         self.nameLabel.text = model.title
         self.cellSeparatorBottom.isHidden = !model.showBottomSeparator
         self.cellSeparatorTop.isHidden = !model.showTopSeparator
@@ -84,10 +81,7 @@ extension ParticipantWaitingTableViewCell: ConfigureView {
     
     func configure(model: ParticipantWaitingTableViewCellModel) {
         viewModel = model
-        widthConstraint.constant = 0.0
-        self.profileImageView.setImage(image: model.image) {[unowned self] _ in
-            self.widthConstraint.constant = profileImageWidth
-        }
+        self.profileAvatarView.set(participant: model.participant)
         self.nameLabel.text = model.title
         self.cellSeparatorBottom.isHidden = !model.showBottomSeparator
         self.cellSeparatorTop.isHidden = !model.showTopSeparator

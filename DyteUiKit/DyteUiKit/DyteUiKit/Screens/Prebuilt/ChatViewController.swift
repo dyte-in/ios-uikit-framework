@@ -83,7 +83,7 @@ public class ChatViewController: DyteBaseViewController, NSTextStorageDelegate {
     private func loadChatMessages() {
         self.view.addSubview(self.activityIndicator)
         self.activityIndicator.set(.centerView(self.view))
-        DispatchQueue.global().asyncAfter(deadline: .now() + 0.01) { [weak self] in
+        DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) { [weak self] in
                 guard let self = self else { return }
                 self.messages = self.meeting.chat.messages
                 self.messageLoaded = true
@@ -110,6 +110,9 @@ public class ChatViewController: DyteBaseViewController, NSTextStorageDelegate {
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             keyboardHeight = keyboardSize.height
+            messageTextFieldBottomConstraint?.isActive = false
+            sendFileButtonBottomConstraint?.isActive = false
+            sendButtonBottomConstraint?.isActive = false
             messageTextFieldBottomConstraint = messageTextView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8)
             sendFileButtonBottomConstraint = sendFileButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8)
             sendButtonBottomConstraint = sendMessageButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8)
@@ -126,16 +129,11 @@ public class ChatViewController: DyteBaseViewController, NSTextStorageDelegate {
     }
     
     @objc func keyboardWillHide(notification: NSNotification) {
-        messageTextFieldBottomConstraint?.isActive = false
-        sendButtonBottomConstraint?.isActive = false
-        sendFileButtonBottomConstraint?.isActive = false
         
         messageTextFieldBottomConstraint?.constant = +keyboardHeight
         sendButtonBottomConstraint?.constant = +keyboardHeight
         sendFileButtonBottomConstraint?.constant = +keyboardHeight
-        messageTextFieldBottomConstraint?.isActive = true
-        sendButtonBottomConstraint?.isActive = true
-        sendFileButtonBottomConstraint?.isActive = true
+        
         UIView.animate(withDuration: 0.25) {
             self.view.layoutIfNeeded()
         }

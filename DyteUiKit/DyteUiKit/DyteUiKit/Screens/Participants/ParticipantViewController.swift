@@ -143,8 +143,9 @@ extension ParticipantViewController: UITableViewDataSource {
                     }
                 }
             }
+            cell.setPinView(isHidden: !cell.model.participantUpdateEventListner.participant.isPinned)
+
             cell.moreButton.accessibilityIdentifier = "InCall_ThreeDots_Button" 
-           
         } else if let cell = cell as? ParticipantWaitingTableViewCell {
             cell.buttonCrossClick = { [weak self] button in
                 guard let self = self else {return}
@@ -157,6 +158,8 @@ extension ParticipantViewController: UITableViewDataSource {
                 self.viewModel.waitlistEventListner.acceptWaitingRequest(participant: cell.model.participant)
                 
             }
+            cell.setPinView(isHidden: true)
+
         } else if let cell = cell as? OnStageWaitingRequestTableViewCell {
             cell.buttonCrossClick = { [weak self] button in
                 guard let self = self else {return}
@@ -172,6 +175,8 @@ extension ParticipantViewController: UITableViewDataSource {
                 button.hideActivityIndicator()
                 self.reloadScreen()
             }
+            cell.setPinView(isHidden: !cell.model.participant.isPinned)
+
         } else if let cell = cell as? AcceptButtonTableViewCell {
             cell.button.hideActivityIndicator()
             cell.buttonClick = { [weak self] button in
@@ -182,6 +187,7 @@ extension ParticipantViewController: UITableViewDataSource {
 
                 self.reloadScreen()
             }
+
         } else if let cell = cell as? RejectButtonTableViewCell {
             cell.button.hideActivityIndicator()
             cell.buttonClick = { [weak self] button in

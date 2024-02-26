@@ -77,6 +77,7 @@ public class ParticipantViewControllerModel: ParticipantViewControllerModelProto
     var meetingEventListner: DyteMeetingEventListner
     private let showAcceptAllButton = true
     private let searchControllerMinimumParticipant = 50
+    
     required init(mobileClient: DyteMobileClient) {
         self.mobileClient = mobileClient
         self.dyteSelfListner = DyteEventSelfListner(mobileClient: mobileClient)
@@ -90,6 +91,20 @@ public class ParticipantViewControllerModel: ParticipantViewControllerModelProto
         meetingEventListner.observeParticipantJoin { [weak self] participant in
             guard let self = self else {return}
             self.participantJoin(participant: participant)
+        }
+        
+        meetingEventListner.observeParticipantPinned {[weak self] participant in
+            guard let self = self else {return}
+            if let completion = self.completion {
+                refresh(completion: completion)
+            }
+        }
+        
+        meetingEventListner.observeParticipantUnPinned {[weak self] participant in
+            guard let self = self else {return}
+            if let completion = self.completion {
+                refresh(completion: completion)
+            }
         }
     }
     

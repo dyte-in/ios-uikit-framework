@@ -44,7 +44,6 @@ class FileMessageCell: UITableViewCell {
     let downloadButton: DyteButton = {
         let button = DyteButton(style: .iconOnly(icon: DyteImage(image: ImageProvider.image(named: "icon_down_arrow"))), dyteButtonState: .active)
         button.backgroundColor = dyteSharedTokenColor.background.shade800
-        button.isUserInteractionEnabled = false
         button.tintColor = .white
         // Set additional button properties if needed
         return button
@@ -74,6 +73,10 @@ class FileMessageCell: UITableViewCell {
     }
     
     private func setupViews() {
+        downloadButton.setClickAction(click: { button in
+            self.downloadButtonTapped()
+        })
+        
         let tap = UITapGestureRecognizer(target: self, action: #selector(downloadButtonTapped))
         contentView.addGestureRecognizer(tap)
         contentView.backgroundColor = .clear
