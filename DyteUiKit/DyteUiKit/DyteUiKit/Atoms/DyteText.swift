@@ -39,8 +39,12 @@ public class DyteText: UILabel {
     }
     
     func setTextWhenInsideStackView(text: String?) {
-        self.isHidden = text?.isEmpty ?? true
-        self.text = text
+        if let text = text, text.count > 0 {
+            self.isHidden =  false
+            self.text = text
+        }else {
+            self.isHidden = true
+        }
     }
     
 }

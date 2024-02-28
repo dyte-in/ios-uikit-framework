@@ -202,7 +202,10 @@ extension DyteControlBarButton {
       }
       
       func hideActivityIndicator() {
-          self.btnTitle?.setTextWhenInsideStackView(text: self.previousTitle)
+          if let title = self.previousTitle {
+              self.btnTitle?.setTextWhenInsideStackView(text: title)
+          }
+          
           if self.baseActivityIndicatorView?.isHidden == false {
               self.baseActivityIndicatorView?.indicatorView.stopAnimating()
               self.baseActivityIndicatorView?.isHidden = true

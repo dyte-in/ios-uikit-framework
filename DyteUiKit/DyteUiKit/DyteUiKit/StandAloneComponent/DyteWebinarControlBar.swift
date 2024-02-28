@@ -20,7 +20,7 @@ open class DyteWebinarControlBar: DyteControlBar {
     private let onRequestButtonClick: (DyteControlBarButton)->Void
     private let presentingViewController: UIViewController
     private let selfListner: DyteEventSelfListner
-    private var stageActionControlButton: DyteStageActionButtonControlBar?
+    private weak var stageActionControlButton: DyteStageActionButtonControlBar?
     private let dataSource: DyteWebinarControlBarDataSource?
    
     init(meeting: DyteMobileClient, delegate: DyteTabBarDelegate?, dataSource: DyteWebinarControlBarDataSource?, presentingViewController: UIViewController, appearance: DyteControlBarAppearance = DyteControlBarAppearanceModel(), onRequestButtonClick:@escaping(DyteControlBarButton)->Void, settingViewControllerCompletion:(()->Void)? = nil, onLeaveMeetingCompletion: (()->Void)? = nil) {

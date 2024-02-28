@@ -23,7 +23,7 @@ open class DyteMeetingControlBar: DyteControlBar {
             }
         }
     }
-    
+
     private let meeting: DyteMobileClient
     
     public override init(meeting: DyteMobileClient, delegate: DyteTabBarDelegate?, presentingViewController: UIViewController, appearance: DyteControlBarAppearance = DyteControlBarAppearanceModel(), settingViewControllerCompletion:(()->Void)? = nil, onLeaveMeetingCompletion: (()->Void)? = nil) {

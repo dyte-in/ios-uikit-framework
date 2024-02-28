@@ -80,8 +80,6 @@ open class  DyteMoreButtonControlBar: DyteControlBarButton {
         }
        
         menus.append(.settings)
-
-        let mediaPermission = self.meeting.localUser.permissions.media
         
         let chatPermission = self.meeting.localUser.permissions.chat
         if chatPermission.canSendFiles || chatPermission.canSendText {

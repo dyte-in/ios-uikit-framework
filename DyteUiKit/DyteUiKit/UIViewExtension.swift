@@ -91,14 +91,14 @@ extension UIView {
         baseLabelView.layer.cornerRadius = 8
         baseLabelView.layer.masksToBounds = true
         baseLabelView.backgroundColor =  UIColor(red: CGFloat(0.0), green: CGFloat(0.0), blue: CGFloat(0.0), alpha: CGFloat(0.8))
-
+        
         baseLabelView.set(.leading(bgView,16, .greaterThanOrEqual), .centerX(bgView))
         if bottom == false {
             baseLabelView.set(.centerY(bgView))
         }else {
             baseLabelView.set(.bottom(bgView, 16+bottomSpace))
         }
-  
+        
         if duration >= 0 {
             UIView.animate(withDuration: 2.5, delay: TimeInterval(duration)) {
                 baseLabelView.alpha = 0
@@ -111,6 +111,21 @@ extension UIView {
         return bgView
     }
     
+    func setRandomColor(view: UIView) {
+        view.backgroundColor = getRandomColor()
+        for subview in view.subviews {
+            setRandomColor(view: subview)
+        }
+    }
+    
+    private func getRandomColor() -> UIColor {
+        //Generate between 0 to 1
+        let red:CGFloat = CGFloat(drand48())
+        let green:CGFloat = CGFloat(drand48())
+        let blue:CGFloat = CGFloat(drand48())
+        
+        return UIColor(red:red, green: green, blue: blue, alpha: 1.0)
+    }
 }
 
 extension CGFloat {
@@ -188,15 +203,15 @@ extension UISearchBar {
 
 extension Bundle {
     static let resources: Bundle = {
-        #if SWIFT_PACKAGE
-            return Bundle.module
-        #else
-             let bundle = Bundle(for:ImageProvider.self)
+#if SWIFT_PACKAGE
+        return Bundle.module
+#else
+        let bundle = Bundle(for:ImageProvider.self)
         if let bundlePath = bundle.path(forResource: "DyteUiKit", ofType: "bundle") {
             return Bundle(path:bundlePath)!
         }
-          return bundle
-        #endif
+        return bundle
+#endif
     }()
 }
 
@@ -207,22 +222,38 @@ extension UIViewController {
 }
 
 extension UIScreen {
-   static var deviceOrientation:UIDeviceOrientation {
-        switch UIApplication.shared.statusBarOrientation {
-            case .portrait:
-               return .portrait
-            case .portraitUpsideDown:
-               return .portraitUpsideDown
-            case .landscapeLeft:
-              return .landscapeLeft
-
-            case .landscapeRight:
+    static var deviceOrientation:UIDeviceOrientation {
+        
+        var interfaceOrientation: UIInterfaceOrientation = .portrait
+        if #available(iOS 13.0, *) {
+            if let orientation = UIApplication.shared.windows
+                .first?
+                .windowScene?
+                .interfaceOrientation {
+                interfaceOrientation = orientation
+            }
+        } else {
+            interfaceOrientation = UIApplication.shared.statusBarOrientation
+        }
+        
+        switch interfaceOrientation {
+        case .portrait:
+            return .portrait
+        case .portraitUpsideDown:
+            return .portraitUpsideDown
+        case .landscapeLeft:
+            return .landscapeLeft
+            
+        case .landscapeRight:
             return .landscapeRight
-
-            case .unknown:
+            
+        case .unknown:
             return .unknown
 
-         }
+        @unknown default:
+            return .unknown
+
+        }
     }
     
     static func isLandscape() -> Bool {

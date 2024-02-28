@@ -60,7 +60,6 @@ public class ActiveListView: UIView {
         for button in self.fixButtons {
             button.removeFromSuperview()
         }
-        var index = 0
         var pre: ScreenShareTabButton! = nil
         for (index,button) in fixButtons.enumerated() {
             fixButtonBaseView.addSubview(button)

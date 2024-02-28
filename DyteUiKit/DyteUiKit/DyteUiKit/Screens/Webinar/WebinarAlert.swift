@@ -29,20 +29,30 @@ public class WebinarAlertView: UIView, ConfigureWebinerAlertView, AdaptableUI {
     
     let selfPeerView: DyteParticipantTileView
     var meeting: DyteMobileClient
-    
+    private var previousOrientationIsLandscape = UIScreen.isLandscape()
+
     public init(meetingClient: DyteMobileClient, participant: DyteJoinedMeetingParticipant) {
         self.meeting = meetingClient
         selfPeerView = DyteParticipantTileView(viewModel: VideoPeerViewModel(mobileClient: meeting, participant: participant, showSelfPreviewVideo: true))
         super.init(frame: .zero)
         setupSubview()
-        NotificationCenter.default.addObserver(self, selector: #selector(onRotationChange), name: UIDevice.orientationDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onOrientationChange), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
     }
     
-    @objc private func onRotationChange() {
+    @objc private func onOrientationChange() {
+        let currentOrientationIsLandscape = UIScreen.isLandscape()
+        if previousOrientationIsLandscape != currentOrientationIsLandscape {
+            previousOrientationIsLandscape = currentOrientationIsLandscape
+            onRotationChange()
+        }
+    }
+    
+    
+    private func onRotationChange() {
         setUpConstraintAsPerOrientation()
     }
     

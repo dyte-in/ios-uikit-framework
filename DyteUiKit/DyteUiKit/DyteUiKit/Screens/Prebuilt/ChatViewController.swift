@@ -398,7 +398,7 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let url = info[UIImagePickerController.InfoKey.imageURL] as? URL {
             sendMessageButton.showActivityIndicator()
-            try?self.meeting.chat.sendImageMessage(filePath: url.path, fileName: url.lastPathComponent)
+            self.meeting.chat.sendImageMessage(imagePath: url.path)
         }
         dismiss(animated: true, completion: nil)
     }
@@ -410,7 +410,7 @@ extension ChatViewController: UIDocumentPickerDelegate {
             return
         }
         sendMessageButton.showActivityIndicator()
-        try?self.meeting.chat.sendFileMessage(filePath: selectedFileURL.path, fileName: selectedFileURL.lastPathComponent)
+        self.meeting.chat.sendFileMessage(filePath: selectedFileURL.path)
     }
 }
 

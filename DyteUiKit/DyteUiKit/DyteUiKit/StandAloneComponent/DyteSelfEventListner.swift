@@ -269,7 +269,6 @@ extension DyteEventSelfListner: DyteSelfEventsListener {
     }
 
     public  func onAudioUpdate(audioEnabled: Bool) {
-        self.dyteMobileClient.localUser.audioEnabled
         self.selfAudioStateCompletion?(audioEnabled)
         self.selfObserveAudioStateCompletion?(audioEnabled)
     }

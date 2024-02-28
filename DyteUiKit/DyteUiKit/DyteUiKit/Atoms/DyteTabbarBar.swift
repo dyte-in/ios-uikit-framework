@@ -31,7 +31,7 @@ public class DyteControlBarAppearanceModel : DyteControlBarAppearance {
 open class DyteTabbarBar: UIView, AdaptableUI {
     public var portraitConstraints = [NSLayoutConstraint]()
     public var landscapeConstraints = [NSLayoutConstraint]()
-        
+    private var previousOrientationIsLandscape = UIScreen.isLandscape()
     private struct Constants {
         static let tabBarAnimationDuration: Double = 1.5
 
@@ -120,7 +120,7 @@ open class DyteTabbarBar: UIView, AdaptableUI {
         self.backgroundColor = appearance.backgroundColor
         self.delegate = delegate
         createViews()
-        NotificationCenter.default.addObserver(self, selector: #selector(onRotationChange), name: UIDevice.orientationDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onOrientationChange), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
     
     deinit {
@@ -139,10 +139,18 @@ open class DyteTabbarBar: UIView, AdaptableUI {
         }
     }
     
-    @objc func onRotationChange() {
-        self.removeHeightWidthConstraint()
-        self.setOrientationContraintAsDeactive()
-        self.setNeedsUpdateConstraints()
+    @objc func onOrientationChange() {
+        let currentOrientationIsLandscape = UIScreen.isLandscape()
+        if previousOrientationIsLandscape != currentOrientationIsLandscape {
+            previousOrientationIsLandscape = currentOrientationIsLandscape
+            onRotationChange()
+        }
+    }
+    
+    func onRotationChange() {
+            self.removeHeightWidthConstraint()
+            self.setOrientationContraintAsDeactive()
+            self.setNeedsUpdateConstraints()
     }
     
    private func createViews() {
@@ -201,7 +209,7 @@ open class DyteTabbarBar: UIView, AdaptableUI {
     public func setButtons(_ buttons: [DyteControlBarButton]) {
         for button in self.buttons {
             button.clean()
-            button.superview?.removeFromSuperview()
+            stackView.removeFully(view: button.superview!)
         }
         self.buttons.removeAll()
         self.buttons = buttons
