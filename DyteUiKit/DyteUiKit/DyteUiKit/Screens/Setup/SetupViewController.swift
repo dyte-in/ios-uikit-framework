@@ -61,27 +61,15 @@ public class MicToggleButton: DyteButton {
     }
        
     @objc func clickMic(button: DyteButton) {
-        if self.getPermission() == false {
-            let alert = UIAlertController(title: "Microphone", message: "Microphone access is necessary to use this app.\n Please click settings to change the permission.", preferredStyle: .alert)
-            // Add "OK" Button to alert, pressing it will bring you to the settings app
-            alert.addAction(UIAlertAction(title: "cancel", style: .default, handler: { action in
-
-            }))
-            alert.addAction(UIAlertAction(title: "settings", style: .default, handler: { action in
-                UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
-            }))
-            // Show the alert with animation
-            self.alertController.present(alert, animated: true)
-            return
+        if dyteSelfListner.isMicrophonePermissionGranted() {
+            self.showActivityIndicator()
+            self.dyteSelfListner.toggleLocalAudio(completion: { [weak self] isEnabled in
+                guard let self = self else {return}
+                button.hideActivityIndicator()
+                button.isSelected = !isEnabled
+                self.completion?(self)
+            })
         }
-        self.showActivityIndicator()
-        self.dyteSelfListner.toggleLocalAudio(completion: { [weak self] isEnabled in
-            guard let self = self else {return}
-            button.hideActivityIndicator()
-            button.isSelected = !isEnabled
-            self.completion?(self)
-        })
-        
     }
     
     public func clean() {
@@ -141,27 +129,15 @@ public class VideoToggleButton: DyteButton {
     }
        
     @objc func clickVideo(button: DyteButton) {
-        if self.getPermission() == false {
-            let alert = UIAlertController(title: "Camera", message: "Camera access is necessary to use this app.\n Please click settings to change the permission.", preferredStyle: .alert)
-            // Add "OK" Button to alert, pressing it will bring you to the settings app
-            alert.addAction(UIAlertAction(title: "cancel", style: .default, handler: { action in
-
-            }))
-            alert.addAction(UIAlertAction(title: "settings", style: .default, handler: { action in
-                UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
-            }))
-            // Show the alert with animation
-            self.alertController.present(alert, animated: true)
-            return
+        if dyteSelfListner.isCameraPermissionGranted() {
+            self.showActivityIndicator()
+            self.dyteSelfListner.toggleLocalVideo(completion: { [weak self] isEnabled in
+                guard let self = self else {return}
+                button.hideActivityIndicator()
+                button.isSelected = !isEnabled
+                self.completion?(self)
+            })
         }
-        self.showActivityIndicator()
-        self.dyteSelfListner.toggleLocalVideo(completion: { [weak self] isEnabled in
-            guard let self = self else {return}
-            button.hideActivityIndicator()
-            button.isSelected = !isEnabled
-            self.completion?(self)
-        })
-        
     }
     
     public func clean() {

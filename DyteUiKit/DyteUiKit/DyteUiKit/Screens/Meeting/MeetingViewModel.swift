@@ -8,14 +8,12 @@
 import DyteiOSCore
 import UIKit
 
-
 protocol MeetingViewModelDelegate: AnyObject {
     func refreshMeetingGrid(forRotation: Bool)
     func refreshPluginsView()
     func activeSpeakerChanged(participant: DyteMeetingParticipant)
-    func pinnedChanged(participant: DyteMeetingParticipant)
+    func pinnedChanged(participant: DyteJoinedMeetingParticipant)
     func activeSpeakerRemoved()
-    func pinnedParticipantRemoved(participant: DyteMeetingParticipant)
     func participantJoined(participant: DyteMeetingParticipant)
     func participantLeft(participant: DyteMeetingParticipant)
     func newPollAdded(createdBy: String)
@@ -247,7 +245,10 @@ public final class MeetingViewModel {
         
         if dyteMobileClient.plugins.active.count >= 1 {
             screenShareViewModel.refresh(plugins: self.dyteMobileClient.plugins.active, selectedPlugin: nil)
-            self.delegate?.refreshPluginsView()
+           
+            if self.dyteMobileClient.participants.currentPageNumber == 0 {
+                self.delegate?.refreshPluginsView()
+            }
         }
         
         //TODO: Do this onConnectedToMeetingRoom
@@ -260,7 +261,6 @@ public final class MeetingViewModel {
         }
         if dyteMobileClient.plugins.active.count >= 1 {
             screenShareViewModel.refresh(plugins: self.dyteMobileClient.plugins.active, selectedPlugin: nil)
-            self.delegate?.refreshPluginsView()
         }
         self.delegate?.refreshMeetingGrid()
     }
@@ -296,6 +296,10 @@ extension MeetingViewModel: DytePollEventsListener {
 
 extension MeetingViewModel {
     
+    public func refreshPinnedParticipants() {
+        refreshActiveParticipants(pageItemCount: self.currentlyShowingItemOnSinglePage)
+    }
+    
     public func refreshActiveParticipants(pageItemCount: UInt = 0) {
         //pageItemCount tell on first page how many tiles needs to be shown to user
         self.updateActiveGridParticipants(pageItemCount: pageItemCount)
@@ -310,7 +314,27 @@ extension MeetingViewModel {
         }
     }
     
+    func pinOrPluginModeIsActive() -> Bool {
+        return pinModeIsActive() || pluginModeIsActive()
+    }
+    
+    func pinModeIsActive() -> Bool {
+        if self.dyteMobileClient.participants.currentPageNumber == 0 {
+            return self.dyteMobileClient.participants.pinned != nil ? true : false
+        }
+        return false
+    }
+    
+    func pluginModeIsActive() -> Bool {
+        if self.dyteMobileClient.participants.currentPageNumber == 0 {
+            return dyteMobileClient.plugins.active.count > 0 ? true : false
+        }
+        return false
+    }
+    
     private func getParticipant(pageItemCount: UInt = 0) -> [GridCellViewModel] {
+        let pinIsActive = pinModeIsActive()
+        let pluginIsActive = pluginModeIsActive()
         let activeParticipants = self.dyteMobileClient.participants.active
         if isDebugModeOn {
             print("Debug DyteUIKit | Active participant count \(activeParticipants.count)")
@@ -324,11 +348,25 @@ extension MeetingViewModel {
         var result =  [GridCellViewModel]()
         for participant in activeParticipants {
             if itemCount < rowCount {
-                if participant.isPinned {
-                    result.insert(GridCellViewModel(participant: participant), at: 0)
-                }else {
+                if pinOrPluginModeIsActive() {
+                    if pluginIsActive {
+                        // we will show plugin view and if there is pinned participant it should be shown at 0 index inside grid
+                        if participant.isPinned {
+                            result.insert(GridCellViewModel(participant: participant), at: 0)
+                        }else {
+                            result.append(GridCellViewModel(participant: participant))
+                        }
+                    } else if pinIsActive {
+                        // We have to remove pinned Participant from the Grid.
+                        if participant.isPinned == false {
+                            // we are adding only non pinned participant
+                            result.append(GridCellViewModel(participant: participant))
+                        }
+                    }
+                } else {
                     result.append(GridCellViewModel(participant: participant))
                 }
+                
             } else {
                 break;
             }
@@ -390,6 +428,7 @@ extension MeetingViewModel: DyteParticipantEventsListener {
         if isDebugModeOn {
             print("Debug DyteUIKit | onActiveParticipantsChanged")
         }
+       
         self.refreshActiveParticipants(pageItemCount: self.currentlyShowingItemOnSinglePage)
     }
     
@@ -419,7 +458,7 @@ extension MeetingViewModel: DyteParticipantEventsListener {
         if isDebugModeOn {
             print("Debug DyteUIKit | Pinned changed Participant Id \(participant.userId)")
         }
-        self.refreshActiveParticipants(pageItemCount: self.currentlyShowingItemOnSinglePage)
+        refreshPinnedParticipants()
         self.delegate?.pinnedChanged(participant: participant)
     }
     
@@ -427,13 +466,15 @@ extension MeetingViewModel: DyteParticipantEventsListener {
         if isDebugModeOn {
             print("Debug DyteUIKit | Pinned removed Participant Id \(participant.userId)")
         }
-        self.delegate?.pinnedParticipantRemoved(participant: participant)
+        refreshPinnedParticipants()
     }
 
     private func updateScreenShareStatus() {
         screenShareViewModel.refresh(participants: self.dyteMobileClient.participants.screenShares)
         self.shouldShowShareScreen = screenShareViewModel.arrScreenShareParticipants.count > 0 ? true : false
-        self.delegate?.refreshPluginsView()
+        if self.dyteMobileClient.participants.currentPageNumber == 0 {
+            self.delegate?.refreshPluginsView()
+        }
     }
     
     public func onVideoUpdate(videoEnabled: Bool, participant: DyteMeetingParticipant) {
@@ -452,16 +493,26 @@ extension MeetingViewModel: DytePluginEventsListener {
         if isDebugModeOn {
             print("Debug DyteUIKit | Delegate onPluginActivated(")
         }
-        screenShareViewModel.refresh(plugins: self.dyteMobileClient.plugins.active, selectedPlugin: plugin)
-        self.delegate?.refreshPluginsView()
+        if self.dyteMobileClient.participants.pinned != nil {
+            self.refreshPinnedParticipants()
+        }
+          screenShareViewModel.refresh(plugins: self.dyteMobileClient.plugins.active, selectedPlugin: plugin)
+        if self.dyteMobileClient.participants.currentPageNumber == 0 {
+            self.delegate?.refreshPluginsView()
+        }
     }
     
     public func onPluginDeactivated(plugin: DytePlugin) {
         if isDebugModeOn {
             print("Debug DyteUIKit | Delegate onPluginDeactivated(")
         }
-        screenShareViewModel.removed(plugin: plugin)
-        self.delegate?.refreshPluginsView()
+        if self.dyteMobileClient.participants.pinned != nil {
+            self.refreshPinnedParticipants()
+        }
+          screenShareViewModel.removed(plugin: plugin)
+        if self.dyteMobileClient.participants.currentPageNumber == 0 {
+            self.delegate?.refreshPluginsView()
+        }
     }
     
     public func onPluginFileRequest(plugin: DytePlugin) {
@@ -474,4 +525,5 @@ extension MeetingViewModel: DytePluginEventsListener {
         }
     }
     
-}
+}    
+    

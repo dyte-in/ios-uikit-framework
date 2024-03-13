@@ -19,11 +19,15 @@ public enum WebinarStageStatus {
     case viewOnly
 }
 
-
-
-
 public class WebinarViewController: MeetingViewController {
     private var waitingView : WaitingRoomView?
+    var webinarViewModel : WebinarViewModel?
+    
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+        webinarViewModel = WebinarViewModel(dyteMobileClient: meeting)
+        webinarViewModel?.stageDelegate = self
+    }
     
     func createWaitingView(message: String) -> WaitingRoomView {
         let waitingView = WaitingRoomView(automaticClose: false, onCompletion: {})
@@ -66,5 +70,20 @@ public class WebinarViewController: MeetingViewController {
         return controlBar
     }
     
+    func updateNotificationWithToast(message: String) {
+        self.view.showToast(toastMessage: message, duration: 2.0, uiBlocker: false)
+        updateMoreButtonNotificationBubble()
+        NotificationCenter.default.post(name: Notification.Name("Notify_ParticipantListUpdate"), object: nil, userInfo: nil)
+    }
+}
+
+extension WebinarViewController: DyteStageDelegate {
+    func onPresentRequestAdded(participant: DyteJoinedMeetingParticipant) {
+        updateNotificationWithToast(message: "\(participant.name) has requested to join stage")
+    }
+    
+    func onPresentRequestWithdrawn(participant: DyteJoinedMeetingParticipant) {
+        updateNotificationWithToast(message: "\(participant.name) has cancelled to join stage")
+    }
 }
 

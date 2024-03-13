@@ -540,7 +540,7 @@ extension LivestreamViewController : MeetingViewModelDelegate {
         // showAndHideActiveSpeaker()
     }
     
-    func pinnedChanged(participant: DyteMeetingParticipant) {
+    func pinnedChanged(participant: DyteJoinedMeetingParticipant) {
         
     }
     
@@ -549,7 +549,7 @@ extension LivestreamViewController : MeetingViewModelDelegate {
         //showAndHideActiveSpeaker()
     }
     
-    func pinnedParticipantRemoved(participant: DyteMeetingParticipant) {
+    func pinnedParticipantRemoved(participant: DyteJoinedMeetingParticipant) {
         //showAndHideActiveSpeaker()
         updatePin(show: false, participant: participant)
     }

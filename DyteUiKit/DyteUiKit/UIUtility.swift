@@ -10,6 +10,19 @@ import UIKit
 
 public struct DyteUIUTility {
     
+    public static func getTopViewController() -> UIViewController? {
+        var topController = UIApplication.shared.windows.first?.rootViewController
+        while let presentedViewController = topController?.presentedViewController {
+            topController = presentedViewController
+        }
+        
+        if let navController = topController as? UINavigationController {
+            return navController.visibleViewController
+        }
+        
+        return topController
+    }
+    
     public static func createLabel(text: String? = nil, alignment: NSTextAlignment = .center, weight: UIFont.Weight? = nil) -> DyteText {
         let label = DyteText()
         label.textAlignment = alignment

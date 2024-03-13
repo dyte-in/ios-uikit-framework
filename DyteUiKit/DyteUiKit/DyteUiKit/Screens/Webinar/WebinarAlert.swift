@@ -237,24 +237,27 @@ public class WebinarAlertView: UIView, ConfigureWebinerAlertView, AdaptableUI {
 
     
     @objc func clickMic(button: DyteButton) {
-        button.showActivityIndicator()
-        dyteSelfListner.toggleLocalAudio(completion: { [weak self] isEnabled in
-            guard let self = self else {return}
-            button.hideActivityIndicator()
-            self.selfPeerView.nameTag.refresh()
-            button.isSelected = !isEnabled
-        })
-        
+        if dyteSelfListner.isMicrophonePermissionGranted() {
+            button.showActivityIndicator()
+            dyteSelfListner.toggleLocalAudio(completion: { [weak self] isEnabled in
+                guard let self = self else {return}
+                button.hideActivityIndicator()
+                self.selfPeerView.nameTag.refresh()
+                button.isSelected = !isEnabled
+            })
+        }
     }
     
     @objc func clickVideo(button: DyteButton) {
-        button.showActivityIndicator()
-        dyteSelfListner.toggleLocalVideo(completion: { [weak self] isEnabled  in
-            guard let self = self else {return}
-            button.hideActivityIndicator()
-            button.isSelected = !isEnabled
-            self.loadSelfVideoView()
-        })
+        if dyteSelfListner.isCameraPermissionGranted() {
+            button.showActivityIndicator()
+            dyteSelfListner.toggleLocalVideo(completion: { [weak self] isEnabled  in
+                guard let self = self else {return}
+                button.hideActivityIndicator()
+                button.isSelected = !isEnabled
+                self.loadSelfVideoView()
+            })
+        }
     }
     
     public func loadSelfVideoView() {

@@ -6,6 +6,7 @@
 //
 
 import DyteiOSCore
+import UIKit
 
 public class DyteEventSelfListner  {
     private static var currentInstance = 0
@@ -55,12 +56,12 @@ public class DyteEventSelfListner  {
     private let isDebugModeOn = DyteUiKit.isDebugModeOn
     
    public func toggleLocalAudio(completion: @escaping(_ isEnabled: Bool)->Void) {
-        self.selfAudioStateCompletion = completion
-        if self.dyteMobileClient.localUser.audioEnabled == true {
-            try?self.dyteMobileClient.localUser.disableAudio()
-        } else {
-            self.dyteMobileClient.localUser.enableAudio()
-        }
+       self.selfAudioStateCompletion = completion
+       if self.dyteMobileClient.localUser.audioEnabled == true {
+           try?self.dyteMobileClient.localUser.disableAudio()
+       } else {
+           self.dyteMobileClient.localUser.enableAudio()
+       }
     }
    
     public func observeSelfVideo(update:@escaping(_ enabled: Bool)->Void) {
@@ -89,6 +90,54 @@ public class DyteEventSelfListner  {
             try?self.dyteMobileClient.localUser.disableVideo()
         }else {
             self.dyteMobileClient.localUser.enableVideo()
+        }
+    }
+    
+    public func isCameraPermissionGranted(alertPresentingController: UIViewController? = DyteUIUTility.getTopViewController()) -> Bool {
+        if !self.dyteMobileClient.localUser.isCameraPermissionGranted {
+            
+            if let alertContoller = alertPresentingController {
+                let alert = UIAlertController(title: "Camera", message: "Camera access is necessary to use this app.\n Please click settings to change the permission.", preferredStyle: .alert)
+                
+                alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { action in
+                    // Handle cancel action if needed
+                }))
+                
+                alert.addAction(UIAlertAction(title: "Settings", style: .default, handler: { action in
+                    if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(settingsURL)
+                    }
+                }))
+                
+                alertContoller.present(alert, animated: true, completion: nil)
+            }
+            
+            return false
+        } else {
+            return true
+        }
+    }
+    
+    public func isMicrophonePermissionGranted(alertPresentingController: UIViewController? = DyteUIUTility.getTopViewController() ) -> Bool {
+        if !self.dyteMobileClient.localUser.isMicrophonePermissionGranted {
+            if let alertController = alertPresentingController {
+                let alert = UIAlertController(title: "Microphone", message: "Microphone access is necessary to use this app.\n Please click settings to change the permission.", preferredStyle: .alert)
+                
+                alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { action in
+                    // Handle cancel action if needed
+                }))
+                
+                alert.addAction(UIAlertAction(title: "Settings", style: .default, handler: { action in
+                    if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(settingsURL)
+                    }
+                }))
+                
+                alertController.present(alert, animated: true, completion: nil)
+            }
+            return false
+        } else {
+            return true
         }
     }
     
@@ -307,22 +356,6 @@ extension DyteEventSelfListner: DyteSelfEventsListener {
     }
     
     func onWebinarPresentRequestReceived() {
-        
-        func onConnectedToMeetingRoom() {
-            
-        }
-        
-        func onConnectingToMeetingRoom() {
-            
-        }
-        
-        func onDisconnectedFromMeetingRoom() {
-            
-        }
-        
-        func onMeetingRoomConnectionFailed() {
-            
-        }
         
     }
 }

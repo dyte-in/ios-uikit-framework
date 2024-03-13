@@ -43,11 +43,13 @@ open class  DyteVideoButtonControlBar: DyteControlBarButton {
 
     
     @objc open func onClick(button: DyteControlBarButton) {
-        button.showActivityIndicator()
-        dyteSelfListner.toggleLocalVideo(completion: { enableVideo in
-            button.isSelected = !enableVideo
-            button.hideActivityIndicator()
-        })
+        if dyteSelfListner.isCameraPermissionGranted() {
+            button.showActivityIndicator()
+            dyteSelfListner.toggleLocalVideo(completion: { enableVideo in
+                button.isSelected = !enableVideo
+                button.hideActivityIndicator()
+            })
+        }
     }
     deinit {
         self.dyteSelfListner.clean()

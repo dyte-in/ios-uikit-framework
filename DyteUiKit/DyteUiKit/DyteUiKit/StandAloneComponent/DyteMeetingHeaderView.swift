@@ -101,12 +101,7 @@ open class DyteMeetingHeaderView: UIView {
        
         self.nextPreviousButtonView.previousButton.addTarget(self, action: #selector(clickPrevious(button:)), for: .touchUpInside)
         self.nextPreviousButtonView.nextButton.addTarget(self, action: #selector(clickNext(button:)), for: .touchUpInside)
-        
-        if ((meeting.localUser.mediaRoomType == DyteMediaRoomType.hive && 
-             meeting.meta.meetingType == DyteMeetingType.webinar) || 
-            meeting.participants.pageCount == 1) {
-            nextPreviouStackView.isHidden = true
-        } 
+    
     }
     
     @objc private func clickPrevious(button: DyteControlBarButton) {
@@ -126,6 +121,14 @@ open class DyteMeetingHeaderView: UIView {
 extension DyteMeetingHeaderView {
     // MARK: Public methods
     public func refreshNextPreviouButtonState() {
+        
+        if (meeting.localUser.mediaRoomType == DyteMediaRoomType.hive &&
+            meeting.meta.meetingType == DyteMeetingType.webinar) {
+            // For Hive Webinar we are not showing any pagination. Hence feature is disabled.
+            return
+        }
+
+        
         let nextPagePossible = self.meeting.participants.canGoNextPage
         let prevPagePossible = self.meeting.participants.canGoPreviousPage
        

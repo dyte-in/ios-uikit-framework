@@ -78,7 +78,7 @@ public class WaitingRoomView: UIView {
         }else if status == WaitListStatus.accepted {
             self.removeFromSuperview()
         }else if status == WaitListStatus.rejected {
-            self.titleLabel.text = "You were removed from the meeting."
+            self.titleLabel.text = "Your request to join the meeting was denied."
             self.titleLabel.textColor = dyteSharedTokenColor.status.danger
             self.button.isHidden = false
 

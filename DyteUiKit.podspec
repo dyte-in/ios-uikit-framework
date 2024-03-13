@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'DyteUiKit'
-  s.version          = '0.6.0'
+  s.version          = '0.6.1'
   s.summary          = 'Customise UI of your Dyte meetings'
 
   s.description      = "Customise UI of your Dyte meetings. You can use this prebuilt meeting flow or you can customise it on individual component level"
@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   s.swift_version = "5.0"
   s.ios.frameworks = ['UIKit', 'AVFAudio']
   s.resource_bundle = { 'DyteUiKit' => 'DyteUiKit/Resources/*' }
-  s.dependency 'DyteiOSCore' , '1.32.3'
+  s.dependency 'DyteiOSCore' , '1.32.5'
   s.dependency 'AmazonIVSPlayer' , '1.19.0'
   s.module_name = 'DyteUiKit'
 end

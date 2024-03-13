@@ -43,13 +43,15 @@ open class  DyteAudioButtonControlBar: DyteControlBarButton {
     }
     
     @objc open func onClick(button: DyteAudioButtonControlBar) {
-        button.showActivityIndicator()
-        self.accessibilityIdentifier = "ControlBar_Audio_"
-        self.dyteSelfListner.toggleLocalAudio(completion: { enableAudio in
-            button.hideActivityIndicator()
-            button.isSelected = !enableAudio
-            self.onClick?(button)
-        })
+        if dyteSelfListner.isMicrophonePermissionGranted() {
+            button.showActivityIndicator()
+            self.accessibilityIdentifier = "ControlBar_Audio_"
+            self.dyteSelfListner.toggleLocalAudio(completion: { enableAudio in
+                button.hideActivityIndicator()
+                button.isSelected = !enableAudio
+                self.onClick?(button)
+            })
+        }
     }
     
     deinit {
