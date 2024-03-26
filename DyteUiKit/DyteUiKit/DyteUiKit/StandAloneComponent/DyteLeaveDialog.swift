@@ -29,7 +29,7 @@ public class DyteLeaveDialog {
     private var dyteSelfListner: DyteEventSelfListner
     private let onClick: ((DyteLeaveDialogAlertButtonType)->Void)?
 
-    init(meeting: DyteMobileClient, onClick:((DyteLeaveDialogAlertButtonType)->Void)? = nil) {
+    public init(meeting: DyteMobileClient, onClick:((DyteLeaveDialogAlertButtonType)->Void)? = nil) {
         self.meeting = meeting
         self.dyteSelfListner = DyteEventSelfListner(mobileClient: meeting)
         self.onClick = onClick
