@@ -269,19 +269,6 @@ extension ParticipantViewControllerModel {
 public class LiveParticipantViewControllerModel: ParticipantViewControllerModelProtocol, DyteLiveStreamEventsListener {
     var dyteSelfListner: DyteEventSelfListner
     
-    
-    public func onJoinRequestAccepted(peer: StagePeer) {
-        if let completion = self.completion {
-            self.refresh(completion: completion)
-        }
-    }
-    
-    public func onJoinRequestRejected(peer: StagePeer) {
-        if let completion = self.completion {
-            self.refresh(completion: completion)
-        }
-    }
-    
     public func onLiveStreamEnded() {
         if let completion = self.completion {
             self.refresh(completion: completion)
@@ -323,13 +310,7 @@ public class LiveParticipantViewControllerModel: ParticipantViewControllerModelP
             self.refresh(completion: completion)
         }
     }
-    
-    public func onStageRequestsUpdated(requests: [StagePeer]) {
-        if let completion = self.completion {
-            self.refresh(completion: completion)
-        }
-    }
-    
+  
     public func onViewerCountUpdated(count: Int32) {
         if let completion = self.completion {
             self.refresh(completion: completion)

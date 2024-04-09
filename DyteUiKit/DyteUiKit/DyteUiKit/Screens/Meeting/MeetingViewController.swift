@@ -845,13 +845,7 @@ extension MeetingViewController: DyteNotificationDelegate {
 }
 
 extension MeetingViewController: DyteLiveStreamEventsListener {
-    public func onJoinRequestAccepted(peer: StagePeer) {
-        
-    }
-    
-    public func onJoinRequestRejected(peer: StagePeer) {
-        
-    }
+
     
     public func onLiveStreamEnded() {
         
@@ -885,10 +879,6 @@ extension MeetingViewController: DyteLiveStreamEventsListener {
             self.present(controller, animated: true)
             notificationDelegate?.didReceiveNotification(type: .Joined)
         }
-    }
-    
-    public func onStageRequestsUpdated(requests: [StagePeer]) {
-        
     }
     
     public func onViewerCountUpdated(count: Int32) {

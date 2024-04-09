@@ -420,9 +420,9 @@ extension WebinarParticipantViewControllerModel: DyteStageEventListener {
     }
     
     public func onStageRequestsUpdated(accessRequests: [DyteJoinedMeetingParticipant]) {
-//        if let completion = self.completion {
-//            self.refresh(completion: completion)
-//        }
+        if let completion = self.completion {
+            self.refresh(completion: completion)
+        }
     }
     
     
