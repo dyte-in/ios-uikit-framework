@@ -19,8 +19,8 @@ let package = Package(
         ),
         .binaryTarget(
             name: "DyteiOSCore",
-            url: "https://dyte-assets.s3.ap-south-1.amazonaws.com/sdk/ios_core/DyteiOSCore-1.32.5-531bde7a-2a2c-4f3f-a013-a5f5608f1b60.xcframework.zip",
-            checksum: "e7a589062dc21716c6c6fa9c521b1c45fde29592fa044600c33bd3b29f4a5c7a"
+            url: "https://dyte-assets.s3.ap-south-1.amazonaws.com/sdk/ios_core/DyteiOSCore-1.34.1-0bb954bd-ee7a-4df5-8c98-638ea5531fc5.xcframework.zip",
+            checksum: "0569b31db24a4da36c2d71bbc9d109795e1a458b2e2e9000d1a67f5da31876c7"
         ),
         .binaryTarget(
             name: "AmazonIVSPlayer",
