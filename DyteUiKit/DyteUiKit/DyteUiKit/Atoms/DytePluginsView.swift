@@ -9,13 +9,13 @@ import UIKit
 import DyteiOSCore
 import WebKit
 
-public class ActiveListView: UIView {
+public class DyteActiveTabSelectorView: UIView {
     
     private let scrollView : UIScrollView = {return UIScrollView()}()
     private let fixButtonBaseView : UIView = {return UIView()}()
     
-    public var buttons = [ScreenShareTabButton]()
-    internal var fixButtons = [ScreenShareTabButton]()
+    public private(set) var buttons: [DytePluginScreenShareTabButton] = [DytePluginScreenShareTabButton]()
+    private(set) var fixButtons: [DytePluginScreenShareTabButton] = [DytePluginScreenShareTabButton]()
     let tokenSpace = DesignLibrary.shared.space
     let tokenColor = DesignLibrary.shared.color
     private var stackView: UIStackView!
@@ -30,23 +30,48 @@ public class ActiveListView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    public func scrollToVisible(button: ScreenShareTabButton) {
-        let buttonFrame = stackView.convert(button.frame, to: self.scrollView.coordinateSpace)
-        let maxX = buttonFrame.maxX
-        let startX = buttonFrame.origin.x
-        let currentWidowFrame = CGRect(x: scrollView.contentOffset.x, y: scrollView.contentOffset.y, width: scrollView.bounds.width, height: scrollView.bounds.height)
-        if startX >= currentWidowFrame.origin.x && maxX <= currentWidowFrame.maxX {
-            // If button is already in visible rect then no need to do anything
-        } else {
-            if startX < currentWidowFrame.origin.x {
-                self.scrollView.setContentOffset(CGPoint(x: startX, y: 0), animated: true)
-            }else if maxX > currentWidowFrame.maxX {
-                let pages = Int(maxX / scrollView.bounds.width)
-                self.scrollView.setContentOffset(CGPoint(x: maxX - (scrollView.bounds.width * CGFloat(pages)), y: 0), animated: true)
+    public func scrollToVisible(button: DytePluginScreenShareTabButton) {
+        if buttons.contains(button) {
+            let buttonFrame = stackView.convert(button.frame, to: self.scrollView.coordinateSpace)
+            let maxX = buttonFrame.maxX
+            let startX = buttonFrame.origin.x
+            let currentWidowFrame = CGRect(x: scrollView.contentOffset.x, y: scrollView.contentOffset.y, width: scrollView.bounds.width, height: scrollView.bounds.height)
+            if startX >= currentWidowFrame.origin.x && maxX <= currentWidowFrame.maxX {
+                // If button is already in visible rect then no need to do anything
+            } else {
+                if startX < currentWidowFrame.origin.x {
+                    self.scrollView.setContentOffset(CGPoint(x: startX, y: 0), animated: true)
+                }else if maxX > currentWidowFrame.maxX {
+                    let pages = Int(maxX / scrollView.bounds.width)
+                    self.scrollView.setContentOffset(CGPoint(x: maxX - (scrollView.bounds.width * CGFloat(pages)), y: 0), animated: true)
+                }
             }
         }
     }
-    public func setButtons(fixButtons: [ScreenShareTabButton], buttons: [ScreenShareTabButton]) {
+    
+   public func setAndDisplayButtons(_ buttons: [DytePluginScreenShareTabButton]) {
+        if stackView == nil {
+            stackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: tokenSpace.space2)
+            scrollView.addSubview(stackView)
+            scrollView.addSubview(fixButtonBaseView)
+            fixButtonBaseView.set(.leading(scrollView, tokenSpace.space3),
+                                  .sameTopBottom(self, tokenSpace.space2))
+            stackView.set(.trailing(scrollView, tokenSpace.space3),
+                          .after(fixButtonBaseView, tokenSpace.space3),
+                          .sameTopBottom(self, tokenSpace.space2))
+        }
+
+        for button in self.buttons {
+            button.removeFromSuperview()
+        }
+        for button in buttons {
+            stackView.addArrangedSubview(button)
+        }
+        self.buttons = buttons
+    }
+
+    
+    func setButtons(fixButtons: [DytePluginScreenShareTabButton]) {
         if stackView == nil {
             stackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: tokenSpace.space2)
             scrollView.addSubview(stackView)
@@ -60,7 +85,7 @@ public class ActiveListView: UIView {
         for button in self.fixButtons {
             button.removeFromSuperview()
         }
-        var pre: ScreenShareTabButton! = nil
+        var pre: DytePluginScreenShareTabButton! = nil
         for (index,button) in fixButtons.enumerated() {
             fixButtonBaseView.addSubview(button)
             button.set(.sameTopBottom(fixButtonBaseView))
@@ -80,14 +105,6 @@ public class ActiveListView: UIView {
             pre = button
         }
         self.fixButtons = fixButtons
-        for button in self.buttons {
-            button.removeFromSuperview()
-        }
-        
-        for button in buttons {
-            stackView.addArrangedSubview(button)
-        }
-        self.buttons = buttons
     }
     
 }
@@ -167,17 +184,20 @@ class ActiveSpeakerPinView: UIView {
     }
 }
 
-public class DytePluginView: UIView {
+public class DytePluginsView: UIView {
     
-    public  let activeListView = ActiveListView()
+    public  let activeListView = DyteActiveTabSelectorView()
     public  let pluginVideoView: DyteParticipantTileView
-    private var clickAction:((ScreenShareTabButton, Bool)-> Void)?
+    public let syncButton: SyncScreenShareTabButton?
+
+    private var clickAction:((DytePluginScreenShareTabButton, Bool)-> Void)?
     private let stackView = DyteUIUTility.createStackView(axis: .vertical, spacing: 0)
     private let activeSpeakerView: ActiveSpeakerPinView
-    let backgroundColorValue = DesignLibrary.shared.color.background.video
-    let borderRadiusType: BorderRadiusToken.RadiusType = AppTheme.shared.cornerRadiusTypePeerView ?? .rounded
-    let spaceToken = DesignLibrary.shared.space
-    public let syncButton: SyncScreenShareTabButton?
+    private let backgroundColorValue = DesignLibrary.shared.color.background.video
+    private let borderRadiusType: BorderRadiusToken.RadiusType = AppTheme.shared.cornerRadiusTypePeerView ?? .rounded
+    private let spaceToken = DesignLibrary.shared.space
+    private var webView: UIView?
+
     
     public init(videoPeerViewModel: VideoPeerViewModel) {
         pluginVideoView = DyteParticipantTileView(viewModel: videoPeerViewModel)
@@ -216,7 +236,7 @@ public class DytePluginView: UIView {
         button.isSelected = !button.isSelected
     }
     
-    public func setButtons(buttons: [ScreenShareTabButton],  selectedIndex: Int?, clickAction:@escaping(ScreenShareTabButton, Bool)->Void)  {
+    public func setButtons(buttons: [DytePluginScreenShareTabButton],  selectedIndex: Int?, clickAction:@escaping(DytePluginScreenShareTabButton, Bool)->Void)  {
         
         if let index = selectedIndex , index < buttons.count {
             buttons[index].isSelected = true
@@ -226,28 +246,25 @@ public class DytePluginView: UIView {
             button.addTarget(self, action: #selector(clickButton(button:)), for: .touchUpInside)
         }
         self.clickAction = clickAction
-        var fixButtons = [ScreenShareTabButton]()
+        var fixButtons = [DytePluginScreenShareTabButton]()
         if let syncButton = self.syncButton {
             fixButtons.append(syncButton)
         }
-        activeListView.setButtons(fixButtons: fixButtons, buttons: buttons)
-    }
-    
-    public func showAndHideActiveButtonListView(buttons: [ScreenShareTabButton]) {
+        activeListView.setButtons(fixButtons: fixButtons)
+        activeListView.setAndDisplayButtons(buttons)
         activeListView.isHidden = buttons.count > 1 ? false : true
     }
+
     
-    @objc func clickButton(button: ScreenShareTabButton) {
+    @objc func clickButton(button: DytePluginScreenShareTabButton) {
         self.activeListView.scrollToVisible(button: button)
         self.clickAction?(button, true)
     }
     
-    public func selectForAutoSync(button: ScreenShareTabButton) {
+    public func selectForAutoSync(button: DytePluginScreenShareTabButton) {
         self.activeListView.scrollToVisible(button: button)
         self.clickAction?(button, false)
     }
-    
-    private var webView: UIView?
     
     public  func show(pluginView view: UIView) {
         if let constraints = webView?.constraints {
@@ -274,10 +291,6 @@ public class DytePluginView: UIView {
         activeSpeakerView.pinView(show: false)
         showActiveSpeakerOrPinnedView(participant: participant)
     }
-    private func showActiveSpeakerOrPinnedView(participant: DyteJoinedMeetingParticipant) {
-        let _ = activeSpeakerView.videoView.set(participant: participant)
-        activeSpeakerView.isHidden = false
-    }
     
     public  func hideActiveSpeaker() {
         if activeSpeakerView.isHidden {
@@ -290,5 +303,14 @@ public class DytePluginView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+
+extension DytePluginsView {
+    
+    private func showActiveSpeakerOrPinnedView(participant: DyteJoinedMeetingParticipant) {
+        let _ = activeSpeakerView.videoView.set(participant: participant)
+        activeSpeakerView.isHidden = false
+    }
+
 }
 

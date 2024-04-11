@@ -47,8 +47,8 @@ public class DyteTextField: BaseAtomView {
         return textField
     }()
     
-    let lblHeader: DyteText = { return DyteUIUTility.createLabel(text: "", alignment: .left) }()
-    let lblError: DyteText = { return DyteUIUTility.createLabel(text: "", alignment: .left) }()
+    let lblHeader: DyteLabel = { return DyteUIUTility.createLabel(text: "", alignment: .left) }()
+    let lblError: DyteLabel = { return DyteUIUTility.createLabel(text: "", alignment: .left) }()
     
     let verticalSpaceTopLabelAndTextField = 8.0
     let verticalSpaceErrorLabel = 4.0

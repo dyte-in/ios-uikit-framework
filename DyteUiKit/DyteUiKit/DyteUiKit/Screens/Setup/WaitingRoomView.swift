@@ -10,7 +10,7 @@ import DyteiOSCore
 
 public class WaitingRoomView: UIView {
     
-    var titleLabel: DyteText = {
+    var titleLabel: DyteLabel = {
         let label = DyteUIUTility.createLabel()
         label.numberOfLines = 0
         return label

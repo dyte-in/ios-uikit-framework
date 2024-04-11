@@ -35,7 +35,7 @@ class ParticipantTableViewCell: BaseTableViewCell {
 
     let profileImageWidth = dyteSharedTokenSpace.space9
         
-    let nameLabel: DyteText = {
+    let nameLabel: DyteLabel = {
         let label = DyteUIUTility.createLabel(alignment: .left)
         label.font = UIFont.boldSystemFont(ofSize: 14)
         label.textColor = dyteSharedTokenColor.textColor.onBackground.shade900

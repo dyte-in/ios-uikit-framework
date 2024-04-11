@@ -17,7 +17,7 @@ class FileMessageCell: UITableViewCell {
         return label
     }()
     
-    let nameLabel: DyteText = {
+    let nameLabel: DyteLabel = {
         let label = DyteUIUTility.createLabel(alignment: .left)
         label.font = UIFont.boldSystemFont(ofSize: 12)
         return label

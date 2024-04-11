@@ -19,12 +19,12 @@ public class DyteMeetingNameTag: DyteNameTag {
         refresh()
     }
     
-    func set(participant: DyteMeetingParticipant) {
+    public func set(participant: DyteMeetingParticipant) {
         self.participant = participant
         refresh()
     }
     
-   public func refresh() {
+    public func refresh() {
         let name = self.participant.name
         if self.meeting.localUser.userId == self.participant.userId {
             self.lblTitle.text = "\(name) (you)"
@@ -35,16 +35,16 @@ public class DyteMeetingNameTag: DyteNameTag {
     }
     
     private func setAudio(isEnabled: Bool) {
-         if isEnabled {
-             self.imageView.accessibilityIdentifier = "NameTag_Mic_Enabled"
-             self.imageView.image = ImageProvider.image(named: "icon_mic_enabled")?.withRenderingMode(.alwaysTemplate)
-             self.imageView.tintColor = appearance.desingLibrary.color.textColor.onBackground.shade1000
-         }else {
-             self.imageView.accessibilityIdentifier = "NameTag_Mic_Disabled"
-             self.imageView.image = ImageProvider.image(named: "icon_mic_disabled")?.withRenderingMode(.alwaysTemplate)
-             self.imageView.tintColor = appearance.desingLibrary.color.status.danger
-         }
-     }
+        if isEnabled {
+            self.imageView.accessibilityIdentifier = "NameTag_Mic_Enabled"
+            self.imageView.image = ImageProvider.image(named: "icon_mic_enabled")?.withRenderingMode(.alwaysTemplate)
+            self.imageView.tintColor = appearance.desingLibrary.color.textColor.onBackground.shade1000
+        }else {
+            self.imageView.accessibilityIdentifier = "NameTag_Mic_Disabled"
+            self.imageView.image = ImageProvider.image(named: "icon_mic_disabled")?.withRenderingMode(.alwaysTemplate)
+            self.imageView.tintColor = appearance.desingLibrary.color.status.danger
+        }
+    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

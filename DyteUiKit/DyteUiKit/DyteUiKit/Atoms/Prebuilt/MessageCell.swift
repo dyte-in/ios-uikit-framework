@@ -73,7 +73,7 @@ class MessageCell: UITableViewCell {
     }()
     
     
-    let nameLabel: DyteText = {
+    let nameLabel: DyteLabel = {
         let label = DyteUIUTility.createLabel(alignment: .left)
         label.font = UIFont.boldSystemFont(ofSize: 12)
         return label
@@ -81,7 +81,7 @@ class MessageCell: UITableViewCell {
     let tokenColor = DesignLibrary.shared.color
     
     let tokenSpace = DesignLibrary.shared.space
-    let messageLabel: DyteText = {
+    let messageLabel: DyteLabel = {
         let label = DyteUIUTility.createLabel(alignment: .left)
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 16)

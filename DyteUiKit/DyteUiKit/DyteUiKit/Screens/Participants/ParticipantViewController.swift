@@ -13,30 +13,38 @@ public let dyteSharedTokenColor = DesignLibrary.shared.color
 
 public let dyteSharedTokenSpace = DesignLibrary.shared.space
 
-class ParticipantViewController: DyteBaseViewController, SetTopbar, KeyboardObservable {
-    var shouldShowTopBar: Bool = true
+public class ParticipantViewControllerFactory {
+    public static func getLiveStreamParticipantViewController(meeting: DyteMobileClient) -> ParticipantViewController {
+        return ParticipantViewController(viewModel: LiveParticipantViewControllerModel(meeting: meeting))
+    }
+    public static func getParticipantViewController(meeting: DyteMobileClient) -> ParticipantViewController {
+        return ParticipantViewController(viewModel: ParticipantViewControllerModel(meeting: meeting))
+    }
+}
+
+public class ParticipantViewController: DyteBaseViewController, SetTopbar, KeyboardObservable {
+    public var shouldShowTopBar: Bool = true
     let tableView = UITableView()
     let viewModel: ParticipantViewControllerModelProtocol
     var keyboardObserver: KeyboardObserver?
+    
     private let isDebugModeOn = DyteUiKit.isDebugModeOn
-
     private var searchController: SearchViewController?
     
-    let topBar: DyteNavigationBar = {
+    public let topBar: DyteNavigationBar = {
         let topBar = DyteNavigationBar(title: "Participants")
         return topBar
     }()
     
-    public init(viewModel: ParticipantViewControllerModelProtocol) {
+    init(viewModel: ParticipantViewControllerModelProtocol) {
         self.viewModel = viewModel
-        super.init(dyteMobileClient: viewModel.mobileClient)
+        super.init(meeting: viewModel.meeting)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-
     public override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
         topBar.set(.top(self.view, self.view.safeAreaInsets.top))
@@ -56,7 +64,7 @@ class ParticipantViewController: DyteBaseViewController, SetTopbar, KeyboardObse
         reloadScreen()
     }
 
-   private func reloadScreen() {
+    private func reloadScreen() {
         self.viewModel.load {[weak self] _ in
             guard let self = self else {return}
             self.tableView.reloadData()
@@ -107,12 +115,29 @@ extension ParticipantViewController: UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let _ = self.viewModel.dataSourceTableView.getItem(indexPath: indexPath) as? TableItemConfigurator<SearchTableViewCell,SearchTableViewCellModel>  {
-            self.openSearchController()
+            let sectionToBeSearch = BaseConfiguratorSection<CollectionTableSearchConfigurator>()
+            self.viewModel.dataSourceTableView.iterate(start: indexPath) { subItemIndexPath, itemConfigurator in
+                if subItemIndexPath.section == indexPath.section {
+                    if let item = itemConfigurator as? TableItemSearchableConfigurator<WebinarViewersTableViewCell,WebinarViewersTableViewCellModel> {
+                        sectionToBeSearch.insert(item)
+                    }
+                    if let item = itemConfigurator as? TableItemSearchableConfigurator<ParticipantInCallTableViewCell,ParticipantInCallTableViewCellModel> {
+                        sectionToBeSearch.insert(item)
+                    }
+                    
+                    return true
+                }
+                return false
+            }
+            self.openSearchController(originalItems: [sectionToBeSearch])
         }
     }
     
-    func openSearchController() {
-        let controller = SearchViewController()
+    func openSearchController(originalItems: [BaseConfiguratorSection<CollectionTableSearchConfigurator>]) {
+        let controller = SearchViewController(meeting: self.viewModel.meeting, originalItems: originalItems) { [weak self] in
+               guard let self = self else {return}
+            self.reloadScreen()
+        }
         self.view.addSubview(controller.view)
         controller.view.set(.sameLeadingTrailing(self.view),
                             .below(self.topBar),
@@ -137,11 +162,13 @@ extension ParticipantViewController: UITableViewDataSource {
         if let cell = cell as? ParticipantInCallTableViewCell {
             cell.buttonMoreClick = { [weak self] button in
                 guard let self = self else {return}
+                
                 if self.createMoreMenu(participantListner: cell.model.participantUpdateEventListner, indexPath: indexPath) {
                     if self.isDebugModeOn {
                         print("Debug DyteUIKit | Critical UIBug Please check why we are showing this button")
                     }
                 }
+            
             }
             cell.setPinView(isHidden: !cell.model.participantUpdateEventListner.participant.isPinned)
 
@@ -164,14 +191,14 @@ extension ParticipantViewController: UITableViewDataSource {
             cell.buttonCrossClick = { [weak self] button in
                 guard let self = self else {return}
                 button.showActivityIndicator()
-                self.viewModel.mobileClient.stage.denyAccess(id: cell.model.participant.id)
+                self.viewModel.meeting.stage.denyAccess(id: cell.model.participant.id)
                 button.hideActivityIndicator()
                 self.reloadScreen()
             }
             cell.buttonTickClick = { [weak self] button in
                 guard let self = self else {return}
                 button.showActivityIndicator()
-                self.viewModel.mobileClient.stage.grantAccess(id: cell.model.participant.id)
+                self.viewModel.meeting.stage.grantAccess(id: cell.model.participant.id)
                 button.hideActivityIndicator()
                 self.reloadScreen()
             }
@@ -202,7 +229,7 @@ extension ParticipantViewController: UITableViewDataSource {
     private func createMoreMenu(participantListner: DyteParticipantUpdateEventListner, indexPath: IndexPath)-> Bool {
         var menus = [MenuType]()
         let participant = participantListner.participant
-        let hostPermission = self.viewModel.mobileClient.localUser.permissions.host
+        let hostPermission = self.viewModel.meeting.localUser.permissions.host
         
         if hostPermission.canPinParticipant {
             if participant.isPinned == false {
@@ -220,7 +247,7 @@ extension ParticipantViewController: UITableViewDataSource {
             menus.append(.muteVideo)
         }
         
-        if hostPermission.canKickParticipant && participant != self.viewModel.mobileClient.localUser {
+        if hostPermission.canKickParticipant && participant != self.viewModel.meeting.localUser {
             menus.append(.kick)
         }
         

@@ -9,80 +9,8 @@ import UIKit
 import DyteiOSCore
 
 
-public class WebinarAlertView: UIView, ConfigureWebinerAlertView, AdaptableUI {
-    public var portraitConstraints = [NSLayoutConstraint]()
-    
-    public var landscapeConstraints = [NSLayoutConstraint]()
-    
-    let baseView = UIView()
-    let borderRadiusType: BorderRadiusToken.RadiusType = AppTheme.shared.cornerRadiusTypePeerView ?? .rounded
-    private lazy var dyteSelfListner: DyteEventSelfListner = {
-        return DyteEventSelfListner(mobileClient: self.meeting)
-    }()
-    
-    let lblTop: DyteText = {
-        let lbl = DyteUIUTility.createLabel(text: "Joining webinar stage" , alignment: .left)
-        lbl.numberOfLines = 0
-        lbl.font = UIFont.systemFont(ofSize: 16)
-        return lbl
-    }()
-    
-    let selfPeerView: DyteParticipantTileView
-    var meeting: DyteMobileClient
-    private var previousOrientationIsLandscape = UIScreen.isLandscape()
-
-    public init(meetingClient: DyteMobileClient, participant: DyteJoinedMeetingParticipant) {
-        self.meeting = meetingClient
-        selfPeerView = DyteParticipantTileView(viewModel: VideoPeerViewModel(mobileClient: meeting, participant: participant, showSelfPreviewVideo: true))
-        super.init(frame: .zero)
-        setupSubview()
-        NotificationCenter.default.addObserver(self, selector: #selector(onOrientationChange), name: UIDevice.orientationDidChangeNotification, object: nil)
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
-    }
-    
-    @objc private func onOrientationChange() {
-        let currentOrientationIsLandscape = UIScreen.isLandscape()
-        if previousOrientationIsLandscape != currentOrientationIsLandscape {
-            previousOrientationIsLandscape = currentOrientationIsLandscape
-            onRotationChange()
-        }
-    }
-    
-    
-    private func onRotationChange() {
-        setUpConstraintAsPerOrientation()
-    }
-    
-    private func setUpConstraintAsPerOrientation() {
-        self.applyConstraintAsPerOrientation()
-    }
-    
-    func setupSubview() {
-        createSubview()
-        setUpConstraintAsPerOrientation()
-        btnMic.isSelected = !self.meeting.localUser.audioEnabled
-        btnVideo.isSelected = !self.meeting.localUser.videoEnabled
-        btnMic.addTarget(self, action: #selector(clickMic(button:)), for: .touchUpInside)
-        btnVideo.addTarget(self, action: #selector(clickVideo(button:)), for: .touchUpInside)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    let btnVideo: DyteButton = {
-        let button = DyteButton(style: .iconOnly(icon: DyteImage(image: ImageProvider.image(named: "icon_video_enabled"))), dyteButtonState: .active)
-        button.normalStateTintColor = DesignLibrary.shared.color.textColor.onBackground.shade1000
-        button.setImage(ImageProvider.image(named: "icon_video_disabled")?.withRenderingMode(.alwaysTemplate), for: .selected)
-        button.selectedStateTintColor = DesignLibrary.shared.color.status.danger
-        button.backgroundColor = dyteSharedTokenColor.background.shade800
-        return button
-    }()
-    
-    let btnMic: DyteButton = {
+public class DyteWebinarAlertView: UIView, ConfigureWebinerAlertView, AdaptableUI {
+    private let btnMic: DyteButton = {
         let button =  DyteButton(style: .iconOnly(icon: DyteImage(image: ImageProvider.image(named: "icon_mic_enabled"))), dyteButtonState: .active)
         button.normalStateTintColor = DesignLibrary.shared.color.textColor.onBackground.shade1000
         button.selectedStateTintColor = DesignLibrary.shared.color.status.danger
@@ -91,26 +19,102 @@ public class WebinarAlertView: UIView, ConfigureWebinerAlertView, AdaptableUI {
         return button
     }()
     
-    let lblBottom: DyteText = {
+    private let lblBottom: DyteLabel = {
         let lbl = DyteUIUTility.createLabel(text: "Upon joining the stage, your video & audio as shown above will be visible to all participants.", alignment: .left)
         lbl.font = UIFont.systemFont(ofSize: 12)
         lbl.numberOfLines = 0
         lbl.textAlignment = .center
         return lbl
     }()
+    private let baseView = UIView()
+    private let borderRadiusType: BorderRadiusToken.RadiusType = AppTheme.shared.cornerRadiusTypePeerView ?? .rounded
+    private lazy var dyteSelfListner: DyteEventSelfListner = {
+        return DyteEventSelfListner(mobileClient: self.meeting)
+    }()
     
+    private let lblTop: DyteLabel = {
+        let lbl = DyteUIUTility.createLabel(text: "Joining webinar stage" , alignment: .left)
+        lbl.numberOfLines = 0
+        lbl.font = UIFont.systemFont(ofSize: 16)
+        return lbl
+    }()
+    private let btnVideo: DyteButton = {
+        let button = DyteButton(style: .iconOnly(icon: DyteImage(image: ImageProvider.image(named: "icon_video_enabled"))), dyteButtonState: .active)
+        button.normalStateTintColor = DesignLibrary.shared.color.textColor.onBackground.shade1000
+        button.setImage(ImageProvider.image(named: "icon_video_disabled")?.withRenderingMode(.alwaysTemplate), for: .selected)
+        button.selectedStateTintColor = DesignLibrary.shared.color.status.danger
+        button.backgroundColor = dyteSharedTokenColor.background.shade800
+        return button
+    }()
+    
+    private let selfPeerView: DyteParticipantTileView
+    private var meeting: DyteMobileClient
+    private var previousOrientationIsLandscape = UIScreen.isLandscape()
+
+    
+    public var portraitConstraints = [NSLayoutConstraint]()
+    public var landscapeConstraints = [NSLayoutConstraint]()
+   
     public let confirmAndJoinButton: DyteButton = {
         let button = DyteUIUTility.createButton(text: "Confirm & join stage")
         return button
     }()
-    
     public let cancelButton: DyteButton = {
         let button = DyteUIUTility.createButton(text: "Cancel")
         button.backgroundColor = dyteSharedTokenColor.background.shade800
         return button
     }()
     
+    required public init(meeting: DyteMobileClient, participant: DyteJoinedMeetingParticipant) {
+        self.meeting = meeting
+        selfPeerView = DyteParticipantTileView(viewModel: VideoPeerViewModel(meeting: meeting, participant: participant, showSelfPreviewVideo: true))
+        super.init(frame: .zero)
+        setupSubview()
+        NotificationCenter.default.addObserver(self, selector: #selector(onOrientationChange), name: UIDevice.orientationDidChangeNotification, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public func show(on view: UIView) {
+        self.layer.zPosition = 1.0
+        view.addSubview(self)
+        self.set(.fillSuperView(view))
+    }
        
+}
+
+extension DyteWebinarAlertView {
+    private func onRotationChange() {
+        setUpConstraintAsPerOrientation()
+    }
+    
+    private func setUpConstraintAsPerOrientation() {
+        self.applyConstraintAsPerOrientation()
+    }
+    
+ 
+    private func setupSubview() {
+         createSubview()
+         setUpConstraintAsPerOrientation()
+         btnMic.isSelected = !self.meeting.localUser.audioEnabled
+         btnVideo.isSelected = !self.meeting.localUser.videoEnabled
+         btnMic.addTarget(self, action: #selector(clickMic(button:)), for: .touchUpInside)
+         btnVideo.addTarget(self, action: #selector(clickVideo(button:)), for: .touchUpInside)
+     }
+     @objc private func onOrientationChange() {
+         let currentOrientationIsLandscape = UIScreen.isLandscape()
+         if previousOrientationIsLandscape != currentOrientationIsLandscape {
+             previousOrientationIsLandscape = currentOrientationIsLandscape
+             onRotationChange()
+         }
+     }
+    
     private func createSubview() {
         baseView.layer.cornerRadius = DesignLibrary.shared.borderRadius.getRadius(size: .two, radius: borderRadiusType)
         baseView.layer.masksToBounds = true
@@ -260,7 +264,7 @@ public class WebinarAlertView: UIView, ConfigureWebinerAlertView, AdaptableUI {
         }
     }
     
-    public func loadSelfVideoView() {
+    private func loadSelfVideoView() {
         selfPeerView.refreshVideo()
     }
 }

@@ -12,7 +12,7 @@ import AmazonIVSPlayer
 public class LivestreamViewController: UIViewController {
     
     private var gridView: GridView<DyteParticipantTileContainerView>!
-    let pluginView: DytePluginView
+    let pluginView: DytePluginsView
     private var playerView: IVSPlayerView!
     private let gridBaseView = UIView()
     private var controlsView = UIView()
@@ -51,7 +51,7 @@ public class LivestreamViewController: UIViewController {
     }
     
     init(dyteMobileClient: DyteMobileClient, completion:@escaping()->Void) {
-        self.pluginView = DytePluginView(videoPeerViewModel:VideoPeerViewModel(mobileClient: dyteMobileClient, participant: dyteMobileClient.localUser, showSelfPreviewVideo: false))
+        self.pluginView = DytePluginsView(videoPeerViewModel:VideoPeerViewModel(meeting: dyteMobileClient, participant: dyteMobileClient.localUser, showSelfPreviewVideo: false))
         self.completion = completion
         self.viewModel = MeetingViewModel(dyteMobileClient: dyteMobileClient)
         self.dyteMobileClient = dyteMobileClient
@@ -196,7 +196,7 @@ private extension LivestreamViewController {
     }
     
     private func onPluginTapped() {
-        let controller = PluginViewController(polls: dyteMobileClient.plugins.all)
+        let controller = DytePluginViewController(plugins: dyteMobileClient.plugins.all)
         let navigationController = UINavigationController(rootViewController: controller)
         navigationController.modalPresentationStyle = .fullScreen
         present(navigationController, animated: true, completion: nil)
@@ -430,7 +430,7 @@ extension LivestreamViewController {
     }
     
     private func onChatTapped() {
-        let controller = ChatViewController(dyteMobileClient: self.dyteMobileClient)
+        let controller = DyteChatViewController(meeting: self.dyteMobileClient)
         let navigationController = UINavigationController(rootViewController: controller)
         navigationController.modalPresentationStyle = .fullScreen
         present(navigationController, animated: true, completion: nil)
@@ -464,12 +464,12 @@ extension LivestreamViewController {
     }
     
     private func launchPollsScreen() {
-        let controller = ShowPollsViewController(dyteMobileClient: self.dyteMobileClient)
+        let controller = DyteShowPollsViewController(meeting: self.dyteMobileClient)
         self.present(controller, animated: true)
     }
     
     private func launchSettingScreen() {
-        let controller = SettingViewController(nameTag: self.dyteMobileClient.localUser.name, dyteMobileClient: self.dyteMobileClient) {
+        let controller = DyteSettingViewController(nameTag: self.dyteMobileClient.localUser.name, meeting: self.dyteMobileClient) {
             [weak self] in
             guard let self = self else {return}
             self.refreshMeetingGridTile(participant: self.dyteMobileClient.localUser)
@@ -498,14 +498,14 @@ extension LivestreamViewController {
     }
     
     private func launchParticipantScreen() {
-        let controller = ParticipantViewController(viewModel: ParticipantViewControllerModel(mobileClient: self.dyteMobileClient))
+        let controller = ParticipantViewControllerFactory.getParticipantViewController(meeting: self.dyteMobileClient)
         controller.view.backgroundColor = self.view.backgroundColor
         controller.modalPresentationStyle = .fullScreen
         self.present(controller, animated: true)
     }
     
     private func launchLiveParticipantScreen() {
-        let controller = ParticipantViewController(viewModel: LiveParticipantViewControllerModel(mobileClient: self.dyteMobileClient))
+        let controller = ParticipantViewControllerFactory.getLiveStreamParticipantViewController(meeting: self.dyteMobileClient)
         controller.view.backgroundColor = self.view.backgroundColor
         controller.modalPresentationStyle = .fullScreen
         self.present(controller, animated: true)
@@ -513,6 +513,7 @@ extension LivestreamViewController {
 }
 
 extension LivestreamViewController : MeetingViewModelDelegate {
+    
     func newPollAdded(createdBy: String) {
         if Shared.data.notification.newPollArrived.showToast {
             self.view.showToast(toastMessage: "New poll created by \(createdBy)", duration: 2.0, uiBlocker: false)
@@ -563,8 +564,8 @@ extension LivestreamViewController : MeetingViewModelDelegate {
         }
     }
     
-    private func getScreenShareTabButton(participants: [ParticipantsShareControl]) -> [ScreenShareTabButton] {
-        var arrButtons = [ScreenShareTabButton]()
+    private func getScreenShareTabButton(participants: [ParticipantsShareControl]) -> [DytePluginScreenShareTabButton] {
+        var arrButtons = [DytePluginScreenShareTabButton]()
         for participant in participants {
             var image: DyteImage?
             if let _ = participant as? ScreenShareModel {
@@ -576,7 +577,7 @@ extension LivestreamViewController : MeetingViewModelDelegate {
                 }
             }
             
-            let button = ScreenShareTabButton(image: image, title: participant.name)
+            let button = DytePluginScreenShareTabButton(image: image, title: participant.name)
             // TODO:Below hardcoding is not needed, We also need to scale down the image as well.
             button.btnImageView?.set(.height(20),
                                      .width(20))
@@ -590,7 +591,7 @@ extension LivestreamViewController : MeetingViewModelDelegate {
         self.viewModel.screenShareViewModel.selectedIndex = (UInt(index), model.id)
     }
     
-    func refreshPluginsButtonTab(pluginsButtonsModels: [ParticipantsShareControl], arrButtons: [ScreenShareTabButton])  {
+    func refreshPluginsButtonTab(pluginsButtonsModels: [ParticipantsShareControl], arrButtons: [DytePluginScreenShareTabButton])  {
         if arrButtons.count >= 1 {
             var selectedIndex: Int?
             if let index = self.viewModel.screenShareViewModel.selectedIndex?.0 {
@@ -607,10 +608,9 @@ extension LivestreamViewController : MeetingViewModelDelegate {
                 }
             }
         }
-        self.pluginView.showAndHideActiveButtonListView(buttons: arrButtons)
     }
     
-    func refreshPluginsView() {
+    func refreshPluginsScreenShareView() {
        
     }
     
@@ -649,7 +649,7 @@ extension LivestreamViewController : MeetingViewModelDelegate {
         }
     }
     
-    private func hidePlugInView(tab buttons: [ScreenShareTabButton]) {
+    private func hidePlugInView(tab buttons: [DytePluginScreenShareTabButton]) {
         
         
         // No need to show any plugin or share view

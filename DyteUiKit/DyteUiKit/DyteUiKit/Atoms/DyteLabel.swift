@@ -27,7 +27,7 @@ public class DyteTextAppearanceModel: DyteTextAppearance {
 }
 
 
-public class DyteText: UILabel {
+public class DyteLabel: UILabel {
     public init(appearance: DyteTextAppearance = DyteTextAppearanceModel()) {
         super.init(frame: .zero)
         self.textColor = appearance.textColor

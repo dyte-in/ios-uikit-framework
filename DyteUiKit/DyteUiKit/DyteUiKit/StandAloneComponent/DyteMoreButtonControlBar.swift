@@ -13,8 +13,9 @@ open class  DyteMoreButtonControlBar: DyteControlBarButton {
     private unowned let presentingViewController: UIViewController
     private let settingViewControllerCompletion:(()->Void)?
     private var bottomSheet: DyteMoreMenuBottomSheet!
-    public init(mobileClient: DyteMobileClient, presentingViewController: UIViewController, settingViewControllerCompletion:(()->Void)? = nil) {
-        self.meeting = mobileClient
+    
+    public init(meeting: DyteMobileClient, presentingViewController: UIViewController, settingViewControllerCompletion:(()->Void)? = nil) {
+        self.meeting = meeting
         self.settingViewControllerCompletion = settingViewControllerCompletion
         self.presentingViewController = presentingViewController
         super.init(image: DyteImage(image: ImageProvider.image(named: "icon_more_tabbar")), title: "More")

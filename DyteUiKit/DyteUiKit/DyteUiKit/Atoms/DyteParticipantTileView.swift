@@ -10,7 +10,8 @@ import DyteiOSCore
 
 
 public class DyteParticipantTileView: DytePeerView {
-     lazy var videoView: DyteVideoView = {
+    
+    private lazy var videoView: DyteVideoView = {
         if self.isDebugModeOn {
             print("Debug DyteUIKit | DyteParticipantTileView trying to create videoView through Lazy Property")
         }
@@ -20,11 +21,8 @@ public class DyteParticipantTileView: DytePeerView {
         return view
     }()
     private let tokenColor = DesignLibrary.shared.color
-    public var nameTag: DyteMeetingNameTag!
-    let spaceToken = DesignLibrary.shared.space
-    public let viewModel: VideoPeerViewModel
+    private let spaceToken = DesignLibrary.shared.space
     private let isDebugModeOn = DyteUiKit.isDebugModeOn
-    
     private lazy var pinView : UIView = {
         let baseView = UIView()
         let imageView = DyteUIUTility.createImageView(image: DyteImage(image:ImageProvider.image(named: "icon_pin")))
@@ -39,10 +37,12 @@ public class DyteParticipantTileView: DytePeerView {
         imageView.get(.bottom)?.priority = .defaultHigh
         return baseView
     }()
-    
     private lazy var dyteAvatarView = {
         return DyteAvatarView(participant: self.viewModel.participant)
     }()
+    
+    public private(set) var nameTag: DyteMeetingNameTag!
+    public let viewModel: VideoPeerViewModel
     
     public init(viewModel: VideoPeerViewModel) {
         self.viewModel = viewModel
@@ -54,9 +54,13 @@ public class DyteParticipantTileView: DytePeerView {
     }
     
     public convenience init(mobileClient: DyteMobileClient, participant: DyteJoinedMeetingParticipant, isForLocalUser: Bool, showScreenShareVideoView: Bool = false) {
-        self.init(viewModel: VideoPeerViewModel(mobileClient: mobileClient, participant: participant, showSelfPreviewVideo: isForLocalUser, showScreenShareVideoView: showScreenShareVideoView))
+        self.init(viewModel: VideoPeerViewModel(meeting: mobileClient, participant: participant, showSelfPreviewVideo: isForLocalUser, showScreenShareVideoView: showScreenShareVideoView))
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     public func pinView(show: Bool) {
        
 
@@ -79,7 +83,32 @@ public class DyteParticipantTileView: DytePeerView {
         self.updateAvatorViewHeightConstraint()
         self.updateNameTagViewHeightConstraint()
     }
-   
+    
+    public func refreshVideo() {
+        if self.isDebugModeOn {
+            print("Debug DyteUIKit | DyteParticipantTileView refreshVideo() is called, Video Enable \(self.viewModel.participant.videoEnabled) Update is Screen name \(self.viewModel.participant.name)")
+        }
+        self.videoView.refreshView()
+    }
+
+    public override func removeFromSuperview() {
+        if self.isDebugModeOn {
+            print("Debug DyteUIKit | DyteParticipantTileView \(self) removeFromSuperview() is called")
+        }
+        self.videoView.removeFromSuperview()
+        super.removeFromSuperview()
+    }
+    
+    deinit {
+        self.videoView.clean()
+        if self.isDebugModeOn {
+            print("Debug DyteUIKit | DyteParticipantTileView \(self) deinit is calling")
+        }
+    }
+    
+}
+
+extension DyteParticipantTileView {
     private func updateAvatorViewHeightConstraint() {
         var width = bounds.height * 0.4
         if bounds.height > bounds.width {
@@ -103,7 +132,6 @@ public class DyteParticipantTileView: DytePeerView {
             dyteAvatarView.get(.height)?.constant = width
         }
     }
-    
     private func updatePinViewHeightConstraint() {
         let width = bounds.width * 0.2
         let maxHeightWidth:CGFloat = 30
@@ -158,17 +186,11 @@ public class DyteParticipantTileView: DytePeerView {
         pinView.get(.leading)?.constant = leadingBottomSpace
         pinView.get(.top)?.constant = leadingBottomSpace
     }
-
-   
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-  private func initialiseView() {
+    private func initialiseView() {
     if self.isDebugModeOn {
         print("Debug DyteUIKit | New DyteParticipantTileView \(self) tile is created to load a video")
-    }    
+    }
     self.addSubview(dyteAvatarView)
     dyteAvatarView.set(.centerView(self),
                        .height(0),
@@ -183,20 +205,13 @@ public class DyteParticipantTileView: DytePeerView {
                 .trailing(self, spaceToken.space3, .greaterThanOrEqual))
 }
     
-   private func updateView() {
+    private func updateView() {
        if self.isDebugModeOn {
            print("Debug DyteUIKit | DyteParticipantTileView refreshVideo() is called Internally through updateView()")
        }
 
         self.refreshVideo()
         self.pinView(show: self.viewModel.participant.isPinned)
-    }
-    
-    public func refreshVideo() {
-        if self.isDebugModeOn {
-            print("Debug DyteUIKit | DyteParticipantTileView refreshVideo() is called, Video Enable \(self.viewModel.participant.videoEnabled) Update is Screen name \(self.viewModel.participant.name)")
-        }
-        self.videoView.refreshView()
     }
     
     private func registerUpdates() {
@@ -217,21 +232,6 @@ public class DyteParticipantTileView: DytePeerView {
             self.nameTag.set(participant: participant)
             self.dyteAvatarView.set(participant: participant)
             self.videoView.set(participant: participant)
-        }
-    }
-    
-    public override func removeFromSuperview() {
-        if self.isDebugModeOn {
-            print("Debug DyteUIKit | DyteParticipantTileView \(self) removeFromSuperview() is called")
-        }
-        self.videoView.removeFromSuperview()
-        super.removeFromSuperview()
-    }
-    
-    deinit {
-        self.videoView.clean()
-        if self.isDebugModeOn {
-            print("Debug DyteUIKit | DyteParticipantTileView \(self) deinit is calling")
         }
     }
     

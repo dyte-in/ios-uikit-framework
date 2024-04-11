@@ -23,8 +23,8 @@ public struct DyteUIUTility {
         return topController
     }
     
-    public static func createLabel(text: String? = nil, alignment: NSTextAlignment = .center, weight: UIFont.Weight? = nil) -> DyteText {
-        let label = DyteText()
+    public static func createLabel(text: String? = nil, alignment: NSTextAlignment = .center, weight: UIFont.Weight? = nil) -> DyteLabel {
+        let label = DyteLabel()
         label.textAlignment = alignment
         label.text = text
         if weight != nil {

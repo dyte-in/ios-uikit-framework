@@ -45,7 +45,7 @@ public class WebinarViewController: MeetingViewController {
         let mediaPermission = meeting.localUser.permissions.media
         
         if (mediaPermission.audioPermission == DyteMediaPermission.allowed || mediaPermission.video.permission == DyteMediaPermission.allowed) && meeting.participants.active.isEmpty && StageStatus.getStageStatus(mobileClient: meeting) == .canJoinStage {
-            self.waitingView = createWaitingView(message: "The stage is empty\nTo begin the webinar, please join the stage or accept a join stage request from the participants tab.")
+            self.waitingView = createWaitingView(message: "The stage is empty.\nYou are off stage. You can manage stage request from the participants tab.")
         } else if meeting.participants.active.isEmpty {
             self.waitingView = createWaitingView(message: "Webinar has not yet been started")
         }

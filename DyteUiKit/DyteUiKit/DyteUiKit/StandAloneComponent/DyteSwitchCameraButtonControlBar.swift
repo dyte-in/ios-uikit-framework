@@ -9,16 +9,16 @@ import UIKit
 import DyteiOSCore
 
 open class  DyteSwitchCameraButtonControlBar: DyteControlBarButton {
-    private let mobileClient: DyteMobileClient
+    private let meeting: DyteMobileClient
     private var dyteSelfListner: DyteEventSelfListner
     
-    public init(mobileClient: DyteMobileClient) {
-        self.mobileClient = mobileClient
-        self.dyteSelfListner = DyteEventSelfListner(mobileClient: mobileClient)
+    public init(meeting: DyteMobileClient) {
+        self.meeting = meeting
+        self.dyteSelfListner = DyteEventSelfListner(mobileClient: meeting)
         super.init(image: DyteImage(image: ImageProvider.image(named: "icon_flipcamera_topbar")))
         self.addTarget(self, action: #selector(onClick(button:)), for: .touchUpInside)
-        if mobileClient.localUser.permissions.media.canPublishVideo {
-            self.isHidden = !mobileClient.localUser.videoEnabled
+        if meeting.localUser.permissions.media.canPublishVideo {
+            self.isHidden = !meeting.localUser.videoEnabled
             self.dyteSelfListner.observeSelfVideo { enabled in
                 self.isHidden = !enabled
             }

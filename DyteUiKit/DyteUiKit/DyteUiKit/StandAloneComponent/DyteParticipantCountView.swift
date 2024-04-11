@@ -8,10 +8,10 @@
 import UIKit
 import DyteiOSCore
 
-public class DyteParticipantCountView: DyteText {
+public class DyteParticipantCountView: DyteLabel {
     private let meeting: DyteMobileClient
     
-    init(meeting: DyteMobileClient, appearance: DyteTextAppearance = AppTheme.shared.participantCountAppearance) {
+    public init(meeting: DyteMobileClient, appearance: DyteTextAppearance = AppTheme.shared.participantCountAppearance) {
         self.meeting = meeting
         super.init(appearance: appearance)
         self.text = ""
@@ -23,11 +23,12 @@ public class DyteParticipantCountView: DyteText {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     deinit {
         self.meeting.removeParticipantEventsListener(participantEventsListener: self)
     }
     
-    func update() {
+    private func update() {
         if self.meeting.participants.joined.count <= 1 {
             self.text = "Only you"
         } else {
@@ -111,45 +112,25 @@ extension DyteParticipantCountView: DyteMeetingRoomEventsListener {
 }
 
 extension DyteParticipantCountView: DyteParticipantEventsListener {
-    public func onAllParticipantsUpdated(allParticipants: [DyteParticipant]) {
-        
-    }
+    public func onAllParticipantsUpdated(allParticipants: [DyteParticipant]) {}
     
-    public func onUpdate(participants: DyteRoomParticipants) {
-        
-    }
+    public func onUpdate(participants: DyteRoomParticipants) {}
     
-    public func onScreenShareEnded(participant_ participant: DyteScreenShareMeetingParticipant) {
-        
-    }
+    public func onScreenShareEnded(participant_ participant: DyteScreenShareMeetingParticipant) {}
     
-    public func onScreenShareStarted(participant_ participant: DyteScreenShareMeetingParticipant) {
-        
-    }
+    public func onScreenShareStarted(participant_ participant: DyteScreenShareMeetingParticipant) {}
     
-    public func onScreenShareEnded(participant: DyteJoinedMeetingParticipant) {
-        
-    }
+    public func onScreenShareEnded(participant: DyteJoinedMeetingParticipant) {}
     
-    public func onScreenShareStarted(participant: DyteJoinedMeetingParticipant) {
-        
-    }
+    public func onScreenShareStarted(participant: DyteJoinedMeetingParticipant) {}
     
-    public func onActiveParticipantsChanged(active: [DyteJoinedMeetingParticipant]) {
-        
-    }
+    public func onActiveParticipantsChanged(active: [DyteJoinedMeetingParticipant]) {}
     
-    public func onActiveSpeakerChanged(participant: DyteJoinedMeetingParticipant) {
-        
-    }
+    public func onActiveSpeakerChanged(participant: DyteJoinedMeetingParticipant) {}
     
-    public func onAudioUpdate(audioEnabled: Bool, participant: DyteMeetingParticipant) {
-        
-    }
+    public func onAudioUpdate(audioEnabled: Bool, participant: DyteMeetingParticipant) {}
     
-    public func onNoActiveSpeaker() {
-        
-    }
+    public func onNoActiveSpeaker() {}
     
     public func onParticipantJoin(participant: DyteJoinedMeetingParticipant) {
         self.update()

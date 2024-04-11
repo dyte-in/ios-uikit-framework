@@ -8,7 +8,7 @@
 import UIKit
 import DyteiOSCore
 
-public class DyteMoreMenuBottomSheet {
+class DyteMoreMenuBottomSheet {
     private let presentingViewController: UIViewController
     private let settingViewControllerCompletion:(()->Void)?
     private let meeting: DyteMobileClient
@@ -75,13 +75,13 @@ public class DyteMoreMenuBottomSheet {
 
 private extension DyteMoreMenuBottomSheet {
     private func launchPollsScreen() {
-        let controller = ShowPollsViewController(dyteMobileClient: self.meeting)
+        let controller = DyteShowPollsViewController(meeting: self.meeting)
         self.presentingViewController.present(controller, animated: true)
         Shared.data.setPollViewCount(totalPolls: self.meeting.polls.polls.count)
     }
     
     private func launchSettingScreen() {
-        let controller = SettingViewController(nameTag: self.meeting.localUser.name, dyteMobileClient: self.meeting, completion: self.settingViewControllerCompletion)
+        let controller = DyteSettingViewController(nameTag: self.meeting.localUser.name, meeting: self.meeting, completion: self.settingViewControllerCompletion)
         controller.view.backgroundColor = self.presentingViewController.view.backgroundColor
         controller.modalPresentationStyle = .fullScreen
         self.presentingViewController.present(controller, animated: true)
@@ -106,7 +106,8 @@ private extension DyteMoreMenuBottomSheet {
     }
     
     private func launchParticipantScreen() {
-        var controller: UIViewController  = ParticipantViewController(viewModel: ParticipantViewControllerModel(mobileClient: self.meeting))
+        var controller: UIViewController  = ParticipantViewControllerFactory.getParticipantViewController(meeting: self.meeting)
+       
         if self.meeting.meta.meetingType == DyteMeetingType.webinar {
             controller = WebinarParticipantViewController(viewModel: WebinarParticipantViewControllerModel(mobileClient: self.meeting))
         }
@@ -116,7 +117,7 @@ private extension DyteMoreMenuBottomSheet {
     }
     
     private func onChatTapped() {
-        let controller = ChatViewController(dyteMobileClient: self.meeting)
+        let controller = DyteChatViewController(meeting: self.meeting)
         let navigationController = UINavigationController(rootViewController: controller)
         navigationController.modalPresentationStyle = .fullScreen
         self.presentingViewController.present(navigationController, animated: true, completion: nil)
@@ -124,7 +125,7 @@ private extension DyteMoreMenuBottomSheet {
     }
    
     private func onPluginTapped() {
-        let controller = PluginViewController(polls: meeting.plugins.all)
+        let controller = DytePluginViewController(plugins: meeting.plugins.all)
         let navigationController = UINavigationController(rootViewController: controller)
         navigationController.modalPresentationStyle = .fullScreen
         presentingViewController.present(navigationController, animated: false, completion: nil)

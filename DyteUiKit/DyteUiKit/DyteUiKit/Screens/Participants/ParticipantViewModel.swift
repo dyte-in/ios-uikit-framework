@@ -57,13 +57,13 @@ struct WebinarViewersTableViewCellModel: Searchable {
 }
 
 
-protocol ParticipantViewControllerModelProtocol {
-    var mobileClient: DyteMobileClient {get}
+ protocol ParticipantViewControllerModelProtocol {
+    var meeting: DyteMobileClient {get}
     var waitlistEventListner: DyteWaitListParticipantUpdateEventListner {get}
     var meetingEventListner: DyteMeetingEventListner {get}
     var dyteSelfListner: DyteEventSelfListner {get}
     var dataSourceTableView: DataSourceStandard<BaseConfiguratorSection<CollectionTableConfigurator>> { get }
-    init(mobileClient: DyteMobileClient)
+    init(meeting: DyteMobileClient)
     func load(completion:@escaping(Bool)->Void)
     func acceptAll()
     func rejectAll()
@@ -72,17 +72,17 @@ protocol ParticipantViewControllerModelProtocol {
 
 public class ParticipantViewControllerModel: ParticipantViewControllerModelProtocol{
     var dyteSelfListner: DyteEventSelfListner
-    public var mobileClient: DyteMobileClient
+    public var meeting: DyteMobileClient
     public var waitlistEventListner: DyteWaitListParticipantUpdateEventListner
     var meetingEventListner: DyteMeetingEventListner
     private let showAcceptAllButton = true
-    private let searchControllerMinimumParticipant = 50
+    private let searchControllerMinimumParticipant = 10
     
-    required init(mobileClient: DyteMobileClient) {
-        self.mobileClient = mobileClient
-        self.dyteSelfListner = DyteEventSelfListner(mobileClient: mobileClient)
-        meetingEventListner = DyteMeetingEventListner(mobileClient: mobileClient)
-        self.waitlistEventListner = DyteWaitListParticipantUpdateEventListner(mobileClient: mobileClient)
+    required init(meeting: DyteMobileClient) {
+        self.meeting = meeting
+        self.dyteSelfListner = DyteEventSelfListner(mobileClient: meeting)
+        meetingEventListner = DyteMeetingEventListner(mobileClient: meeting)
+        self.waitlistEventListner = DyteWaitListParticipantUpdateEventListner(mobileClient: meeting)
         meetingEventListner.observeParticipantLeave { [weak self] participant in
             guard let self = self else {return}
             self.participantLeave(participant: participant)
@@ -109,7 +109,7 @@ public class ParticipantViewControllerModel: ParticipantViewControllerModelProto
     }
     
     func acceptAll() {
-        try?self.mobileClient.participants.acceptAllWaitingRequests()
+        try?self.meeting.participants.acceptAllWaitingRequests()
     }
     
     func rejectAll() {
@@ -175,7 +175,7 @@ public class ParticipantViewControllerModel: ParticipantViewControllerModelProto
 extension ParticipantViewControllerModel {
     private func getWaitlistSection() -> BaseConfiguratorSection<CollectionTableConfigurator> {
         let sectionOne = BaseConfiguratorSection<CollectionTableConfigurator>()
-        let waitListedParticipants = self.mobileClient.participants.waitlisted
+        let waitListedParticipants = self.meeting.participants.waitlisted
         if waitListedParticipants.count > 0 {
             var participantCount = ""
             if waitListedParticipants.count > 1 {
@@ -204,7 +204,7 @@ extension ParticipantViewControllerModel {
     }
     
     private func getInCallSection(minimumParticpantCountToShowSearchBar: Int) ->  BaseConfiguratorSection<CollectionTableConfigurator> {
-        let joinedParticipants = self.mobileClient.participants.joined
+        let joinedParticipants = self.meeting.participants.joined
         let sectionTwo =  BaseConfiguratorSection<CollectionTableConfigurator>()
         
         if joinedParticipants.count > 0 {
@@ -227,7 +227,7 @@ extension ParticipantViewControllerModel {
                 
                 func showMoreButton() -> Bool {
                     var canShow = false
-                    let hostPermission = self.mobileClient.localUser.permissions.host
+                    let hostPermission = self.meeting.localUser.permissions.host
                     
                     if hostPermission.canPinParticipant && participant.isPinned == false {
                         canShow = true
@@ -249,7 +249,7 @@ extension ParticipantViewControllerModel {
                 }
                 
                 var name = participant.name
-                if participant.userId == mobileClient.localUser.userId {
+                if participant.userId == meeting.localUser.userId {
                     name = "\(participant.name) (you)"
                 }
                 var image: DyteImage? = nil
@@ -257,7 +257,7 @@ extension ParticipantViewControllerModel {
                     image = DyteImage(url: url)
                 }
                 
-                sectionTwo.insert(TableItemConfigurator<ParticipantInCallTableViewCell,ParticipantInCallTableViewCellModel>(model:ParticipantInCallTableViewCellModel(image: image, title: name, showBottomSeparator: showBottomSeparator, showTopSeparator: false, participantUpdateEventListner: DyteParticipantUpdateEventListner(participant: participant), showMoreButton: showMoreButton())))
+                sectionTwo.insert(TableItemSearchableConfigurator<ParticipantInCallTableViewCell,ParticipantInCallTableViewCellModel>(model:ParticipantInCallTableViewCellModel(image: image, title: name, showBottomSeparator: showBottomSeparator, showTopSeparator: false, participantUpdateEventListner: DyteParticipantUpdateEventListner(participant: participant), showMoreButton: showMoreButton())))
             }
         }
         return sectionTwo
@@ -310,23 +310,23 @@ public class LiveParticipantViewControllerModel: ParticipantViewControllerModelP
             self.refresh(completion: completion)
         }
     }
-  
+
     public func onViewerCountUpdated(count: Int32) {
         if let completion = self.completion {
             self.refresh(completion: completion)
         }
     }
     
-    let mobileClient: DyteMobileClient
+    let meeting: DyteMobileClient
     let waitlistEventListner: DyteWaitListParticipantUpdateEventListner
     let meetingEventListner: DyteMeetingEventListner
     private let showAcceptAllButton = true //TODO: when enable then please test the functionality, for now call backs are not working
    
-    required init(mobileClient: DyteMobileClient) {
-        self.mobileClient = mobileClient
-        self.dyteSelfListner = DyteEventSelfListner(mobileClient: mobileClient)
-        meetingEventListner = DyteMeetingEventListner(mobileClient: mobileClient)
-        self.waitlistEventListner = DyteWaitListParticipantUpdateEventListner(mobileClient: mobileClient)
+    required init(meeting: DyteMobileClient) {
+        self.meeting = meeting
+        self.dyteSelfListner = DyteEventSelfListner(mobileClient: meeting)
+        meetingEventListner = DyteMeetingEventListner(mobileClient: meeting)
+        self.waitlistEventListner = DyteWaitListParticipantUpdateEventListner(mobileClient: meeting)
         meetingEventListner.observeParticipantLeave { [weak self] participant in
             guard let self = self else {return}
             self.participantLeave(participant: participant)
@@ -336,17 +336,17 @@ public class LiveParticipantViewControllerModel: ParticipantViewControllerModelP
             guard let self = self else {return}
             self.participantJoin(participant: participant)
         }
-        mobileClient.addLiveStreamEventsListener(liveStreamEventsListener: self)
+        meeting.addLiveStreamEventsListener(liveStreamEventsListener: self)
     }
     
     func acceptAll() {
        
-        self.mobileClient.stage.grantAccessAll()
+        self.meeting.stage.grantAccessAll()
     }
     
     func rejectAll() {
        
-        self.mobileClient.stage.denyAccessAll()
+        self.meeting.stage.denyAccessAll()
     }
     
     private func participantLeave(participant: DyteMeetingParticipant) {
@@ -408,7 +408,7 @@ public class LiveParticipantViewControllerModel: ParticipantViewControllerModelP
 extension LiveParticipantViewControllerModel {
     private func getWaitlistSection() -> BaseConfiguratorSection<CollectionTableConfigurator> {
         let sectionOne = BaseConfiguratorSection<CollectionTableConfigurator>()
-        let waitListedParticipants = self.mobileClient.stage.accessRequests
+        let waitListedParticipants = self.meeting.stage.accessRequests
         if waitListedParticipants.count > 0 {
             var participantCount = ""
             if waitListedParticipants.count > 1 {
@@ -435,7 +435,7 @@ extension LiveParticipantViewControllerModel {
     }
     
     private func getInCallSection(minimumParticpantCountToShowSearchBar: Int) ->  BaseConfiguratorSection<CollectionTableConfigurator> {
-        let joinedParticipants = self.mobileClient.participants.joined
+        let joinedParticipants = self.meeting.participants.joined
         let sectionTwo =  BaseConfiguratorSection<CollectionTableConfigurator>()
         
         if joinedParticipants.count > 0 {
@@ -458,7 +458,7 @@ extension LiveParticipantViewControllerModel {
                 
                 func showMoreButton() -> Bool {
                     var canShow = false
-                    let hostPermission = self.mobileClient.localUser.permissions.host
+                    let hostPermission = self.meeting.localUser.permissions.host
                     
                     if hostPermission.canPinParticipant && participant.isPinned == false {
                         canShow = true
@@ -480,7 +480,7 @@ extension LiveParticipantViewControllerModel {
                 }
                 
                 var name = participant.name
-                if participant.userId == mobileClient.localUser.userId {
+                if participant.userId == meeting.localUser.userId {
                     name = "\(participant.name) (you)"
                 }
                 var image: DyteImage? = nil
@@ -488,7 +488,7 @@ extension LiveParticipantViewControllerModel {
                     image = DyteImage(url: url)
                 }
                 
-                sectionTwo.insert(TableItemConfigurator<ParticipantInCallTableViewCell,ParticipantInCallTableViewCellModel>(model:ParticipantInCallTableViewCellModel(image: image, title: name, showBottomSeparator: showBottomSeparator, showTopSeparator: false, participantUpdateEventListner: DyteParticipantUpdateEventListner(participant: participant), showMoreButton: showMoreButton())))
+                sectionTwo.insert(TableItemSearchableConfigurator<ParticipantInCallTableViewCell,ParticipantInCallTableViewCellModel>(model:ParticipantInCallTableViewCellModel(image: image, title: name, showBottomSeparator: showBottomSeparator, showTopSeparator: false, participantUpdateEventListner: DyteParticipantUpdateEventListner(participant: participant), showMoreButton: showMoreButton())))
             }
         }
         return sectionTwo

@@ -61,13 +61,13 @@ public class DyteNameTag : BaseAtomView {
         return stackView
     }()
     
-    public var lblTitle: DyteText = {
+    public var lblTitle: DyteLabel = {
         let lbl = DyteUIUTility.createLabel(text: "", alignment: .left)
         lbl.minimumScaleFactor = 0.8
         return lbl
     }()
     
-    public var lblSubTitle: DyteText?
+    public var lblSubTitle: DyteLabel?
     
     public var imageView: BaseImageView = {
         let imageView = BaseImageView()

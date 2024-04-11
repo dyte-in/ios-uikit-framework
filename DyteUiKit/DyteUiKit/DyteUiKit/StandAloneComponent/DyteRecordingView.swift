@@ -31,7 +31,7 @@ public class DyteRecordingViewAppearanceModel: DyteRecordingViewAppearance {
     }
 }
 
-class DyteRecordingView: UIView {
+public class DyteRecordingView: UIView {
     private let tokenSpace = DesignLibrary.shared.space
 
     private var title: String
@@ -39,7 +39,7 @@ class DyteRecordingView: UIView {
     private let appearance: DyteRecordingViewAppearance
     private let meeting: DyteMobileClient
     
-    init(meeting: DyteMobileClient,title: String, image: DyteImage? = nil, appearance: DyteRecordingViewAppearance = DyteRecordingViewAppearanceModel(designLibrary: DesignLibrary.shared)) {
+    public init(meeting: DyteMobileClient, title: String = "Rec", image: DyteImage? = nil, appearance: DyteRecordingViewAppearance = DyteRecordingViewAppearanceModel(designLibrary: DesignLibrary.shared)) {
         self.title = title
         self.image = image
         self.appearance = appearance
@@ -47,6 +47,11 @@ class DyteRecordingView: UIView {
         super.init(frame: .zero)
         createSubViews()
         meeting.addRecordingEventsListener(recordingEventsListener: self)
+        if meeting.recording.recordingState == .recording || meeting.recording.recordingState == .starting {
+           self.blinking(start: true)
+        }else if meeting.recording.recordingState == .stopping || meeting.recording.recordingState == .idle {
+            self.blinking(start: false)
+        }
         self.accessibilityIdentifier = "Recording_Red_Dot"
     }
     
@@ -58,7 +63,7 @@ class DyteRecordingView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func createSubViews() {
+    private func createSubViews() {
         let stackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: 4)
         var imageView = BaseImageView()
         if let image = self.image {
@@ -71,17 +76,20 @@ class DyteRecordingView: UIView {
         if self.image == nil {
             imageView.set(.width(tokenSpace.space2),
                           .height(tokenSpace.space2))
-            imageView.backgroundColor = appearance.imageBackGroundColor
             imageView.layer.cornerRadius = tokenSpace.space1
         }
+        imageView.backgroundColor = appearance.imageBackGroundColor
         self.addSubview(stackView)
         stackView.set(.fillSuperView(self))
     }
     
-    func meetingRecording(start: Bool) {
+    public func blinking(start: Bool) {
         self.isHidden = !start
         if start {
-            self.blink()
+            // I have to use DispatchQueue here because recording view didn't blink, and by doing so its start working
+            DispatchQueue.main.async {
+                self.blink()
+            }
         }else {
             self.stopBlink()
         }
@@ -89,21 +97,21 @@ class DyteRecordingView: UIView {
 }
 
 extension  DyteRecordingView: DyteRecordingEventsListener {
-    func onMeetingRecordingPauseError(e: KotlinException) {
+    public func onMeetingRecordingPauseError(e: KotlinException) {
         
     }
     
-    func onMeetingRecordingResumeError(e: KotlinException) {
+    public func onMeetingRecordingResumeError(e: KotlinException) {
         
     }
     
     public  func onMeetingRecordingEnded() {
-        self.meetingRecording(start: false)
+        self.blinking(start: false)
         NotificationCenter.default.post(name: Notification.Name("Notify_RecordingUpdate"), object: nil, userInfo: nil)
     }
     
     public  func onMeetingRecordingStarted() {
-        self.meetingRecording(start: true)
+        self.blinking(start: true)
         NotificationCenter.default.post(name: Notification.Name("Notify_RecordingUpdate"), object: nil, userInfo: nil)
     }
     

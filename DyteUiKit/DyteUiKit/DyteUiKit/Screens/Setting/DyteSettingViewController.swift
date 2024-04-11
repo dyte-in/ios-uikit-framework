@@ -9,15 +9,14 @@ import DyteiOSCore
 import UIKit
 import AVFAudio
 
-public class SettingViewController: DyteBaseViewController, SetTopbar {
-    public  var shouldShowTopBar: Bool = true
-    
+public class DyteSettingViewController: DyteBaseViewController, SetTopbar {
+    public var shouldShowTopBar: Bool = true
     public var topBar: DyteNavigationBar = DyteNavigationBar(title: "Settings")
-    let baseView: BaseView = BaseView()
-    let selfPeerView: DyteParticipantTileView
+    private let baseView: BaseView = BaseView()
+    private let selfPeerView: DyteParticipantTileView
 
-    let spaceToken = DesignLibrary.shared.space
-    let borderRadius = DesignLibrary.shared.borderRadius
+    private let spaceToken = DesignLibrary.shared.space
+    private let borderRadius = DesignLibrary.shared.borderRadius
 
     private let nameTagTitle: String
     
@@ -25,15 +24,14 @@ public class SettingViewController: DyteBaseViewController, SetTopbar {
     private var speakerDropDown: DyteDropdown<DyteAudioPickerCellModel>!
     private var audioSelectionView: DyteCustomPickerView<DytePickerModel<DyteAudioPickerCellModel>>?
 
-    
-    let backgroundColor = DesignLibrary.shared.color.background.shade1000
+    private let backgroundColor = DesignLibrary.shared.color.background.shade1000
     private let completion: (()->Void)?
     
-   public init(nameTag: String, dyteMobileClient: DyteMobileClient, completion:(()->Void)? = nil) {
+    public init(nameTag: String, meeting: DyteMobileClient, completion:(()->Void)? = nil) {
         nameTagTitle = nameTag
         self.completion = completion
-        selfPeerView = DyteParticipantTileView(viewModel: VideoPeerViewModel(mobileClient: dyteMobileClient, participant: dyteMobileClient.localUser, showSelfPreviewVideo: true))
-        super.init(dyteMobileClient: dyteMobileClient)
+        selfPeerView = DyteParticipantTileView(viewModel: VideoPeerViewModel(meeting: meeting, participant: meeting.localUser, showSelfPreviewVideo: true))
+        super.init(meeting: meeting)
         
     }
     
@@ -60,6 +58,14 @@ public class SettingViewController: DyteBaseViewController, SetTopbar {
          self.view.backgroundColor =  backgroundColor
         NotificationCenter.default.addObserver(self, selector: #selector(routeChanged(notification:)), name: AVAudioSession.routeChangeNotification, object: nil)
     }
+    
+    deinit {
+        print("Debug DyteUIKit | SettingViewController deinit is calling")
+    }
+    
+}
+
+extension DyteSettingViewController {
     
     @objc
     private func routeChanged(notification: Notification) {
@@ -276,6 +282,7 @@ public class SettingViewController: DyteBaseViewController, SetTopbar {
         let devices = getDevices()
         return (devices, selectedIndex(current: currentAudioSelectedDevice, deviceModels: devices))
     }
+   
     private func createAudioDropDown() -> DyteDropdown<DyteAudioPickerCellModel> {
         
         let metaData = getSpeakerDropDownData()
@@ -332,10 +339,6 @@ public class SettingViewController: DyteBaseViewController, SetTopbar {
     
     private func loadSelfVideoView() {
         selfPeerView.refreshVideo()
-    }
-    
-    deinit {
-        print("Debug DyteUIKit | SettingViewController deinit is calling")
     }
     
 }

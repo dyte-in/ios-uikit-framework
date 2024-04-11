@@ -118,13 +118,13 @@ extension DyteMobileClient {
 
 extension DyteUiKit {
     
-    private func getSetUpViewController(configuration: DyteMeetingInfo?,configurationV2: DyteMeetingInfoV2?, completion:@escaping()->Void) -> SetupViewController {
+    private func getSetUpViewController(configuration: DyteMeetingInfo?,configurationV2: DyteMeetingInfoV2?, completion:@escaping()->Void) -> DyteSetupViewController {
         if let config = configuration {
-            let controller =  SetupViewController(meetingInfo: config, mobileClient: self.mobileClient, completion: completion)
+            let controller =  DyteSetupViewController(meetingInfo: config, meeting: self.mobileClient, completion: completion)
             controller.delegate = self
             return controller
         } else {
-            let controller =  SetupViewController(meetingInfo:configurationV2!, mobileClient: self.mobileClient, completion: completion)
+            let controller =  DyteSetupViewController(meetingInfo:configurationV2!, meeting: self.mobileClient, completion: completion)
             controller.delegate = self
             return controller
         }

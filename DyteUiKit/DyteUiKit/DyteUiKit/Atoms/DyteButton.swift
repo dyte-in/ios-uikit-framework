@@ -146,30 +146,10 @@ open class DyteButton: UIButton, BaseAtom {
     var borderRadiusType: BorderRadiusToken.RadiusType
     var borderWidhtType: BorderWidthToken.Width
     private var appearance: DyteButtonAppearance
-    
-    public init(style: Style = .solid, dyteButtonState: States = .active, size: Size = .large, appearance: DyteButtonAppearance = DyteButtonAppearanceModel()) {
-        self.style = style
-        self.appearance = appearance
-        self.size = size
-        self.dyteButtonState = dyteButtonState
-        self.normalStateTintColor = self.appearance.normalStateTintColor
-        self.selectedStateTintColor = self.appearance.selectedStateTintColor
-        borderRadiusType = self.appearance.cornerRadius
-        borderWidhtType = self.appearance.borderWidhtType
-        super.init(frame: .zero)
-        createButton(style: style)
-        applyStyle(style: style)
-        applyWidhtHeightConstraint(style: style)
-    }
-    
-    required public init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     private var isLoading = false
     private var baseActivityIndicatorView: BaseIndicatorView?
     private var baseContentView: UIView!
-    private var titleTextAtom: DyteText!
+    private var titleTextAtom: DyteLabel!
     private var iconImageView: UIImageView!
     
     
@@ -189,6 +169,26 @@ open class DyteButton: UIButton, BaseAtom {
         }
     }
     
+    public init(style: Style = .solid, dyteButtonState: States = .active, size: Size = .large, appearance: DyteButtonAppearance = DyteButtonAppearanceModel()) {
+        self.style = style
+        self.appearance = appearance
+        self.size = size
+        self.dyteButtonState = dyteButtonState
+        self.normalStateTintColor = self.appearance.normalStateTintColor
+        self.selectedStateTintColor = self.appearance.selectedStateTintColor
+        borderRadiusType = self.appearance.cornerRadius
+        borderWidhtType = self.appearance.borderWidhtType
+        super.init(frame: .zero)
+        createButton(style: style)
+        applyStyle(style: style)
+        applyWidhtHeightConstraint(style: style)
+    }
+    
+     
+     required public init?(coder: NSCoder) {
+         fatalError("init(coder:) has not been implemented")
+     }
+     
     
     private func setButtonHeight(constant: CGFloat) {
         if self.heightConstraint != nil {
@@ -262,7 +262,7 @@ open class DyteButton: UIButton, BaseAtom {
         baseContentView.set(.fillSuperView(self))
     }
    
-    private func getLabelOnlyView() -> (stackView: BaseStackView, title: DyteText) {
+    private func getLabelOnlyView() -> (stackView: BaseStackView, title: DyteLabel) {
         let stackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: dyteSharedTokenSpace.space1)
         let title = DyteUIUTility.createLabel(text: "")
         stackView.addArrangedSubviews(title)
@@ -276,7 +276,7 @@ open class DyteButton: UIButton, BaseAtom {
         return (stackView, iconView)
     }
     
-    private func getLabelAndImageOnlyView(dir: IconPlacementDirection = .left) -> (stackView: BaseStackView, title: DyteText , imageView: UIImageView) {
+    private func getLabelAndImageOnlyView(dir: IconPlacementDirection = .left) -> (stackView: BaseStackView, title: DyteLabel , imageView: UIImageView) {
         let stackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: dyteSharedTokenSpace.space1)
         let imageView = DyteUIUTility.createImageView(image: DyteImage(image: nil))
         let title = DyteUIUTility.createLabel(text: "")
@@ -435,7 +435,8 @@ extension DyteButton {
     func prepareForReuse() {
          hideActivityIndicator()
     }
-      func showActivityIndicator() {
+   
+    public  func showActivityIndicator() {
           if self.baseActivityIndicatorView == nil {
               let baseIndicatorView = BaseIndicatorView.createIndicatorView()
               self.addSubview(baseIndicatorView)
@@ -454,7 +455,7 @@ extension DyteButton {
           isLoading = true
       }
       
-      func hideActivityIndicator() {
+    public  func hideActivityIndicator() {
           if self.baseActivityIndicatorView?.isHidden == false {
               self.baseActivityIndicatorView?.indicatorView.stopAnimating()
               self.baseActivityIndicatorView?.isHidden = true

@@ -11,9 +11,9 @@ import UIKit
 public class NextPreviousButtonView: UIView {
     public  let previousButton: DyteControlBarButton
     public  let nextButton: DyteControlBarButton
-    private let firstLabel: DyteText
-    private let secondLabel: DyteText
-    private let slashLabel: DyteText
+    private let firstLabel: DyteLabel
+    private let secondLabel: DyteLabel
+    private let slashLabel: DyteLabel
     
     private let tokenBorderRadius = DesignLibrary.shared.borderRadius
     private let tokenSpace = DesignLibrary.shared.space
@@ -97,7 +97,7 @@ public class NextPreviousButtonView: UIView {
     }
 }
 
-public protocol ScreenShareTabButtonDesignDependency: BaseAppearance {
+public protocol PluginScreenShareTabButtonDesignDependency: BaseAppearance {
     var selectedStateBackGroundColor:  TextColorToken.Brand.Shade {get}
     var normalStateBackGroundColor: TextColorToken.Background.Shade {get}
     var cornerRadius: BorderRadiusToken.RadiusType {get}
@@ -106,7 +106,7 @@ public protocol ScreenShareTabButtonDesignDependency: BaseAppearance {
 }
 
 
-public class ScreenShareTabButtonDesignDependencyModel : ScreenShareTabButtonDesignDependency {
+public class PluginScreenShareTabButtonDesignDependencyModel : PluginScreenShareTabButtonDesignDependency {
     public var desingLibrary: DyteDesignTokens
     public var selectedStateBackGroundColor: TextColorToken.Brand.Shade
     public var normalStateBackGroundColor: TextColorToken.Background.Shade
@@ -125,20 +125,22 @@ public class ScreenShareTabButtonDesignDependencyModel : ScreenShareTabButtonDes
 }
 
 
-public class ScreenShareTabButton: UIButton {
+public class DytePluginScreenShareTabButton: UIButton {
     
     private var normalImage: DyteImage?
     fileprivate var normalTitle: String
     private var selectedImage: DyteImage?
     fileprivate var selectedTitle: String?
 
-    public var btnImageView: BaseImageView?
-    fileprivate var btnTitle: DyteText?
+    fileprivate var btnTitle: DyteLabel?
     private var baseActivityIndicatorView: BaseIndicatorView?
-    fileprivate let appearance: ScreenShareTabButtonDesignDependency
+    fileprivate let appearance: PluginScreenShareTabButtonDesignDependency
+   
     public var index: Int = 0
     public let id: String
-    public init(image: DyteImage?, title: String = "", id: String = "", appearance: ScreenShareTabButtonDesignDependency = ScreenShareTabButtonDesignDependencyModel()) {
+    public var btnImageView: BaseImageView?
+
+    public init(image: DyteImage?, title: String = "", id: String = "", appearance: PluginScreenShareTabButtonDesignDependency = PluginScreenShareTabButtonDesignDependencyModel()) {
         self.normalImage = image
         self.id = id
         self.appearance = appearance
@@ -174,12 +176,15 @@ public class ScreenShareTabButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setSelected(image: DyteImage? = nil, title: String? = nil) {
-        self.selectedImage = DyteImage.init(image: image?.image?.withRenderingMode(.alwaysTemplate), url: image?.url)
+    public func setSelected(image: DyteImage) {
+        self.selectedImage = DyteImage.init(image: image.image?.withRenderingMode(.alwaysTemplate), url: image.url)
+    }
+    
+    public func setSelected(title: String) {
         self.selectedTitle = title
     }
     
-    func createButton() {
+   private func createButton() {
         let baseView = UIView()
         self.addSubview(baseView)
         baseView.set(.fillSuperView(self))
@@ -197,7 +202,7 @@ public class ScreenShareTabButton: UIButton {
                                        .centerX(baseView))
     }
     
-    private func getLabelAndImageOnlyView() -> (stackView: BaseStackView, title: DyteText , imageView: BaseImageView) {
+    private func getLabelAndImageOnlyView() -> (stackView: BaseStackView, title: DyteLabel , imageView: BaseImageView) {
         let stackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: dyteSharedTokenSpace.space2)
         let imageView = DyteUIUTility.createImageView(image: self.normalImage)
         let title = DyteUIUTility.createLabel(text: self.normalTitle)
@@ -207,7 +212,7 @@ public class ScreenShareTabButton: UIButton {
     }
 }
 
-extension ScreenShareTabButton {
+extension DytePluginScreenShareTabButton {
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         self.alpha = 0.6
@@ -224,9 +229,9 @@ extension ScreenShareTabButton {
     }
 }
 
-extension ScreenShareTabButton {
+extension DytePluginScreenShareTabButton {
       
-      func showActivityIndicator() {
+     private func showActivityIndicator() {
           if self.baseActivityIndicatorView == nil {
               let baseIndicatorView = BaseIndicatorView.createIndicatorView()
               self.addSubview(baseIndicatorView)
@@ -240,13 +245,13 @@ extension ScreenShareTabButton {
           self.baseActivityIndicatorView?.isHidden = false
       }
       
-      func hideActivityIndicator() {
+    private func hideActivityIndicator() {
           self.baseActivityIndicatorView?.indicatorView.stopAnimating()
           self.baseActivityIndicatorView?.isHidden = true
       }
 }
 
-public class SyncScreenShareTabButton: ScreenShareTabButton {
+public class SyncScreenShareTabButton: DytePluginScreenShareTabButton {
     public override var isSelected: Bool {
         didSet {
             if isSelected == true {

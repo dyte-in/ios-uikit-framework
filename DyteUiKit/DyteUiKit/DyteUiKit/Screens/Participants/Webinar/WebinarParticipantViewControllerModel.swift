@@ -13,7 +13,7 @@ public class WebinarParticipantViewControllerModel {
     let waitlistEventListner: DyteWaitListParticipantUpdateEventListner
     let dyteSelfListner: DyteEventSelfListner
     private let isDebugModeOn = DyteUiKit.isDebugModeOn
-    private let searchControllerMinimumParticipant = 50
+    private let searchControllerMinimumParticipant = 10
     
     required init(mobileClient: DyteMobileClient) {
         self.mobileClient = mobileClient
@@ -73,20 +73,19 @@ public class WebinarParticipantViewControllerModel {
     private var completion: ((Bool)->Void)?
     
     public func load(completion:@escaping(Bool)->Void) {
-            self.completion = completion
-            refresh(completion: completion)
+       self.completion = completion
+       refresh(completion: completion)
     }
     
     private func refresh(completion:@escaping(Bool)->Void) {
         self.dataSourceTableView.sections.removeAll()
         let minimumParticpantCountToShowSearchBar = searchControllerMinimumParticipant
+        
         let sectionZero = self.getWaitlistSection()
-        
         let sectionOne = self.getJoinStageRequestSection()
-        
         let sectionTwo = self.getOnStageSection(minimumParticpantCountToShowSearchBar: minimumParticpantCountToShowSearchBar)
-
         let sectionThree = self.getInCallViewers(minimumParticpantCountToShowSearchBar: minimumParticpantCountToShowSearchBar)
+        
         self.dataSourceTableView.sections.append(sectionZero)
         self.dataSourceTableView.sections.append(sectionOne)
         self.dataSourceTableView.sections.append(sectionTwo)
@@ -128,12 +127,13 @@ extension WebinarParticipantViewControllerModel {
                     showBottomSeparator = false
                 }
                 sectionOne.insert(TableItemConfigurator<ParticipantWaitingTableViewCell,ParticipantWaitingTableViewCellModel>(model:ParticipantWaitingTableViewCellModel(title: participant.name, image: image, showBottomSeparator: showBottomSeparator, showTopSeparator: false, participant: participant)))
-                
             }
+            
             if waitListedParticipants.count > 1 {
                 sectionOne.insert(TableItemConfigurator<AcceptButtonWaitingTableViewCell,ButtonTableViewCellModel>(model:ButtonTableViewCellModel(buttonTitle: "Accept All")))
             }
         }
+        
         return sectionOne
     }
 
@@ -219,16 +219,17 @@ extension WebinarParticipantViewControllerModel {
                     image = DyteImage(url: url)
                 }
                 
-                sectionTwo.insert(TableItemConfigurator<ParticipantInCallTableViewCell,ParticipantInCallTableViewCellModel>(model:ParticipantInCallTableViewCellModel(image: image, title: name, showBottomSeparator: showBottomSeparator, showTopSeparator: false, participantUpdateEventListner: DyteParticipantUpdateEventListner(participant: participant), showMoreButton: showMoreButton())))
+                sectionTwo.insert(TableItemSearchableConfigurator<ParticipantInCallTableViewCell,ParticipantInCallTableViewCellModel>(model:ParticipantInCallTableViewCellModel(image: image, title: name, showBottomSeparator: showBottomSeparator, showTopSeparator: false, participantUpdateEventListner: DyteParticipantUpdateEventListner(participant: participant), showMoreButton: showMoreButton())))
             }
         }
         return sectionTwo
     }
-
+    
+    
     private func getInCallViewers(minimumParticpantCountToShowSearchBar: Int) ->  BaseConfiguratorSection<CollectionTableConfigurator> {
-        let joinedParticipants = self.mobileClient.stage.viewers
+        var joinedParticipants = [DyteJoinedMeetingParticipant]()
+        joinedParticipants.append(contentsOf: self.mobileClient.stage.viewers)
         let sectionTwo =  BaseConfiguratorSection<CollectionTableConfigurator>()
-        
         if joinedParticipants.count > 0 {
             var participantCount = ""
             if joinedParticipants.count > 1 {
@@ -251,13 +252,10 @@ extension WebinarParticipantViewControllerModel {
                     var canShow = false
                     let hostPermission = self.mobileClient.localUser.permissions.host
                     
-                   
                     if self.mobileClient.localUser.canDoParticipantHostControls() || hostPermission.canAcceptRequests == true {
                         canShow = true
                     }
-                    
-                    
-                    return canShow
+                     return canShow
                 }
                 
                 var name = participant.name
@@ -268,14 +266,11 @@ extension WebinarParticipantViewControllerModel {
                 if let imageUrl = participant.picture, let url = URL(string: imageUrl) {
                     image = DyteImage(url: url)
                 }
-                
-                sectionTwo.insert(TableItemConfigurator<WebinarViewersTableViewCell,WebinarViewersTableViewCellModel>(model:WebinarViewersTableViewCellModel(image: image, title: name, showBottomSeparator: showBottomSeparator, showTopSeparator: false,  participantUpdateEventListner: DyteParticipantUpdateEventListner(participant: participant), showMoreButton: showMoreButton())))
+                sectionTwo.insert(TableItemSearchableConfigurator<WebinarViewersTableViewCell,WebinarViewersTableViewCellModel>(model:WebinarViewersTableViewCellModel(image: image, title: name, showBottomSeparator: showBottomSeparator, showTopSeparator: false,  participantUpdateEventListner: DyteParticipantUpdateEventListner(participant: participant), showMoreButton: showMoreButton())))
             }
         }
         return sectionTwo
     }
-    
-
 }
 
 extension WebinarParticipantViewControllerModel: DyteParticipantEventsListener {

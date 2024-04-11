@@ -22,11 +22,11 @@ public protocol MeetingViewControllerDataSource {
 public class MeetingViewController: DyteBaseViewController {
     
     private var gridView: GridView<DyteParticipantTileContainerView>!
-    let pluginView: DytePluginView
+    let pluginScreenShareView: DytePluginsView
     let pinnedView = DyteParticipantTileContainerView()
 
     let gridBaseView = UIView()
-    private let pluginPinnedBaseView = UIView()
+    private let pluginPinnedScreenShareBaseView = UIView()
     private var fullScreenView: FullScreenView!
     
     let baseContentView = UIView()
@@ -58,10 +58,10 @@ public class MeetingViewController: DyteBaseViewController {
 
    public init(meeting: DyteMobileClient, completion:@escaping()->Void) {
         //TODO: Check the local user passed now
-        self.pluginView = DytePluginView(videoPeerViewModel:VideoPeerViewModel(mobileClient: meeting, participant: meeting.localUser, showSelfPreviewVideo: false, showScreenShareVideoView: true))
+       self.pluginScreenShareView = DytePluginsView(videoPeerViewModel:VideoPeerViewModel(meeting: meeting, participant: meeting.localUser, showSelfPreviewVideo: false, showScreenShareVideoView: true))
         self.onFinishedMeeting = completion
         self.viewModel = MeetingViewModel(dyteMobileClient: meeting)
-        super.init(dyteMobileClient: meeting)
+        super.init(meeting: meeting)
         notificationDelegate = self
     }
     
@@ -175,7 +175,7 @@ public class MeetingViewController: DyteBaseViewController {
         } success: {  [weak self] in
             guard let self = self else {return}
             self.refreshMeetingGrid()
-            self.refreshPluginsView()
+            self.refreshPluginsScreenShareView()
         }
     }
     
@@ -189,7 +189,7 @@ public class MeetingViewController: DyteBaseViewController {
             if shouldShowNotificationBubble() {
                 self.moreButtonBottomBar?.notificationBadge.isHidden = false
             } else {
-                self.moreButtonBottomBar?.notificationBadge.isHidden = false
+                self.moreButtonBottomBar?.notificationBadge.isHidden = true
             }
         }
     }
@@ -224,14 +224,14 @@ public class MeetingViewController: DyteBaseViewController {
             })
         }
         
-        if self.viewModel.pinOrPluginModeIsActive() {
+        if self.viewModel.pinOrPluginScreenShareModeIsActive() {
             loadGridAndPluginView(showPluginPinnedView: true, animation: false)
         } else {
             loadGridAndPluginView(showPluginPinnedView: false, animation: false)
         }
         
-        if self.viewModel.pinOrPluginModeIsActive() {
-            self.refreshPluginsView()
+        if self.viewModel.pinOrPluginScreenShareModeIsActive() {
+            self.refreshPluginsScreenShareView()
         }
         
         func populateGridChildViews(models: [GridCellViewModel]) {
@@ -351,22 +351,22 @@ private extension MeetingViewController {
     
     private func createSubView() {
         self.view.addSubview(baseContentView)
-        baseContentView.addSubview(pluginPinnedBaseView)
+        baseContentView.addSubview(pluginPinnedScreenShareBaseView)
         baseContentView.addSubview(gridBaseView)
-        pluginPinnedBaseView.accessibilityIdentifier = "Grid_Plugin_View"
+        pluginPinnedScreenShareBaseView.accessibilityIdentifier = "Grid_Plugin_View"
         
         gridView = GridView(showingCurrently: 9, getChildView: {
             return DyteParticipantTileContainerView()
         })
         
         gridBaseView.addSubview(gridView)
-        pluginPinnedBaseView.addSubview(pluginView)
-        pluginPinnedBaseView.addSubview(pinnedView)
+        pluginPinnedScreenShareBaseView.addSubview(pluginScreenShareView)
+        pluginPinnedScreenShareBaseView.addSubview(pinnedView)
         
-        pluginView.addSubview(fullScreenButton)
+        pluginScreenShareView.addSubview(fullScreenButton)
         
-        fullScreenButton.set(.trailing(pluginView, dyteSharedTokenSpace.space1),
-                             .bottom(pluginView,dyteSharedTokenSpace.space1))
+        fullScreenButton.set(.trailing(pluginScreenShareView, dyteSharedTokenSpace.space1),
+                             .bottom(pluginScreenShareView,dyteSharedTokenSpace.space1))
         
         fullScreenButton.addTarget(self, action: #selector(buttonClick(button:)), for: .touchUpInside)
         self.fullScreenButton.isHidden = !UIScreen.isLandscape()
@@ -379,8 +379,8 @@ private extension MeetingViewController {
     @objc func buttonClick(button: DyteButton) {
         if UIScreen.isLandscape() {
             if button.isSelected == false {
-                pluginView.removeFromSuperview()
-                self.addFullScreenView(contentView: pluginView)
+                pluginScreenShareView.removeFromSuperview()
+                self.addFullScreenView(contentView: pluginScreenShareView)
             }else {
                 closefullscreen()
             }
@@ -390,8 +390,8 @@ private extension MeetingViewController {
     
     private func closefullscreen() {
         if fullScreenView?.isVisible == true {
-            self.pluginPinnedBaseView.addSubview(self.pluginView)
-            self.pluginView.set(.fillSuperView(self.pluginPinnedBaseView))
+            self.pluginPinnedScreenShareBaseView.addSubview(self.pluginScreenShareView)
+            self.pluginScreenShareView.set(.fillSuperView(self.pluginPinnedScreenShareBaseView))
             self.removeFullScreenView()
         }
     }
@@ -421,22 +421,22 @@ private extension MeetingViewController {
                                                 baseContentView.get(.top)!,
                                                 baseContentView.get(.bottom)!])
         
-        pluginPinnedBaseView.set(.sameLeadingTrailing(baseContentView),
+        pluginPinnedScreenShareBaseView.set(.sameLeadingTrailing(baseContentView),
                                  .top(baseContentView))
-        portraitConstraints.append(contentsOf: [pluginPinnedBaseView.get(.leading)!,
-                                                pluginPinnedBaseView.get(.trailing)!,
-                                                pluginPinnedBaseView.get(.top)!])
+        portraitConstraints.append(contentsOf: [pluginPinnedScreenShareBaseView.get(.leading)!,
+                                                pluginPinnedScreenShareBaseView.get(.trailing)!,
+                                                pluginPinnedScreenShareBaseView.get(.top)!])
         
-        layoutPortraitContraintPluginBaseVariableHeight = NSLayoutConstraint(item: pluginPinnedBaseView, attribute: .height, relatedBy: .equal, toItem: baseContentView, attribute: .height, multiplier: 0.7, constant: 0)
+        layoutPortraitContraintPluginBaseVariableHeight = NSLayoutConstraint(item: pluginPinnedScreenShareBaseView, attribute: .height, relatedBy: .equal, toItem: baseContentView, attribute: .height, multiplier: 0.7, constant: 0)
         layoutPortraitContraintPluginBaseVariableHeight.isActive = false
         
-        layoutContraintPluginBaseZeroHeight = NSLayoutConstraint(item: pluginPinnedBaseView, attribute: .height, relatedBy: .equal, toItem: baseContentView, attribute: .height, multiplier: 0.0, constant: 0)
+        layoutContraintPluginBaseZeroHeight = NSLayoutConstraint(item: pluginPinnedScreenShareBaseView, attribute: .height, relatedBy: .equal, toItem: baseContentView, attribute: .height, multiplier: 0.0, constant: 0)
         
         layoutContraintPluginBaseZeroHeight.isActive = false
         
         
         gridBaseView.set(.sameLeadingTrailing(baseContentView),
-                         .below(pluginPinnedBaseView),
+                         .below(pluginPinnedScreenShareBaseView),
                          .bottom(baseContentView))
         
         portraitConstraints.append(contentsOf: [gridBaseView.get(.leading)!,
@@ -449,13 +449,13 @@ private extension MeetingViewController {
                                                 gridView.get(.trailing)!,
                                                 gridView.get(.top)!,
                                                 gridView.get(.bottom)!])
-        pluginView.set(.fillSuperView(pluginPinnedBaseView))
-        portraitConstraints.append(contentsOf: [pluginView.get(.leading)!,
-                                                pluginView.get(.trailing)!,
-                                                pluginView.get(.top)!,
-                                                pluginView.get(.bottom)!])
+        pluginScreenShareView.set(.fillSuperView(pluginPinnedScreenShareBaseView))
+        portraitConstraints.append(contentsOf: [pluginScreenShareView.get(.leading)!,
+                                                pluginScreenShareView.get(.trailing)!,
+                                                pluginScreenShareView.get(.top)!,
+                                                pluginScreenShareView.get(.bottom)!])
         
-        pinnedView.set(.fillSuperView(pluginPinnedBaseView))
+        pinnedView.set(.fillSuperView(pluginPinnedScreenShareBaseView))
         portraitConstraints.append(contentsOf: [pinnedView.get(.leading)!,
                                                 pinnedView.get(.trailing)!,
                                                 pinnedView.get(.top)!,
@@ -476,22 +476,22 @@ private extension MeetingViewController {
                                                  baseContentView.get(.bottom)!])
         
         
-        pluginPinnedBaseView.set(.leading(baseContentView),
+        pluginPinnedScreenShareBaseView.set(.leading(baseContentView),
                                  .sameTopBottom(baseContentView))
-        landscapeConstraints.append(contentsOf: [pluginPinnedBaseView.get(.leading)!,
-                                                 pluginPinnedBaseView.get(.bottom)!,
-                                                 pluginPinnedBaseView.get(.top)!])
+        landscapeConstraints.append(contentsOf: [pluginPinnedScreenShareBaseView.get(.leading)!,
+                                                 pluginPinnedScreenShareBaseView.get(.bottom)!,
+                                                 pluginPinnedScreenShareBaseView.get(.top)!])
         
-        layoutLandscapeContraintPluginBaseVariableWidth = NSLayoutConstraint(item: pluginPinnedBaseView, attribute: .width, relatedBy: .equal, toItem: baseContentView, attribute: .width, multiplier: 0.75, constant: 0)
+        layoutLandscapeContraintPluginBaseVariableWidth = NSLayoutConstraint(item: pluginPinnedScreenShareBaseView, attribute: .width, relatedBy: .equal, toItem: baseContentView, attribute: .width, multiplier: 0.75, constant: 0)
         layoutLandscapeContraintPluginBaseVariableWidth.isActive = false
         
-        layoutContraintPluginBaseZeroWidth = NSLayoutConstraint(item: pluginPinnedBaseView, attribute: .width, relatedBy: .equal, toItem: baseContentView, attribute: .width, multiplier: 0.0, constant: 0)
+        layoutContraintPluginBaseZeroWidth = NSLayoutConstraint(item: pluginPinnedScreenShareBaseView, attribute: .width, relatedBy: .equal, toItem: baseContentView, attribute: .width, multiplier: 0.0, constant: 0)
         
         layoutContraintPluginBaseZeroWidth.isActive = false
         
         
         gridBaseView.set(.sameTopBottom(baseContentView),
-                         .after(pluginPinnedBaseView),
+                         .after(pluginPinnedScreenShareBaseView),
                          .trailing(baseContentView))
         
         landscapeConstraints.append(contentsOf: [gridBaseView.get(.leading)!,
@@ -504,13 +504,13 @@ private extension MeetingViewController {
                                                  gridView.get(.trailing)!,
                                                  gridView.get(.top)!,
                                                  gridView.get(.bottom)!])
-        pluginView.set(.fillSuperView(pluginPinnedBaseView))
-        landscapeConstraints.append(contentsOf: [pluginView.get(.leading)!,
-                                                 pluginView.get(.trailing)!,
-                                                 pluginView.get(.top)!,
-                                                 pluginView.get(.bottom)!])
+        pluginScreenShareView.set(.fillSuperView(pluginPinnedScreenShareBaseView))
+        landscapeConstraints.append(contentsOf: [pluginScreenShareView.get(.leading)!,
+                                                 pluginScreenShareView.get(.trailing)!,
+                                                 pluginScreenShareView.get(.top)!,
+                                                 pluginScreenShareView.get(.bottom)!])
         
-        pinnedView.set(.fillSuperView(pluginPinnedBaseView))
+        pinnedView.set(.fillSuperView(pluginPinnedScreenShareBaseView))
         landscapeConstraints.append(contentsOf: [pinnedView.get(.leading)!,
                                                  pinnedView.get(.trailing)!,
                                                  pinnedView.get(.top)!,
@@ -582,8 +582,12 @@ extension MeetingViewController : MeetingViewModelDelegate {
     }
     
     func pinnedChanged(participant: DyteJoinedMeetingParticipant) {
-        if self.viewModel.pinOrPluginModeIsActive() {
-            if self.viewModel.pluginModeIsActive() == false {
+        if !self.viewModel.pinOrPluginScreenShareModeIsActive() {
+            //move to page 0 forcefully as we need to show pin view
+            //large pin view functionality only exists on page 0
+            try? self.meeting.participants.setPage(pageNumber: 0)
+        } else {
+            if self.viewModel.pluginScreenShareModeIsActive() == false {
                 self.pinnedView.setParticipant(meeting: self.meeting, participant: participant)
             }
         }
@@ -596,14 +600,14 @@ extension MeetingViewController : MeetingViewModelDelegate {
     
     private func showAndHideActiveSpeaker() {
         if let pinned = self.meeting.participants.pinned {
-            self.pluginView.showPinnedView(participant: pinned)
+            self.pluginScreenShareView.showPinnedView(participant: pinned)
         }else {
-            self.pluginView.hideActiveSpeaker()
+            self.pluginScreenShareView.hideActiveSpeaker()
         }
     }
     
-    private func getScreenShareTabButton(participants: [ParticipantsShareControl]) -> [ScreenShareTabButton] {
-        var arrButtons = [ScreenShareTabButton]()
+    private func getScreenShareTabButton(participants: [ParticipantsShareControl]) -> [DytePluginScreenShareTabButton] {
+        var arrButtons = [DytePluginScreenShareTabButton]()
         for participant in participants {
             var image: DyteImage?
             if let _ = participant as? ScreenShareModel {
@@ -615,7 +619,7 @@ extension MeetingViewController : MeetingViewModelDelegate {
                 }
             }
             
-            let button = ScreenShareTabButton(image: image, title: participant.name, id: participant.id)
+            let button = DytePluginScreenShareTabButton(image: image, title: participant.name, id: participant.id)
             // TODO:Below hardcoding is not needed, We also need to scale down the image as well.
             button.btnImageView?.set(.height(20),
                                      .width(20))
@@ -625,44 +629,44 @@ extension MeetingViewController : MeetingViewModelDelegate {
     }
     
     private func handleClicksOnPluginsTab(model: PluginButtonModel, at index: Int) {
-        self.pluginView.show(pluginView:  model.plugin.getPluginView())
+        self.pluginScreenShareView.show(pluginView:  model.plugin.getPluginView())
         self.viewModel.screenShareViewModel.selectedIndex = (UInt(index), model.id)
     }
     
     private func handleClicksOnScreenShareTab(model: ScreenShareModel, index: Int) {
-        self.pluginView.showVideoView(participant: model.participant)
-        self.pluginView.pluginVideoView.viewModel.refreshNameTag()
+        self.pluginScreenShareView.showVideoView(participant: model.participant)
+        self.pluginScreenShareView.pluginVideoView.viewModel.refreshNameTag()
         self.viewModel.screenShareViewModel.selectedIndex = (UInt(index), model.id)
     }
     
     public func selectPluginOrScreenShare(id: String) {
         var index: Int = -1
-        for button in self.pluginView.activeListView.buttons {
+        for button in self.pluginScreenShareView.activeListView.buttons {
             index = index + 1
             if button.id == id {
-                self.pluginView.selectForAutoSync(button: button)
+                self.pluginScreenShareView.selectForAutoSync(button: button)
                 break
             }
         }
     }
     
-    func refreshPluginsButtonTab(pluginsButtonsModels: [ParticipantsShareControl], arrButtons: [ScreenShareTabButton])  {
+    func refreshPluginsButtonTab(pluginsButtonsModels: [ParticipantsShareControl], arrButtons: [DytePluginScreenShareTabButton])  {
         if arrButtons.count >= 1 {
             var selectedIndex: Int?
             if let index = self.viewModel.screenShareViewModel.selectedIndex?.0 {
                 selectedIndex = Int(index)
             }
-            self.pluginView.setButtons(buttons: arrButtons, selectedIndex: selectedIndex) { [weak self] button, isUserClick in
+            self.pluginScreenShareView.setButtons(buttons: arrButtons, selectedIndex: selectedIndex) { [weak self] button, isUserClick in
                 guard let self = self else {return}
                 if let plugin = pluginsButtonsModels[button.index] as? PluginButtonModel {
-                    if self.pluginView.syncButton?.isSelected == false && isUserClick {
+                    if self.pluginScreenShareView.syncButton?.isSelected == false && isUserClick {
                         //This is send only when Syncbutton is on and Visible
                         self.meeting.meta.syncTab(id: plugin.id, tabType: .plugin)
                     }
                     self.handleClicksOnPluginsTab(model: plugin, at: button.index)
                     
                 }else if let screenShare = pluginsButtonsModels[button.index] as? ScreenShareModel {
-                    if self.pluginView.syncButton?.isSelected == false && isUserClick {
+                    if self.pluginScreenShareView.syncButton?.isSelected == false && isUserClick {
                         //This is send only when Syncbutton is on and Visible
                         self.meeting.meta.syncTab(id: screenShare.id, tabType: .screenshare)
                     }
@@ -673,13 +677,12 @@ extension MeetingViewController : MeetingViewModelDelegate {
                 }
             }
         }
-        self.pluginView.showAndHideActiveButtonListView(buttons: arrButtons)
     }
     
     private func showHidePluginPinnedAndScreenShareView() {
-        if self.viewModel.pinOrPluginModeIsActive() {
+        if self.viewModel.pinOrPluginScreenShareModeIsActive() {
             self.showPinnedPluginView(show: true, animation: true)
-            if self.viewModel.pluginModeIsActive() {
+            if self.viewModel.pluginScreenShareModeIsActive() {
                 self.showPluginView(show: true)
             }
             else if self.viewModel.pinModeIsActive() {
@@ -690,9 +693,9 @@ extension MeetingViewController : MeetingViewModelDelegate {
         }
     }
     
-    func refreshPluginsView() {
+    func refreshPluginsScreenShareView() {
         self.showHidePluginPinnedAndScreenShareView()
-        if self.viewModel.pluginModeIsActive() {
+        if self.viewModel.pluginScreenShareModeIsActive() {
             let participants = self.viewModel.screenShareViewModel.arrScreenShareParticipants
             let arrButtons = self.getScreenShareTabButton(participants: participants)
             self.refreshPluginsButtonTab(pluginsButtonsModels: participants, arrButtons: arrButtons)
@@ -703,10 +706,10 @@ extension MeetingViewController : MeetingViewModelDelegate {
                 }
                 if let index = selectedIndex {
                     if let pluginModel = participants[index] as? PluginButtonModel {
-                        self.pluginView.show(pluginView: pluginModel.plugin.getPluginView())
+                        self.pluginScreenShareView.show(pluginView: pluginModel.plugin.getPluginView())
                     }
                     else if let screenShare = participants[index] as? ScreenShareModel {
-                        self.pluginView.showVideoView(participant: screenShare.participant)
+                        self.pluginScreenShareView.showVideoView(participant: screenShare.participant)
                     }
                     self.loadGrid(fullScreen: false, animation: false, completion: {})
                 }
@@ -718,7 +721,7 @@ extension MeetingViewController : MeetingViewModelDelegate {
             }
 
             if self.viewModel.pinModeIsActive() {
-                self.pluginView.setButtons(buttons: [ScreenShareTabButton](), selectedIndex: nil) {_,_  in}
+                self.pluginScreenShareView.setButtons(buttons: [DytePluginScreenShareTabButton](), selectedIndex: nil) {_,_  in}
                 self.pinnedView.setParticipant(meeting: self.meeting, participant: self.meeting.participants.pinned!)
                 self.loadGrid(fullScreen: false, animation: false, completion: {})
             } else {
@@ -730,18 +733,18 @@ extension MeetingViewController : MeetingViewModelDelegate {
     }
     
     private func showPluginView(show: Bool) {
-        self.pluginView.isHidden = !show
+        self.pluginScreenShareView.isHidden = !show
         self.pinnedView.isHidden = true
     }
     
     private func showPinnedView(show: Bool) {
         self.pinnedView.isHidden = !show
-        self.pluginView.isHidden = true
+        self.pluginScreenShareView.isHidden = true
     }
     
     private func showPinnedPluginView(show: Bool, animation: Bool) {
         self.showPinnedPluginViewAsPerOrientation(show: show)
-        pluginPinnedBaseView.isHidden = !show
+        pluginPinnedScreenShareBaseView.isHidden = !show
         if animation {
             UIView.animate(withDuration: Animations.gridViewAnimationDuration) {
                 self.view.layoutIfNeeded()
@@ -845,7 +848,6 @@ extension MeetingViewController: DyteNotificationDelegate {
 }
 
 extension MeetingViewController: DyteLiveStreamEventsListener {
-
     
     public func onLiveStreamEnded() {
         

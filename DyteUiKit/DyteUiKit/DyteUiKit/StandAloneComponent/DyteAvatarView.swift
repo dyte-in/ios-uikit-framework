@@ -10,12 +10,13 @@ import DyteiOSCore
 
 
 public class DyteAvatarView: UIView {
+   
     private let profileImageView: BaseImageView = {
         let imageView = DyteUIUTility.createImageView(image: nil)
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
-    private let initialName: DyteText = DyteUIUTility.createLabel(text: "")
+    private let initialName: DyteLabel = DyteUIUTility.createLabel(text: "")
     private var participant: DyteMeetingParticipant?
     
     public init() {
@@ -31,7 +32,7 @@ public class DyteAvatarView: UIView {
         refresh()
     }
     
-    func set(participant: DyteMeetingParticipant) {
+    public func set(participant: DyteMeetingParticipant) {
         self.participant = participant
         refresh()
     }
@@ -39,6 +40,30 @@ public class DyteAvatarView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+ 
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        updateInitialNameConstraints()
+    }
+    
+    public func refresh() {
+        if let participant = self.participant {
+            if let path = participant.picture {
+                self.showImage(path: path)
+            }
+            self.setInitials(name: participant.name)
+        }
+    }
+    
+    public func setInitialName(font: UIFont) {
+        self.initialName.font = font
+    }
+    
+    
+}
+
+extension DyteAvatarView {
     
     private func createSubView() {
         self.addSubview(initialName)
@@ -75,23 +100,6 @@ public class DyteAvatarView: UIView {
         self.layer.cornerRadius = bounds.width/2.0
     }
     
-    public override func layoutSubviews() {
-        super.layoutSubviews()
-        updateInitialNameConstraints()
-    }
-    
-    public func refresh() {
-        if let participant = self.participant {
-            if let path = participant.picture {
-                self.showImage(path: path)
-            }
-            self.setInitials(name: participant.name)
-        }
-    }
-    
-    func setInitialName(font: UIFont) {
-        self.initialName.font = font
-    }
     
     private func showImage(path: String) {
         if let url = URL(string: path) {
@@ -119,4 +127,5 @@ public class DyteAvatarView: UIView {
         }
         return nameInitials
     }
+
 }

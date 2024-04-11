@@ -41,7 +41,7 @@ open class DyteControlBarButton: UIButton {
     public var normalStateTintColor: UIColor
 
     private var btnImageView: UIImageView?
-    var btnTitle: DyteText?
+    var btnTitle: DyteLabel?
     private var baseActivityIndicatorView: BaseIndicatorView?
     private var previousTitle: String?
 
@@ -93,7 +93,7 @@ open class DyteControlBarButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
     
-   public func setSelected(image: DyteImage? = nil, title: String? = nil) {
+    public func setSelected(image: DyteImage? = nil, title: String? = nil) {
         self.selectedImage = DyteImage.init(image: image?.image?.withRenderingMode(.alwaysTemplate), url: image?.url)
         self.selectedTitle = title
         self.isSelected = true
@@ -107,7 +107,7 @@ open class DyteControlBarButton: UIButton {
         self.isSelected = false
     }
     
-   private func createButton() {
+    private func createButton() {
         let baseView = UIView()
         self.addSubview(baseView)
         baseView.set(.fillSuperView(self, dyteSharedTokenSpace.space1))
@@ -135,7 +135,7 @@ open class DyteControlBarButton: UIButton {
         notificationBadge.isHidden = true
     }
     
-    private func getLabelAndImageOnlyView() -> (stackView: BaseStackView, title: DyteText , imageView: UIImageView) {
+    private func getLabelAndImageOnlyView() -> (stackView: BaseStackView, title: DyteLabel , imageView: UIImageView) {
         let stackView = DyteUIUTility.createStackView(axis: .vertical, spacing: 4)
         let imageView = DyteUIUTility.createImageView(image: self.normalImage)
         let title = DyteUIUTility.createLabel(text: self.normalTitle)

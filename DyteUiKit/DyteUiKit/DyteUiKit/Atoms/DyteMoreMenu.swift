@@ -114,7 +114,7 @@ protocol BottomSheetModelProtocol {
 
 class UNReadCountView: UIView {
 
-   private let title : DyteText = {
+   private let title : DyteLabel = {
        let label = DyteUIUTility.createLabel(text: "")
        label.font = UIFont.systemFont(ofSize: 12)
        return label

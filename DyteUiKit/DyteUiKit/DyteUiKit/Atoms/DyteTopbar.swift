@@ -8,14 +8,14 @@
 import UIKit
 import DyteiOSCore
 
-open class DyteNavigationBar:UIView {
+open class DyteNavigationBar: UIView {
     
     private var previousButtonClick: ((DyteControlBarButton)->Void)?
     private let tokenTextColorToken = DesignLibrary.shared.color.textColor
     private let tokenSpace = DesignLibrary.shared.space
     let backgroundColorValue = DesignLibrary.shared.color.background.shade900
 
-    public let title: DyteText = {
+    public let titleLabel: DyteLabel = {
         return DyteUIUTility.createLabel()
     }()
     
@@ -25,8 +25,8 @@ open class DyteNavigationBar:UIView {
         return button
     }()
     
-    init(title: String) {
-        self.title.text = title
+    public  init(title: String) {
+        self.titleLabel.text = title
         super.init(frame: .zero)
         self.backgroundColor = backgroundColorValue
         createSubViews()
@@ -38,14 +38,14 @@ open class DyteNavigationBar:UIView {
     }
     
    private func createSubViews() {
-       self.addSubview(title)
+       self.addSubview(titleLabel)
        self.addSubview(leftButton)
        leftButton.addTarget(self, action: #selector(clickPrevious(button:)), for: .touchUpInside)
        
        leftButton.set(.centerY(self),
                         .top(self, tokenSpace.space1, .greaterThanOrEqual),
                         .leading(self, tokenSpace.space3))
-       title.set(.sameTopBottom(self, tokenSpace.space1, .greaterThanOrEqual),
+       titleLabel.set(.sameTopBottom(self, tokenSpace.space1, .greaterThanOrEqual),
                  .centerY(leftButton),
                  .centerX(self),
                  .trailing(self, tokenSpace.space4, .greaterThanOrEqual),
@@ -54,8 +54,8 @@ open class DyteNavigationBar:UIView {
        leftButton.backgroundColor = self.backgroundColor
     }
     
-    public  func setClicks(previousButton:@escaping(DyteControlBarButton)->Void) {
-        self.previousButtonClick = previousButton
+    public func setBackButtonClick(callBack: @escaping(DyteControlBarButton)->Void) {
+        self.previousButtonClick = callBack
     }
     
     @objc private func clickPrevious(button: DyteControlBarButton) {

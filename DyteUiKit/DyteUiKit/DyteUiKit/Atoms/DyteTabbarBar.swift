@@ -256,7 +256,7 @@ open class DyteControlBar: DyteTabbarBar {
     public init(meeting: DyteMobileClient, delegate: DyteTabBarDelegate?, presentingViewController: UIViewController, appearance: DyteControlBarAppearance = DyteControlBarAppearanceModel(), settingViewControllerCompletion:(()->Void)? = nil, onLeaveMeetingCompletion: (()->Void)? = nil) {
         self.meeting = meeting
         self.presentingViewController = presentingViewController
-        let moreButton = DyteMoreButtonControlBar(mobileClient: meeting, presentingViewController: presentingViewController, settingViewControllerCompletion: settingViewControllerCompletion)
+        let moreButton = DyteMoreButtonControlBar(meeting: meeting, presentingViewController: presentingViewController, settingViewControllerCompletion: settingViewControllerCompletion)
         self.moreButton = moreButton
         moreButton.accessibilityIdentifier = "More_ControlBarButton"
         self.endCallCompletion = onLeaveMeetingCompletion

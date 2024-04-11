@@ -13,8 +13,6 @@ import DyteiOSCore
 
 public class DyteLeaveDialog {
     public static let onEndMeetingForAllButtonPress: Notification.Name = Notification.Name("onEndMeetingForAllButtonPress")
-    
-
     public  enum DyteLeaveDialogAlertButtonType {
         case willLeaveMeeting
         case didLeaveMeeting

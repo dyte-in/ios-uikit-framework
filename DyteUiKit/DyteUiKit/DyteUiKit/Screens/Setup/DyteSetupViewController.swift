@@ -158,7 +158,7 @@ public protocol SetupViewControllerDelegate: AnyObject {
     func userJoinedMeetingSuccessfully(sender: UIViewController)
 }
 
-public class SetupViewController: DyteBaseViewController, KeyboardObservable, SetupViewControllerDataSource {
+public class DyteSetupViewController: DyteBaseViewController, KeyboardObservable, SetupViewControllerDataSource {
     
     var keyboardObserver: KeyboardObserver?
     let baseView: BaseView = BaseView()
@@ -190,7 +190,7 @@ public class SetupViewController: DyteBaseViewController, KeyboardObservable, Se
         return button
     }()
     
-    let lblJoinAs: DyteText = {return DyteUIUTility.createLabel(text: "Join in as")}()
+    let lblJoinAs: DyteLabel = {return DyteUIUTility.createLabel(text: "Join in as")}()
     
     let textFieldBottom: DyteTextField = {
         let textField = DyteTextField()
@@ -200,13 +200,12 @@ public class SetupViewController: DyteBaseViewController, KeyboardObservable, Se
     
     var btnBottom: DyteJoinButton!
     
-    let lblBottom: DyteText = { return DyteUIUTility.createLabel(text: "24 people Present")}()
+    let lblBottom: DyteLabel = { return DyteUIUTility.createLabel(text: "24 people Present")}()
     
     let spaceToken = DesignLibrary.shared.space
     
     let backgroundColor = DesignLibrary.shared.color.background.shade1000
     
-    private let baseUrl: String?
     private let completion: ()->Void
     
     private let meetinInfoV2: DyteMeetingInfoV2?
@@ -217,22 +216,20 @@ public class SetupViewController: DyteBaseViewController, KeyboardObservable, Se
     private let peerViewBaseView = UIView()
 
     
-    public init(meetingInfo: DyteMeetingInfo, mobileClient: DyteMobileClient, baseUrl: String? = nil, completion:@escaping()->Void) {
+    public init(meetingInfo: DyteMeetingInfo, meeting: DyteMobileClient, completion:@escaping()->Void) {
         self.meetinInfo = meetingInfo
-        self.mobileClient = mobileClient
-        self.baseUrl = baseUrl
+        self.mobileClient = meeting
         self.completion = completion
         self.meetinInfoV2 = nil
-        super.init(dyteMobileClient: mobileClient)
+        super.init(meeting: meeting)
     }
     
-    public init(meetingInfo: DyteMeetingInfoV2, mobileClient: DyteMobileClient, baseUrl: String? = nil, completion:@escaping()->Void) {
-        self.mobileClient = mobileClient
+    public init(meetingInfo: DyteMeetingInfoV2, meeting: DyteMobileClient, completion:@escaping()->Void) {
+        self.mobileClient = meeting
         self.meetinInfoV2 = meetingInfo
         self.meetinInfo = nil
-        self.baseUrl = baseUrl
         self.completion = completion
-        super.init(dyteMobileClient: mobileClient)
+        super.init(meeting: meeting)
     }
     
     required init?(coder: NSCoder) {
@@ -268,18 +265,18 @@ public class SetupViewController: DyteBaseViewController, KeyboardObservable, Se
 }
 
 //Mark: Public methods
-extension SetupViewController {
-    public func loadSelfVideoView() {
+extension DyteSetupViewController {
+     func loadSelfVideoView() {
         selfPeerView.refreshVideo()
     }
     
-    public func setTag(name: String) {
+     func setTag(name: String) {
         selfPeerView.viewModel.refreshNameTag()
         selfPeerView.viewModel.refreshInitialName()
     }
 }
 
-extension SetupViewController: MeetingDelegate {
+extension DyteSetupViewController: MeetingDelegate {
 
     internal func onMeetingInitCompleted() {
         self.setupUIAfterMeetingInit()
@@ -316,7 +313,7 @@ extension SetupViewController: MeetingDelegate {
     }
 }
 
-extension SetupViewController {
+extension DyteSetupViewController {
     
     func setupView() {
         createSubviews()
@@ -402,7 +399,7 @@ extension SetupViewController {
         activityIndicator.stopAnimating()
         baseView.addSubview(peerViewBaseView)
 
-        selfPeerView = DyteParticipantTileView(viewModel: VideoPeerViewModel(mobileClient: mobileClient, participant: self.mobileClient.localUser, showSelfPreviewVideo: true))
+        selfPeerView = DyteParticipantTileView(viewModel: VideoPeerViewModel(meeting: mobileClient, participant: self.mobileClient.localUser, showSelfPreviewVideo: true))
         
         peerViewBaseView.addSubview(selfPeerView)
 
@@ -589,7 +586,7 @@ extension SetupViewController {
     }
 }
 
-extension SetupViewController : UITextFieldDelegate {
+extension DyteSetupViewController : UITextFieldDelegate {
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return false
@@ -597,7 +594,7 @@ extension SetupViewController : UITextFieldDelegate {
 }
 
 
-extension SetupViewController {
+extension DyteSetupViewController {
     
     @objc func clickSetting(button: DyteButton) {
         if !mobileClient.localUser.videoEnabled && !mobileClient.localUser.audioEnabled {
@@ -607,7 +604,7 @@ extension SetupViewController {
         
         if let mobileClient = self.viewModel?.dyteMobileClient {
             mobileClient.localUser.setDisplayName(name: textFieldBottom.text ?? "")
-            let controller = SettingViewController(nameTag: textFieldBottom.text ?? "", dyteMobileClient: mobileClient)
+            let controller = DyteSettingViewController(nameTag: textFieldBottom.text ?? "", meeting: mobileClient)
             controller.view.backgroundColor = self.view.backgroundColor
             controller.modalPresentationStyle = .fullScreen
             self.present(controller, animated: true)

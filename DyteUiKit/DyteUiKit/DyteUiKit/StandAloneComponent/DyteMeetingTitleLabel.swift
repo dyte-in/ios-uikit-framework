@@ -8,10 +8,10 @@
 import UIKit
 import DyteiOSCore
 
-public class DyteMeetingTitle: DyteText {
+public class DyteMeetingTitleLabel: DyteLabel {
     private let meeting: DyteMobileClient
     
-    init(meeting: DyteMobileClient, appearance: DyteTextAppearance = AppTheme.shared.meetingTitleAppearance) {
+    public init(meeting: DyteMobileClient, appearance: DyteTextAppearance = AppTheme.shared.meetingTitleAppearance) {
         self.meeting = meeting
         super.init(appearance: appearance)
         self.text = self.meeting.meta.meetingTitle

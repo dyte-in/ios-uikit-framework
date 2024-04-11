@@ -18,7 +18,7 @@ class SelectionProgressView: UIView {
         return imageView
         
     }()
-    let title: DyteText = {
+    let title: DyteLabel = {
         let label = DyteUIUTility.createLabel(alignment: .left)
         label.numberOfLines = 0
         label.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
@@ -26,7 +26,7 @@ class SelectionProgressView: UIView {
         return label
     }()
     
-    let progressTitle: DyteText = {
+    let progressTitle: DyteLabel = {
         let label = DyteUIUTility.createLabel(alignment: .right)
         label.font = UIFont.systemFont(ofSize: 12)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -162,18 +162,18 @@ class ListProgressSelectionView: UIView {
     
     var onSelectView:((Int)->Void)?
     
-    let titleLabel: DyteText = {
+    let titleLabel: DyteLabel = {
         let label = DyteUIUTility.createLabel(alignment: .left)
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()
-    let leftSubTitleLabel: DyteText = {
+    let leftSubTitleLabel: DyteLabel = {
         let label = DyteUIUTility.createLabel(alignment: .left)
         label.font = UIFont.systemFont(ofSize: 12)
         return label
     }()
-    let rightSubTitleLabel: DyteText = {
+    let rightSubTitleLabel: DyteLabel = {
         let label = DyteUIUTility.createLabel(alignment: .left)
         label.font = UIFont.systemFont(ofSize: 12)
         return label
@@ -272,14 +272,14 @@ class ShowPolls: UIView {
 
     let backGroundColor = DesignLibrary.shared.color.background.shade900
  
-    let lblTitle: DyteText = {
+    let lblTitle: DyteLabel = {
         let label = DyteUIUTility.createLabel(alignment: .left)
         label.numberOfLines = 0
         label.font = UIFont.boldSystemFont(ofSize: 12)
         return label
     }()
     
-    let lblTime: DyteText = {
+    let lblTime: DyteLabel = {
         let label = DyteUIUTility.createLabel(alignment: .left)
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 12)
@@ -446,7 +446,7 @@ extension ShowPollsViewModel: DytePollEventsListener {
     }
 }
 
-public class ShowPollsViewController: UIViewController , SetTopbar {
+public class DyteShowPollsViewController: UIViewController , SetTopbar {
     public var shouldShowTopBar: Bool = true
     
     public let topBar: DyteNavigationBar = {
@@ -460,7 +460,7 @@ public class ShowPollsViewController: UIViewController , SetTopbar {
     let dyteMobileClient: DyteMobileClient
 
     let viewBackGroundColor = DesignLibrary.shared.color.background.shade1000
-    let lblNoPollExist: DyteText = {
+    let lblNoPollExist: DyteLabel = {
         let label = DyteUIUTility.createLabel(text: "No active polls! \n\n Let's start a new poll now by clicking Create Poll button below")
         label.numberOfLines = 0
         label.accessibilityIdentifier = "Polls_EmptyScreen_Label"
@@ -480,9 +480,9 @@ public class ShowPollsViewController: UIViewController , SetTopbar {
         topBar.set(.top(self.view, self.view.safeAreaInsets.top))
     }
     
-    public init(dyteMobileClient: DyteMobileClient) {
-        self.viewModel = ShowPollsViewModel(dyteMobileClient: dyteMobileClient)
-        self.dyteMobileClient = dyteMobileClient
+    public init(meeting: DyteMobileClient) {
+        self.viewModel = ShowPollsViewModel(dyteMobileClient: meeting)
+        self.dyteMobileClient = meeting
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -501,7 +501,7 @@ public class ShowPollsViewController: UIViewController , SetTopbar {
         self.viewModel.refresh(onNewCreated: true)
     }
     
-    func setUpView() {
+    private func setUpView() {
         self.addTopBar(dismissAnimation: true)
         createSubView(on: self.view)
         self.view.backgroundColor = viewBackGroundColor
@@ -565,17 +565,18 @@ public class ShowPollsViewController: UIViewController , SetTopbar {
         
     }
     
-    private var controller: CreatePollsViewController? = nil
+    private var creatPollController: DyteCreatePollsViewController? = nil
+   
     @objc func createPollClick(button: DyteButton) {
-        let controller = CreatePollsViewController(dyteMobileClient: dyteMobileClient) { [weak self] result in
+        let controller = DyteCreatePollsViewController(dyteMobileClient: dyteMobileClient) { [weak self] result in
             guard let self = self else {return}
-            self.controller?.view.removeFromSuperview()
-            self.controller = nil
+            self.creatPollController?.view.removeFromSuperview()
+            self.creatPollController = nil
         }
         controller.view.backgroundColor = self.view.backgroundColor
         self.view.addSubview(controller.view)
         controller.view.set(.below(topBar), .sameLeadingTrailing(self.view), .bottom(self.view))
-        self.controller = controller
+        self.creatPollController = controller
     }
     
     func createShowPollResultView(pollsModel: [PollCardModel]) -> UIView {

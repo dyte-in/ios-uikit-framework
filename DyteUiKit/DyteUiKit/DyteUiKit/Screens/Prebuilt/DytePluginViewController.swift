@@ -9,22 +9,22 @@ import Foundation
 import DyteiOSCore
 import UIKit
 
-class PluginViewController: UIViewController {
+public class DytePluginViewController: UIViewController {
     
     // MARK: - Properties
     var plugins: [DytePlugin] = []
     let pluginTableView = UITableView()
     
-    init(polls: [DytePlugin]) {
-        self.plugins = polls
-        if polls.count > 0 {
+    public init(plugins: [DytePlugin]) {
+        self.plugins = plugins
+        if plugins.count > 0 {
             pluginTableView.accessibilityIdentifier = "Plugins_List"
         }
         super.init(nibName: nil, bundle: nil)
     }
     
     // MARK: - View Life Cycle
-    override func viewDidLoad() {
+    public  override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
         self.view.accessibilityIdentifier = "Plugins_Screen"
@@ -35,7 +35,7 @@ class PluginViewController: UIViewController {
     }
     
     // MARK: - Setup Views
-    func setupViews() {
+   private func setupViews() {
         
         // configure messageTableView
         pluginTableView.delegate = self
@@ -76,12 +76,12 @@ class PluginViewController: UIViewController {
     }
 }
 
-extension PluginViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+extension DytePluginViewController: UITableViewDelegate, UITableViewDataSource {
+  public  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return plugins.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "PluginCell", for: indexPath) as? PluginCell
         {
             cell.set(plugin: plugins[indexPath.row], indexPath: indexPath)
@@ -91,7 +91,7 @@ extension PluginViewController: UITableViewDelegate, UITableViewDataSource {
         return UITableViewCell(frame: .zero)
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let plugin = plugins[indexPath.row]
         if plugin.isActive {
             plugin.deactivate()

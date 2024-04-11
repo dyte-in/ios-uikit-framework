@@ -110,9 +110,9 @@ extension AutoSizingTextView: UITextViewDelegate {
 class AutoSizingTitleTextView: BaseMoluculeView {
     let gapBetweenTitleAndTextView:CGFloat = 8
         
-    let lblHeader: DyteText = { return DyteUIUTility.createLabel(text: "", alignment: .left, weight: UIFont.Weight.bold) }()
+    let lblHeader: DyteLabel = { return DyteUIUTility.createLabel(text: "", alignment: .left, weight: UIFont.Weight.bold) }()
     let textView: AutoSizingTextView
-    let lblError: DyteText = { return DyteUIUTility.createLabel(text: "" , alignment: .left) }()
+    let lblError: DyteLabel = { return DyteUIUTility.createLabel(text: "" , alignment: .left) }()
 
     init(headerTitle: String, placeHolderText: String) {
         textView = AutoSizingTextView(maxheight: 100, minHeight: 68, placeHolderText: placeHolderText)
@@ -328,7 +328,7 @@ extension AddOptions : UITextFieldDelegate {
 class SelectionView: UIView {
     let spaceToken = DesignLibrary.shared.space
     let imageView:BaseImageView = { return BaseImageView()}()
-    let title: DyteText = {
+    let title: DyteLabel = {
         let label = DyteUIUTility.createLabel(alignment: .left)
         label.numberOfLines = 0
         return label
@@ -415,7 +415,7 @@ enum SelectionType {
 class ListSelectionView<Model: SelectionModel>: UIView {
     let spaceToken = DesignLibrary.shared.space
     let models: [Model]
-    let titleLabel: DyteText = {return DyteUIUTility.createLabel(alignment: .left, weight: UIFont.Weight.bold)}()
+    let titleLabel: DyteLabel = {return DyteUIUTility.createLabel(alignment: .left, weight: UIFont.Weight.bold)}()
     let selectionType : SelectionType
     
     private let stackView = DyteUIUTility.createStackView(axis: .vertical, spacing: 4)
@@ -506,7 +506,7 @@ class CreatePollView: UIView {
     
     let verticalSpacingBetweenElemements = DesignLibrary.shared.space.space4
     
-    let lblHeader: DyteText = {
+    let lblHeader: DyteLabel = {
         let label = DyteUIUTility.createLabel(text: "Create Poll", alignment: .left)
         label.font = UIFont.systemFont(ofSize: 20, weight: UIFont.Weight.bold)
         return label
@@ -603,7 +603,7 @@ enum Result<Value, Error: Swift.Error> {
     case failure(Error)
 }
 
-public class CreatePollsViewController: UIViewController, KeyboardObservable {
+public class DyteCreatePollsViewController: UIViewController, KeyboardObservable {
     let scrollView:UIScrollView = {return UIScrollView()}()
     var keyboardObserver: KeyboardObserver?
     let dyteMobileClient: DyteMobileClient
@@ -628,7 +628,7 @@ public class CreatePollsViewController: UIViewController, KeyboardObservable {
         setUpView()
     }
     
-    func setUpView() {
+    private func setUpView() {
         createSubView(on: self.view)
         setupKeyboard()
     }
@@ -702,7 +702,7 @@ public class CreatePollsViewController: UIViewController, KeyboardObservable {
         self.view.endEditing(true)
     }
 }
-extension CreatePollsViewController: DytePollEventsListener {
+extension DyteCreatePollsViewController: DytePollEventsListener {
     public func onNewPoll(poll: DytePollMessage) {
         if createdByMe {
             createdByMe = false

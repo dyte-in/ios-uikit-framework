@@ -29,7 +29,7 @@ extension SetTopbar where Self:UIViewController {
     func addTopBar(dismissAnimation: Bool, completion:(()->Void)? = nil) {
         self.view.addSubview(self.topBar)
         if shouldShowTopBar {
-            topBar.setClicks { [weak self] button in
+            topBar.setBackButtonClick { [weak self] button in
                 guard let self = self else {return}
                 if self.isModal {
                     self.dismiss(animated: dismissAnimation, completion: completion)

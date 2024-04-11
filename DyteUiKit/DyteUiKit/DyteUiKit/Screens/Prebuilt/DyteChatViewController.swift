@@ -10,7 +10,7 @@ import DyteiOSCore
 import MobileCoreServices
 import UniformTypeIdentifiers
 
-public class ChatViewController: DyteBaseViewController, NSTextStorageDelegate {
+public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelegate {
     // MARK: - Properties
     fileprivate var messages: [DyteChatMessage]?
     let messageTableView = UITableView()
@@ -28,7 +28,7 @@ public class ChatViewController: DyteBaseViewController, NSTextStorageDelegate {
     let backgroundColor = DesignLibrary.shared.color.background.shade1000
     
     let spaceToken = DesignLibrary.shared.space
-    let lblNoPollExist: DyteText = {
+    let lblNoPollExist: DyteLabel = {
         let label = DyteUIUTility.createLabel(text: "No messages! \n\n Chat messages will appear here")
         label.accessibilityIdentifier = "No_Chat_Message_Label"
         label.numberOfLines = 0
@@ -46,8 +46,8 @@ public class ChatViewController: DyteBaseViewController, NSTextStorageDelegate {
     var viewDidAppear = false
     var messageLoaded = false
 
-    override public init(dyteMobileClient: DyteMobileClient) {
-        super.init(dyteMobileClient: dyteMobileClient)
+    override public init(meeting: DyteMobileClient) {
+        super.init(meeting: meeting)
     }
     
     required init?(coder: NSCoder) {
@@ -141,113 +141,113 @@ public class ChatViewController: DyteBaseViewController, NSTextStorageDelegate {
     
     
     // MARK: - Setup Views
-    func setupViews() {
-        // configure messageTableView
-        messageTableView.backgroundColor = backgroundColor
-        messageTableView.separatorStyle = .none
-        self.view.backgroundColor = backgroundColor
-        messageTableView.delegate = self
-        messageTableView.keyboardDismissMode = .onDrag
-        messageTableView.dataSource = self
-        messageTableView.register(MessageCell.self, forCellReuseIdentifier: "MessageCell")
-        messageTableView.register(FileMessageCell.self, forCellReuseIdentifier: "FileMessageCell")
-        messageTableView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(lblNoPollExist)
-        lblNoPollExist.set(.centerView(view), .leading(view, spaceToken.space5))
-        view.addSubview(messageTableView)
-        
-        // configure messageTextField
-        messageTableView.rowHeight = UITableView.automaticDimension
-        messageTextView.textStorage.delegate = self
-        messageTextView.font = UIFont.boldSystemFont(ofSize: 14)
-        messageTextView.isScrollEnabled = false
-        messageTextView.backgroundColor = DesignLibrary.shared.color.background.shade900
-        let borderRadiusType: BorderRadiusToken.RadiusType = AppTheme.shared.cornerRadiusTypeNameTextField ?? .rounded
-        messageTextView.layer.cornerRadius = DesignLibrary.shared.borderRadius.getRadius(size: .one,
-                                                                                         radius: borderRadiusType)
-        messageTextView.clipsToBounds = true
-        messageTextView.delegate = self
-        messageTextView.textColor = .black
-        messageTextView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(messageTextView)
-        
-        let leftButton: DyteControlBarButton = {
-            let button = DyteControlBarButton(image: DyteImage(image: ImageProvider.image(named: "icon_cross")))
-            button.accessibilityIdentifier = "Cross_Button"
-            return button
-        }()
-        leftButton.backgroundColor = navigationItem.backBarButtonItem?.tintColor
-        leftButton.addTarget(self, action: #selector(goBack), for: .touchUpInside)
-        let customBarButtonItem = UIBarButtonItem(customView: leftButton)
-        navigationItem.leftBarButtonItem = customBarButtonItem
-        
-        let label = DyteUIUTility.createLabel(text: "Chat")
-        label.font = UIFont.boldSystemFont(ofSize: 18)
-        label.textColor = DesignLibrary.shared.color.textColor.onBackground.shade900
-        navigationItem.titleView = label
-        
-        // configure sendButton
-        let fileIcon = ImageProvider.image(named: "icon_chat_add")
-        sendFileButton.setImage(fileIcon, for: .normal)
-        sendFileButton.addTarget(self, action: #selector(menuTapped), for: .touchUpInside)
-        view.addSubview(sendFileButton)
-        if self.meeting.localUser.permissions.chat.canSendFiles {
-            sendFileButton.set(.width(48))
-            sendFileButton.isHidden = false
-        } else {
-            sendFileButton.set(.width(0))
-            sendFileButton.isHidden = true
-        }
-        
-        //        let imageIcon = ImageProvider.image(named: "icon_image")
-        //        sendImageButton.setImage(imageIcon, for: .normal)
-        //        sendImageButton.set(.width(48))
-        //        sendImageButton.addTarget(self, action: #selector(addImageButtonTapped), for: .touchUpInside)
-        //        view.addSubview(sendImageButton)
-        
-        
-        sendMessageButton.set(.width(48))
-        sendMessageButton.backgroundColor = dyteSharedTokenColor.brand.shade500
-        sendMessageButton.clipsToBounds = true
-        sendMessageButton.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
-        view.addSubview(sendMessageButton)
-        
-        
-        
-        // add constraints
-        let constraints = [
-                   messageTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-                   messageTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                   messageTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                   messageTableView.bottomAnchor.constraint(equalTo: messageTextView.topAnchor, constant: -8),
-                   messageTextView.trailingAnchor.constraint(equalTo: sendMessageButton.leadingAnchor, constant: -8),
-                   messageTextView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
-                   messageTextView.topAnchor.constraint(equalTo: messageTableView.bottomAnchor, constant: 8),
-                   
-                   sendFileButton.trailingAnchor.constraint(equalTo: messageTextView.leadingAnchor, constant: -8),
-                   sendFileButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
-                   sendFileButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
-                   
-                   sendMessageButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
-                   sendMessageButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
-               ]
-        
-        // configure addImageButton
-        //        addImageButton.setTitle("Add Image", for: .normal)
-        //        addImageButton.addTarget(self, action: #selector(addImageButtonTapped), for: .touchUpInside)
-        //        addImageButton.translatesAutoresizingMaskIntoConstraints = false
-        //        view.addSubview(addImageButton)
-        //
-        //
-        //        addFileButton.setTitle("Add File", for: .normal)
-        //        addFileButton.addTarget(self, action: #selector(addFileButtonTapped), for: .touchUpInside)
-        //        addFileButton.translatesAutoresizingMaskIntoConstraints = false
-        //        view.addSubview(addFileButton)
-        
-        NSLayoutConstraint.activate(constraints)
-        messageTextViewHeightConstraint = messageTextView.heightAnchor.constraint(equalToConstant: 48)
-        messageTextViewHeightConstraint?.isActive = true
+    private func setupViews() {
+    // configure messageTableView
+    messageTableView.backgroundColor = backgroundColor
+    messageTableView.separatorStyle = .none
+    self.view.backgroundColor = backgroundColor
+    messageTableView.delegate = self
+    messageTableView.keyboardDismissMode = .onDrag
+    messageTableView.dataSource = self
+    messageTableView.register(MessageCell.self, forCellReuseIdentifier: "MessageCell")
+    messageTableView.register(FileMessageCell.self, forCellReuseIdentifier: "FileMessageCell")
+    messageTableView.translatesAutoresizingMaskIntoConstraints = false
+    view.addSubview(lblNoPollExist)
+    lblNoPollExist.set(.centerView(view), .leading(view, spaceToken.space5))
+    view.addSubview(messageTableView)
+    
+    // configure messageTextField
+    messageTableView.rowHeight = UITableView.automaticDimension
+    messageTextView.textStorage.delegate = self
+    messageTextView.font = UIFont.boldSystemFont(ofSize: 14)
+    messageTextView.isScrollEnabled = false
+    messageTextView.backgroundColor = DesignLibrary.shared.color.background.shade900
+    let borderRadiusType: BorderRadiusToken.RadiusType = AppTheme.shared.cornerRadiusTypeNameTextField ?? .rounded
+    messageTextView.layer.cornerRadius = DesignLibrary.shared.borderRadius.getRadius(size: .one,
+                                                                                        radius: borderRadiusType)
+    messageTextView.clipsToBounds = true
+    messageTextView.delegate = self
+    messageTextView.textColor = .black
+    messageTextView.translatesAutoresizingMaskIntoConstraints = false
+    view.addSubview(messageTextView)
+    
+    let leftButton: DyteControlBarButton = {
+        let button = DyteControlBarButton(image: DyteImage(image: ImageProvider.image(named: "icon_cross")))
+        button.accessibilityIdentifier = "Cross_Button"
+        return button
+    }()
+    leftButton.backgroundColor = navigationItem.backBarButtonItem?.tintColor
+    leftButton.addTarget(self, action: #selector(goBack), for: .touchUpInside)
+    let customBarButtonItem = UIBarButtonItem(customView: leftButton)
+    navigationItem.leftBarButtonItem = customBarButtonItem
+    
+    let label = DyteUIUTility.createLabel(text: "Chat")
+    label.font = UIFont.boldSystemFont(ofSize: 18)
+    label.textColor = DesignLibrary.shared.color.textColor.onBackground.shade900
+    navigationItem.titleView = label
+    
+    // configure sendButton
+    let fileIcon = ImageProvider.image(named: "icon_chat_add")
+    sendFileButton.setImage(fileIcon, for: .normal)
+    sendFileButton.addTarget(self, action: #selector(menuTapped), for: .touchUpInside)
+    view.addSubview(sendFileButton)
+    if self.meeting.localUser.permissions.chat.canSendFiles {
+        sendFileButton.set(.width(48))
+        sendFileButton.isHidden = false
+    } else {
+        sendFileButton.set(.width(0))
+        sendFileButton.isHidden = true
     }
+    
+    //        let imageIcon = ImageProvider.image(named: "icon_image")
+    //        sendImageButton.setImage(imageIcon, for: .normal)
+    //        sendImageButton.set(.width(48))
+    //        sendImageButton.addTarget(self, action: #selector(addImageButtonTapped), for: .touchUpInside)
+    //        view.addSubview(sendImageButton)
+    
+    
+    sendMessageButton.set(.width(48))
+    sendMessageButton.backgroundColor = dyteSharedTokenColor.brand.shade500
+    sendMessageButton.clipsToBounds = true
+    sendMessageButton.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
+    view.addSubview(sendMessageButton)
+    
+    
+    
+    // add constraints
+    let constraints = [
+                messageTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                messageTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                messageTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                messageTableView.bottomAnchor.constraint(equalTo: messageTextView.topAnchor, constant: -8),
+                messageTextView.trailingAnchor.constraint(equalTo: sendMessageButton.leadingAnchor, constant: -8),
+                messageTextView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
+                messageTextView.topAnchor.constraint(equalTo: messageTableView.bottomAnchor, constant: 8),
+                
+                sendFileButton.trailingAnchor.constraint(equalTo: messageTextView.leadingAnchor, constant: -8),
+                sendFileButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
+                sendFileButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
+                
+                sendMessageButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
+                sendMessageButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
+            ]
+    
+    // configure addImageButton
+    //        addImageButton.setTitle("Add Image", for: .normal)
+    //        addImageButton.addTarget(self, action: #selector(addImageButtonTapped), for: .touchUpInside)
+    //        addImageButton.translatesAutoresizingMaskIntoConstraints = false
+    //        view.addSubview(addImageButton)
+    //
+    //
+    //        addFileButton.setTitle("Add File", for: .normal)
+    //        addFileButton.addTarget(self, action: #selector(addFileButtonTapped), for: .touchUpInside)
+    //        addFileButton.translatesAutoresizingMaskIntoConstraints = false
+    //        view.addSubview(addFileButton)
+    
+    NSLayoutConstraint.activate(constraints)
+    messageTextViewHeightConstraint = messageTextView.heightAnchor.constraint(equalToConstant: 48)
+    messageTextViewHeightConstraint?.isActive = true
+}
     
     private func createMoreMenu() {
         var menus = [MenuType]()
@@ -325,7 +325,7 @@ public class ChatViewController: DyteBaseViewController, NSTextStorageDelegate {
     }
 }
 
-extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
+extension DyteChatViewController: UITableViewDelegate, UITableViewDataSource {
     // MARK: - UITableViewDelegate, UITableViewDataSource
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messages?.count ?? 0
@@ -393,7 +393,7 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-extension ChatViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension DyteChatViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let url = info[UIImagePickerController.InfoKey.imageURL] as? URL {
@@ -404,7 +404,7 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
     }
 }
 
-extension ChatViewController: UIDocumentPickerDelegate {
+extension DyteChatViewController: UIDocumentPickerDelegate {
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let selectedFileURL = urls.first else {
             return
@@ -414,7 +414,7 @@ extension ChatViewController: UIDocumentPickerDelegate {
     }
 }
 
-extension ChatViewController: UITextViewDelegate {
+extension DyteChatViewController: UITextViewDelegate {
     public func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.textColor == UIColor.black {
             textView.text = nil
@@ -441,7 +441,7 @@ extension ChatViewController: UITextViewDelegate {
     }
 }
 
-extension ChatViewController: DyteChatEventsListener {
+extension DyteChatViewController: DyteChatEventsListener {
     public func onNewChatMessage(message: DyteChatMessage) {
        
     }
@@ -450,6 +450,7 @@ extension ChatViewController: DyteChatEventsListener {
         if isOnScreen {
             NotificationCenter.default.post(name: Notification.Name("NotificationAllChatsRead"), object: nil)
         }
+        Shared.data.setChatReadCount(totalMessage: self.meeting.chat.messages.count)
         sendMessageButton.hideActivityIndicator()
         self.messages = meeting.chat.messages
         reloadMessageTableView()
@@ -506,8 +507,8 @@ extension UITextView {
     
     private class PlaceholderLabel: UILabel { }
     
-    private var placeholderLabel: DyteText {
-        if let label = subviews.compactMap( { $0 as? DyteText }).first {
+    private var placeholderLabel: DyteLabel {
+        if let label = subviews.compactMap( { $0 as? DyteLabel }).first {
             return label
         } else {
             let label = DyteUIUTility.createLabel(alignment: .left)

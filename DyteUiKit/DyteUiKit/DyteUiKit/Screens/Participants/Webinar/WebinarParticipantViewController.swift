@@ -9,8 +9,8 @@ import DyteiOSCore
 import UIKit
 
 
-class WebinarParticipantViewController: UIViewController, SetTopbar, KeyboardObservable {
-    var shouldShowTopBar: Bool = true
+public class WebinarParticipantViewController: UIViewController, SetTopbar, KeyboardObservable {
+    public var shouldShowTopBar: Bool = true
     let tableView = UITableView()
     let viewModel: WebinarParticipantViewControllerModel
     var keyboardObserver: KeyboardObserver?
@@ -18,7 +18,7 @@ class WebinarParticipantViewController: UIViewController, SetTopbar, KeyboardObs
 
     private var searchController: SearchViewController?
     
-    let topBar: DyteNavigationBar = {
+    public let topBar: DyteNavigationBar = {
         let topBar = DyteNavigationBar(title: "Participants")
         return topBar
     }()
@@ -130,12 +130,28 @@ extension WebinarParticipantViewController: UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let _ = self.viewModel.dataSourceTableView.getItem(indexPath: indexPath) as? TableItemConfigurator<SearchTableViewCell,SearchTableViewCellModel>  {
-            self.openSearchController()
+            
+            let sectionToBeSearch = BaseConfiguratorSection<CollectionTableSearchConfigurator>()
+            self.viewModel.dataSourceTableView.iterate(start: indexPath) { subItemIndexPath, itemConfigurator in
+                if subItemIndexPath.section == indexPath.section {
+                    if let item = itemConfigurator as? TableItemSearchableConfigurator<WebinarViewersTableViewCell,WebinarViewersTableViewCellModel> {
+                        sectionToBeSearch.insert(item)
+                    }else if let item = itemConfigurator as? TableItemSearchableConfigurator<ParticipantInCallTableViewCell,ParticipantInCallTableViewCellModel> {
+                        sectionToBeSearch.insert(item)
+                    }
+                    return false
+                }
+                return true
+            }
+            self.openSearchController(originalItems: [sectionToBeSearch])
         }
     }
     
-    func openSearchController() {
-        let controller = SearchViewController()
+    func openSearchController(originalItems: [BaseConfiguratorSection<CollectionTableSearchConfigurator>]) {
+        let controller = SearchViewController(meeting: self.viewModel.mobileClient, originalItems: originalItems, completion: { [weak self] in
+            guard let self = self else {return}
+            self.reloadScreen()
+        })
         self.view.addSubview(controller.view)
         controller.view.set(.sameLeadingTrailing(self.view),
                             .below(self.topBar),
@@ -187,15 +203,16 @@ extension WebinarParticipantViewController: UITableViewDataSource {
         else if let cell = cell as? WebinarViewersTableViewCell {
             cell.buttonMoreClick = { [weak self] button in
                 guard let self = self else {return}
-                if self.createMoreMenuForViewers(participantListner: cell.model.participantUpdateEventListner, indexPath: indexPath) {
-                    if self.isDebugModeOn {
-                        print("Debug DyteUIKit | Critical UIBug Please check why we are showing this button")
+                if cell.model.participantUpdateEventListner.participant.userId == viewModel.mobileClient.localUser.userId {
+                    if self.createMoreMenuForViewers(participantListner: cell.model.participantUpdateEventListner, indexPath: indexPath) {
+                        if self.isDebugModeOn {
+                            print("Debug DyteUIKit | Critical UIBug Please check why we are showing this button")
+                        }
                     }
                 }
             }
             cell.setPinView(isHidden: !cell.model.participantUpdateEventListner.participant.isPinned)
         }
-        
         else if let cell = cell as? OnStageWaitingRequestTableViewCell {
             cell.buttonCrossClick = { [weak self] button in
                 guard let self = self else {return}
@@ -341,5 +358,4 @@ extension WebinarParticipantViewController: UITableViewDataSource {
         return true
     }
 }
-
 

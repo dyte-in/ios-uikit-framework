@@ -10,11 +10,11 @@ import DyteiOSCore
 
 
 
-public class DyteClockView: DyteText {
+public class DyteClockView: DyteLabel {
     private let meeting: DyteMobileClient
     var meetingTimer: Timer?
 
-    init(meeting: DyteMobileClient, appearance: DyteTextAppearance = AppTheme.shared.clockViewAppearance) {
+    public init(meeting: DyteMobileClient, appearance: DyteTextAppearance = AppTheme.shared.clockViewAppearance) {
         self.meeting = meeting
         super.init(appearance: appearance)
         self.showMeetingTime()

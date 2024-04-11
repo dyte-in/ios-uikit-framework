@@ -17,13 +17,13 @@ public class DyteDropdown<Model: PickerCellModel>: UIView {
 
     let spaceToken = DesignLibrary.shared.space
     
-    fileprivate  var lblTitle: DyteText = {
+    fileprivate  var lblTitle: DyteLabel = {
         let lbl = DyteUIUTility.createLabel(text: "", alignment: .left)
         return lbl
     }()
     
-    let lblHeader: DyteText = { return DyteUIUTility.createLabel(text: "", alignment: .left) }()
-    let lblError: DyteText = { return DyteUIUTility.createLabel(text: "", alignment: .left) }()
+    let lblHeader: DyteLabel = { return DyteUIUTility.createLabel(text: "", alignment: .left) }()
+    let lblError: DyteLabel = { return DyteUIUTility.createLabel(text: "", alignment: .left) }()
     
     let verticalSpaceTopLabelAndTextField = 8.0
     let verticalSpaceErrorLabel = 4.0

@@ -10,7 +10,7 @@ import UIKit
 
 protocol MeetingViewModelDelegate: AnyObject {
     func refreshMeetingGrid(forRotation: Bool)
-    func refreshPluginsView()
+    func refreshPluginsScreenShareView()
     func activeSpeakerChanged(participant: DyteMeetingParticipant)
     func pinnedChanged(participant: DyteJoinedMeetingParticipant)
     func activeSpeakerRemoved()
@@ -247,12 +247,13 @@ public final class MeetingViewModel {
             screenShareViewModel.refresh(plugins: self.dyteMobileClient.plugins.active, selectedPlugin: nil)
            
             if self.dyteMobileClient.participants.currentPageNumber == 0 {
-                self.delegate?.refreshPluginsView()
+                self.delegate?.refreshPluginsScreenShareView()
             }
         }
         
-        //TODO: Do this onConnectedToMeetingRoom
-        
+        if dyteMobileClient.participants.screenShares.count > 0 {
+            updateScreenShareStatus()
+        }
     }
     
     func onReconnect() {
@@ -314,8 +315,8 @@ extension MeetingViewModel {
         }
     }
     
-    func pinOrPluginModeIsActive() -> Bool {
-        return pinModeIsActive() || pluginModeIsActive()
+    func pinOrPluginScreenShareModeIsActive() -> Bool {
+        return pinModeIsActive() || pluginScreenShareModeIsActive()
     }
     
     func pinModeIsActive() -> Bool {
@@ -325,16 +326,19 @@ extension MeetingViewModel {
         return false
     }
     
-    func pluginModeIsActive() -> Bool {
+    func pluginScreenShareModeIsActive() -> Bool {
         if self.dyteMobileClient.participants.currentPageNumber == 0 {
-            return dyteMobileClient.plugins.active.count > 0 ? true : false
+            if dyteMobileClient.participants.screenShares.count > 0 || dyteMobileClient.plugins.active.count > 0 {
+                return true
+            }
+            return false
         }
         return false
     }
     
     private func getParticipant(pageItemCount: UInt = 0) -> [GridCellViewModel] {
         let pinIsActive = pinModeIsActive()
-        let pluginIsActive = pluginModeIsActive()
+        let pluginScreenShareIsActive = pluginScreenShareModeIsActive()
         let activeParticipants = self.dyteMobileClient.participants.active
         if isDebugModeOn {
             print("Debug DyteUIKit | Active participant count \(activeParticipants.count)")
@@ -348,8 +352,8 @@ extension MeetingViewModel {
         var result =  [GridCellViewModel]()
         for participant in activeParticipants {
             if itemCount < rowCount {
-                if pinOrPluginModeIsActive() {
-                    if pluginIsActive {
+                if pinOrPluginScreenShareModeIsActive() {
+                    if pluginScreenShareIsActive {
                         // we will show plugin view and if there is pinned participant it should be shown at 0 index inside grid
                         if participant.isPinned {
                             result.insert(GridCellViewModel(participant: participant), at: 0)
@@ -470,10 +474,14 @@ extension MeetingViewModel: DyteParticipantEventsListener {
     }
 
     private func updateScreenShareStatus() {
+        if self.dyteMobileClient.participants.pinned != nil {
+            self.refreshPinnedParticipants()
+        }
+        
         screenShareViewModel.refresh(participants: self.dyteMobileClient.participants.screenShares)
         self.shouldShowShareScreen = screenShareViewModel.arrScreenShareParticipants.count > 0 ? true : false
         if self.dyteMobileClient.participants.currentPageNumber == 0 {
-            self.delegate?.refreshPluginsView()
+            self.delegate?.refreshPluginsScreenShareView()
         }
     }
     
@@ -496,9 +504,9 @@ extension MeetingViewModel: DytePluginEventsListener {
         if self.dyteMobileClient.participants.pinned != nil {
             self.refreshPinnedParticipants()
         }
-          screenShareViewModel.refresh(plugins: self.dyteMobileClient.plugins.active, selectedPlugin: plugin)
+        screenShareViewModel.refresh(plugins: self.dyteMobileClient.plugins.active, selectedPlugin: plugin)
         if self.dyteMobileClient.participants.currentPageNumber == 0 {
-            self.delegate?.refreshPluginsView()
+            self.delegate?.refreshPluginsScreenShareView()
         }
     }
     
@@ -511,7 +519,7 @@ extension MeetingViewModel: DytePluginEventsListener {
         }
           screenShareViewModel.removed(plugin: plugin)
         if self.dyteMobileClient.participants.currentPageNumber == 0 {
-            self.delegate?.refreshPluginsView()
+            self.delegate?.refreshPluginsScreenShareView()
         }
     }
     

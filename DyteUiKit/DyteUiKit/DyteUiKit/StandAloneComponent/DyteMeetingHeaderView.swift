@@ -33,7 +33,6 @@ open class DyteMeetingHeaderView: UIView {
     
    private lazy var recordingView: DyteRecordingView = {
         let view = DyteRecordingView(meeting: self.meeting, title: "Rec", image: nil, appearance: AppTheme.shared.recordingViewAppearance)
-        view.isHidden = true
         return view
     }()
     
@@ -53,14 +52,6 @@ open class DyteMeetingHeaderView: UIView {
         self.backgroundColor = backgroundColorValue
         createSubViews()
         self.nextPreviousButtonView.isHidden = true
-        if meeting.recording.recordingState == .recording || meeting.recording.recordingState == .starting {
-            // I have to use DispatchQueue here because recording view didn't blink, and by doing so its start working
-            DispatchQueue.main.async {
-                self.recordingView.meetingRecording(start: true)
-            }
-        }else if meeting.recording.recordingState == .stopping {
-            self.recordingView.meetingRecording(start: false)
-        }
     }
 
     private func createSubViews() {
@@ -74,34 +65,33 @@ open class DyteMeetingHeaderView: UIView {
         let stackView = DyteUIUTility.createStackView(axis: .vertical, spacing: 4)
         containerView.addSubview(stackView)
        
-        let title = DyteMeetingTitle(meeting: self.meeting)
+        let title = DyteMeetingTitleLabel(meeting: self.meeting)
         let stackViewSubTitle = DyteUIUTility.createStackView(axis: .horizontal, spacing: 4)
         stackViewSubTitle.addArrangedSubviews(lblSubtitle,clockView)
         stackView.addArrangedSubviews(title,stackViewSubTitle)
         containerView.addSubview(recordingView)
             
-       let nextPreviouStackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: tokenSpace.space2)
+        let nextPreviouStackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: tokenSpace.space2)
         containerView.addSubview(nextPreviouStackView)
       
-       stackView.set(.leading(containerView, tokenSpace.space3),
+        stackView.set(.leading(containerView, tokenSpace.space3),
                     .sameTopBottom(containerView, tokenSpace.space2))
-       recordingView.set(.centerY(containerView),
+        recordingView.set(.centerY(containerView),
                          .top(containerView, tokenSpace.space1, .greaterThanOrEqual),
                          .after(stackView, tokenSpace.space3))
         recordingView.get(.top)?.priority = .defaultLow
-       nextPreviouStackView.set(.after(recordingView,tokenSpace.space3, .greaterThanOrEqual),
+        nextPreviouStackView.set(.after(recordingView,tokenSpace.space3, .greaterThanOrEqual),
                           .trailing(containerView,tokenSpace.space3),
                           .centerY(containerView),
                           .top(containerView,tokenSpace.space1,.greaterThanOrEqual))
         nextPreviouStackView.get(.top)?.priority = .defaultLow
 
-        let cameraSwitchButton = DyteSwitchCameraButtonControlBar(mobileClient: self.meeting)
+        let cameraSwitchButton = DyteSwitchCameraButtonControlBar(meeting: self.meeting)
         cameraSwitchButton.backgroundColor = self.backgroundColor
         nextPreviouStackView.addArrangedSubviews(nextPreviousButtonView, cameraSwitchButton)
        
         self.nextPreviousButtonView.previousButton.addTarget(self, action: #selector(clickPrevious(button:)), for: .touchUpInside)
         self.nextPreviousButtonView.nextButton.addTarget(self, action: #selector(clickNext(button:)), for: .touchUpInside)
-    
     }
     
     @objc private func clickPrevious(button: DyteControlBarButton) {
@@ -128,7 +118,6 @@ extension DyteMeetingHeaderView {
             return
         }
 
-        
         let nextPagePossible = self.meeting.participants.canGoNextPage
         let prevPagePossible = self.meeting.participants.canGoPreviousPage
        

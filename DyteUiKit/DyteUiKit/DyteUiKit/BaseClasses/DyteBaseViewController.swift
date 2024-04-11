@@ -15,9 +15,9 @@ open class DyteBaseViewController: UIViewController, AdaptableUI {
     public var portraitConstraints = [NSLayoutConstraint]()
     public var landscapeConstraints = [NSLayoutConstraint]()
     
-   public init(dyteMobileClient: DyteMobileClient) {
-        self.meeting = dyteMobileClient
-        dyteSelfListner = DyteEventSelfListner(mobileClient: dyteMobileClient)
+   public init(meeting: DyteMobileClient) {
+        self.meeting = meeting
+        dyteSelfListner = DyteEventSelfListner(mobileClient: meeting)
         super.init(nibName: nil, bundle: nil)
     }
     

@@ -164,6 +164,8 @@ public protocol DyteStageActionButtonControlBarDataSource {
 public protocol ConfigureWebinerAlertView: UIView {
     var confirmAndJoinButton: DyteButton {get }
     var cancelButton: DyteButton {get }
+    func show(on view: UIView)
+    init(meeting: DyteMobileClient, participant: DyteJoinedMeetingParticipant)
 }
 
 public class  DyteStageActionButtonControlBar: DyteControlBarButton {
@@ -267,13 +269,11 @@ public class  DyteStageActionButtonControlBar: DyteControlBarButton {
    
     func showAlert(baseController: UIViewController) {
         if self.alert == nil {
-            let alert = self.dataSource?.getAlertView() ?? WebinarAlertView(meetingClient: self.mobileClient, participant: self.mobileClient.localUser)
-            alert.layer.zPosition = 1.0
-            baseController.view.addSubview(alert)
+            let alert = self.dataSource?.getAlertView() ?? DyteWebinarAlertView(meeting: self.mobileClient, participant: self.mobileClient.localUser)
             alert.confirmAndJoinButton.addTarget(self, action: #selector(alertConfirmAndJoinClick(button:)), for: .touchUpInside)
             alert.cancelButton.addTarget(self, action: #selector(alertCancelButton(button:)), for: .touchUpInside)
-            alert.set(.fillSuperView(baseController.view))
             self.alert = alert
+            alert.show(on: baseController.view)
             Shared.data.delegate?.webinarJoinStagePopupDidShow()
         }
     }
