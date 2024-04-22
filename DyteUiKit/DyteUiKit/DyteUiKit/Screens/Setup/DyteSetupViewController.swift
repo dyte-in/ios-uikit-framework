@@ -240,7 +240,6 @@ public class DyteSetupViewController: DyteBaseViewController, KeyboardObservable
         super.viewDidLoad()
         setupView()
         self.view.backgroundColor = backgroundColor
-       
     }
 
     private var viewModel: SetupViewModel!
@@ -581,7 +580,7 @@ extension DyteSetupViewController {
             waitingView.set(.fillSuperView(self.view))
             self.view.endEditing(true)
             waitingRoomView = waitingView
-            waitingView.show(status: status)
+            waitingView.show(status: ParticipantMeetingStatus.getStatus(status: status))
         }
     }
 }

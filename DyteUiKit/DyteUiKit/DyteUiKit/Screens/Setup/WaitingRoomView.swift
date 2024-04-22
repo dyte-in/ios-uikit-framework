@@ -8,6 +8,32 @@
 import UIKit
 import DyteiOSCore
 
+
+public enum ParticipantMeetingStatus {
+    case waiting
+    case rejected
+    case accepted
+    case kicked
+    case meetingEnded
+    case none
+}
+
+extension ParticipantMeetingStatus {
+   static func getStatus(status: WaitListStatus) -> ParticipantMeetingStatus {
+        switch status {
+        case .accepted:
+            return .accepted
+        case .waiting:
+            return .waiting
+        case .rejected:
+            return .rejected
+        default:
+            return .none
+        }
+    }
+}
+
+
 public class WaitingRoomView: UIView {
     
     var titleLabel: DyteLabel = {
@@ -53,7 +79,7 @@ public class WaitingRoomView: UIView {
             baseView.addSubViews(titleLabel,buttonBaseView)
             titleLabel.set(.sameLeadingTrailing(baseView),
                            .top(baseView))
-            buttonBaseView.set(.sameLeadingTrailing(baseView), .below(titleLabel),
+            buttonBaseView.set(.sameLeadingTrailing(baseView), .below(titleLabel, dyteSharedTokenSpace.space2),
                                .bottom(baseView))
         }
         
@@ -69,20 +95,30 @@ public class WaitingRoomView: UIView {
         self.onComplete()
     }
     
-    public func show(status: WaitListStatus) {
+    public func show(status: ParticipantMeetingStatus) {
         self.button.isHidden = true
-        if status == WaitListStatus.waiting {
+        if status == .waiting {
             self.titleLabel.text = "You are in the waiting room, the host will let you in soon."
             self.titleLabel.textColor = dyteSharedTokenColor.textColor.onBackground.shade1000
 
-        }else if status == WaitListStatus.accepted {
+        }else if status == .accepted {
             self.removeFromSuperview()
-        }else if status == WaitListStatus.rejected {
+        }else if status == .rejected {
             self.titleLabel.text = "Your request to join the meeting was denied."
             self.titleLabel.textColor = dyteSharedTokenColor.status.danger
             self.button.isHidden = false
-
         }
+        else if status == .kicked {
+            self.titleLabel.text = "Your were removed from the meeting"
+            self.titleLabel.textColor = dyteSharedTokenColor.status.danger
+            self.button.isHidden = false
+        }
+        else if status == .meetingEnded {
+            self.titleLabel.text = "The meeting ended."
+            self.titleLabel.textColor = dyteSharedTokenColor.textColor.onBackground.shade1000
+            self.button.isHidden = false
+        }
+
     }
     
     public func show(message: String) {

@@ -22,7 +22,7 @@ public class DyteEventSelfListner  {
     
     private var selfObserveWebinarStageStatus:((StageStatus)->Void)?
     private var selfObserveRequestToJoinStage:(()->Void)?
-
+    private var observeSelfPermissionChanged:(()->Void)?
     private var selfWebinarJoinedStateCompletion:((Bool)->Void)?
     private var selfWebinarLeaveStateCompletion:((Bool)->Void)?
     private var selfRequestToGetPermissionJoinedStateCompletion:((Bool)->Void)?
@@ -216,6 +216,10 @@ public class DyteEventSelfListner  {
         self.selfObserveRequestToJoinStage = update
     }
     
+    public func observeSelfPermissionChanged(update:@escaping()->Void) {
+        self.observeSelfPermissionChanged = update
+    }
+    
     deinit{
         Self.currentInstance -= 1
         if isDebugModeOn {
@@ -278,6 +282,11 @@ extension DyteEventSelfListner: DyteStageEventListener {
 }
 
 extension DyteEventSelfListner: DyteSelfEventsListener {
+   
+    public func onPermissionsUpdated(permission: SelfPermissions) {
+        self.observeSelfPermissionChanged?()
+    }
+    
 
     public func onScreenShareStartFailed(reason: String) {
         
@@ -300,9 +309,7 @@ extension DyteEventSelfListner: DyteSelfEventsListener {
     }
     
     public func onStageStatusUpdated(stageStatus: StageStatus) {
-        if self.selfObserveWebinarStageStatus != nil {
-            self.selfObserveWebinarStageStatus?(stageStatus)
-        }
+        self.selfObserveWebinarStageStatus?(stageStatus)
     }
     
     func onRoomMessage(message: String) {

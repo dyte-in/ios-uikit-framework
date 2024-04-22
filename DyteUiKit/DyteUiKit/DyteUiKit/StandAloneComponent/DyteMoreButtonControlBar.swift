@@ -82,11 +82,8 @@ open class  DyteMoreButtonControlBar: DyteControlBarButton {
        
         menus.append(.settings)
         
-        let chatPermission = self.meeting.localUser.permissions.chat
-        if chatPermission.canSendFiles || chatPermission.canSendText {
-            let chatCount = Shared.data.getUnreadChatCount(totalMessage: self.meeting.chat.messages.count)
-            menus.append(.chat(notificationMessage: chatCount > 0 ? "\(chatCount)" : ""))
-        }
+        let chatCount = Shared.data.getUnreadChatCount(totalMessage: self.meeting.chat.messages.count)
+        menus.append(.chat(notificationMessage: chatCount > 0 ? "\(chatCount)" : ""))
         
         var message = ""
         let pending = self.meeting.getPendingParticipantCount()

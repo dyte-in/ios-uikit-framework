@@ -67,6 +67,10 @@ extension ParticipantInCallTableViewCell: ConfigureView {
             guard let self = self else {return}
             self.audioButton.isSelected = !isEnabled
         }
+        model.participantUpdateEventListner.observePinState { [weak self] isPinned, observer in
+            guard let self = self else {return}
+            self.setPinView(isHidden: !isPinned)
+        }
         model.participantUpdateEventListner.observeVideoState { [weak self] isEnabled, observer in
             guard let self = self else {return}
             self.videoButton.isSelected = !isEnabled

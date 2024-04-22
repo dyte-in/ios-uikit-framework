@@ -10,10 +10,12 @@ import DyteiOSCore
 class DyteParticipantUpdateEventListner  {
     private var participantAudioStateCompletion:((Bool)->Void)?
     private var participantVideoStateCompletion:((Bool)->Void)?
+    
     private var participantObserveAudioStateCompletion:((Bool,DyteParticipantUpdateEventListner)->Void)?
     private var participantObserveVideoStateCompletion:((Bool,DyteParticipantUpdateEventListner)->Void)?
     private var participantPinStateCompletion:((Bool)->Void)?
     private var participantUnPinStateCompletion:((Bool)->Void)?
+    private var participantObservePinStateCompletion:((Bool,DyteParticipantUpdateEventListner)->Void)?
     private let isDebugModeOn = DyteUiKit.isDebugModeOn
 
     let participant: DyteJoinedMeetingParticipant
@@ -25,6 +27,10 @@ class DyteParticipantUpdateEventListner  {
     
     public func observeAudioState(update:@escaping(_ isEnabled: Bool,_ observer: DyteParticipantUpdateEventListner)->Void) {
         participantObserveAudioStateCompletion = update
+    }
+    
+    public func observePinState(update:@escaping(_ isPinned: Bool,_ observer: DyteParticipantUpdateEventListner)->Void) {
+        participantObservePinStateCompletion = update
     }
     
     public func observeVideoState(update:@escaping(_ isEnabled: Bool,_ observer: DyteParticipantUpdateEventListner)->Void){
@@ -67,6 +73,7 @@ extension DyteParticipantUpdateEventListner: DyteParticipantUpdateListener {
     func onPinned() {
         self.participantPinStateCompletion?(true)
         self.participantPinStateCompletion = nil
+        self.participantObservePinStateCompletion?(true, self)
     }
     
     func onRemovedAsActiveSpeaker() {
@@ -88,6 +95,8 @@ extension DyteParticipantUpdateEventListner: DyteParticipantUpdateListener {
     func onUnpinned() {
         self.participantUnPinStateCompletion?(true)
         self.participantUnPinStateCompletion = nil
+        self.participantObservePinStateCompletion?(false, self)
+
     }
     
     func onUpdate(participant: DyteMeetingParticipant) {

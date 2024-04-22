@@ -203,13 +203,11 @@ extension WebinarParticipantViewController: UITableViewDataSource {
         else if let cell = cell as? WebinarViewersTableViewCell {
             cell.buttonMoreClick = { [weak self] button in
                 guard let self = self else {return}
-                if cell.model.participantUpdateEventListner.participant.userId == viewModel.mobileClient.localUser.userId {
                     if self.createMoreMenuForViewers(participantListner: cell.model.participantUpdateEventListner, indexPath: indexPath) {
                         if self.isDebugModeOn {
                             print("Debug DyteUIKit | Critical UIBug Please check why we are showing this button")
                         }
                     }
-                }
             }
             cell.setPinView(isHidden: !cell.model.participantUpdateEventListner.participant.isPinned)
         }
@@ -258,6 +256,7 @@ extension WebinarParticipantViewController: UITableViewDataSource {
         }
         return cell
     }
+        
     private func createMoreMenuForViewers(participantListner: DyteParticipantUpdateEventListner, indexPath: IndexPath)-> Bool {
         var menus = [MenuType]()
         let participant = participantListner.participant

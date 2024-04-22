@@ -118,7 +118,7 @@ public class MeetingViewController: DyteBaseViewController {
         self.viewModel.dyteSelfListner.observeSelfRemoved { [weak self] success in
             guard let self = self else {return}
             
-            func showWaitingRoom(status: WaitListStatus, time:TimeInterval, onComplete:@escaping()->Void) {
+            func showWaitingRoom(status: ParticipantMeetingStatus, time:TimeInterval, onComplete:@escaping()->Void) {
                 if status != .none {
                     let waitingView = WaitingRoomView(automaticClose: true, onCompletion: onComplete)
                     waitingView.backgroundColor = self.view.backgroundColor
@@ -129,7 +129,7 @@ public class MeetingViewController: DyteBaseViewController {
                 }
             }
             //self.dismiss(animated: true)
-            showWaitingRoom(status: .rejected, time: 2) { [weak self] in
+            showWaitingRoom(status: .meetingEnded, time: 2) { [weak self] in
                 guard let self = self else {return}
                 self.viewModel.clean()
                 self.onFinishedMeeting()

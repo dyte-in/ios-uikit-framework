@@ -20,9 +20,25 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     var messageTextFieldBottomConstraint: NSLayoutConstraint?
     var sendFileButtonBottomConstraint: NSLayoutConstraint?
     var sendButtonBottomConstraint: NSLayoutConstraint?
+    
+    let sendFileButtonDisabledView: UIView = {
+        let view = UIView()
+        view.backgroundColor = DesignLibrary.shared.color.background.shade1000
+        view.alpha = 0.8
+        return view
+    }()
+    
+    let sendTextViewDisabledView: UIView = {
+        let view = UIView()
+        view.backgroundColor = DesignLibrary.shared.color.background.shade1000
+        view.alpha = 0.8
+        return view
+    }()
+    
     let sendFileButton = DyteButton(style: .iconOnly(icon: DyteImage(image: ImageProvider.image(named: "icon_chat_add"))), dyteButtonState: .focus)
     let sendImageButton = DyteButton(style: .iconOnly(icon: DyteImage(image: ImageProvider.image(named: "icon_image"))), dyteButtonState: .active)
     let sendMessageButton = DyteButton(style: .iconOnly(icon: DyteImage(image: ImageProvider.image(named: "icon_chat_send"))), dyteButtonState: .active)
+    
     var documentsViewController: DocumentsViewController?
     let imagePicker = UIImagePickerController()
     let backgroundColor = DesignLibrary.shared.color.background.shade1000
@@ -66,6 +82,16 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
         addWaitingRoom {}
         setUpReconnection(failed: {}, success: {})
         loadChatMessages()
+        addPermissionUpdateObserver()
+    }
+    
+    func addPermissionUpdateObserver() {
+        dyteSelfListner.observeSelfPermissionChanged { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.refreshPermission()
+        }
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -176,6 +202,7 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
         button.accessibilityIdentifier = "Cross_Button"
         return button
     }()
+        
     leftButton.backgroundColor = navigationItem.backBarButtonItem?.tintColor
     leftButton.addTarget(self, action: #selector(goBack), for: .touchUpInside)
     let customBarButtonItem = UIBarButtonItem(customView: leftButton)
@@ -191,28 +218,14 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     sendFileButton.setImage(fileIcon, for: .normal)
     sendFileButton.addTarget(self, action: #selector(menuTapped), for: .touchUpInside)
     view.addSubview(sendFileButton)
-    if self.meeting.localUser.permissions.chat.canSendFiles {
-        sendFileButton.set(.width(48))
-        sendFileButton.isHidden = false
-    } else {
-        sendFileButton.set(.width(0))
-        sendFileButton.isHidden = true
-    }
-    
-    //        let imageIcon = ImageProvider.image(named: "icon_image")
-    //        sendImageButton.setImage(imageIcon, for: .normal)
-    //        sendImageButton.set(.width(48))
-    //        sendImageButton.addTarget(self, action: #selector(addImageButtonTapped), for: .touchUpInside)
-    //        view.addSubview(sendImageButton)
-    
-    
+    sendFileButton.set(.width(48))
+    sendFileButton.addSubview(sendFileButtonDisabledView)
+    sendFileButtonDisabledView.set(.fillSuperView(sendFileButton))
     sendMessageButton.set(.width(48))
     sendMessageButton.backgroundColor = dyteSharedTokenColor.brand.shade500
     sendMessageButton.clipsToBounds = true
     sendMessageButton.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
     view.addSubview(sendMessageButton)
-    
-    
     
     // add constraints
     let constraints = [
@@ -232,22 +245,24 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
                 sendMessageButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
             ]
     
-    // configure addImageButton
-    //        addImageButton.setTitle("Add Image", for: .normal)
-    //        addImageButton.addTarget(self, action: #selector(addImageButtonTapped), for: .touchUpInside)
-    //        addImageButton.translatesAutoresizingMaskIntoConstraints = false
-    //        view.addSubview(addImageButton)
-    //
-    //
-    //        addFileButton.setTitle("Add File", for: .normal)
-    //        addFileButton.addTarget(self, action: #selector(addFileButtonTapped), for: .touchUpInside)
-    //        addFileButton.translatesAutoresizingMaskIntoConstraints = false
-    //        view.addSubview(addFileButton)
-    
     NSLayoutConstraint.activate(constraints)
     messageTextViewHeightConstraint = messageTextView.heightAnchor.constraint(equalToConstant: 48)
     messageTextViewHeightConstraint?.isActive = true
-}
+    view.addSubview(sendTextViewDisabledView)
+    sendTextViewDisabledView.set(.sameTopBottom(sendMessageButton),
+                                     .leading(messageTextView),
+                                     .trailing(sendMessageButton))
+     refreshPermission()
+    }
+    
+    private func refreshPermission() {
+        let canSendFiles = self.meeting.localUser.permissions.chat.canSendFiles
+        let canSendText = self.meeting.localUser.permissions.chat.canSendText
+        self.sendTextViewDisabledView.isHidden = canSendText
+        self.sendFileButtonDisabledView.isHidden = canSendFiles
+        messageTextView.resignFirstResponder()
+    }
+    
     
     private func createMoreMenu() {
         var menus = [MenuType]()

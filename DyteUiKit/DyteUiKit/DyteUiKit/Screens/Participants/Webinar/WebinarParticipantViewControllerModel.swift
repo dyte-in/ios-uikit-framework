@@ -219,12 +219,12 @@ extension WebinarParticipantViewControllerModel {
                     image = DyteImage(url: url)
                 }
                 
+                
                 sectionTwo.insert(TableItemSearchableConfigurator<ParticipantInCallTableViewCell,ParticipantInCallTableViewCellModel>(model:ParticipantInCallTableViewCellModel(image: image, title: name, showBottomSeparator: showBottomSeparator, showTopSeparator: false, participantUpdateEventListner: DyteParticipantUpdateEventListner(participant: participant), showMoreButton: showMoreButton())))
             }
         }
         return sectionTwo
     }
-    
     
     private func getInCallViewers(minimumParticpantCountToShowSearchBar: Int) ->  BaseConfiguratorSection<CollectionTableConfigurator> {
         var joinedParticipants = [DyteJoinedMeetingParticipant]()

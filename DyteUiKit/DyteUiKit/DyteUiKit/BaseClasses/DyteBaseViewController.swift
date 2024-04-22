@@ -66,7 +66,7 @@ open class DyteBaseViewController: UIViewController, AdaptableUI {
                waitingView.set(.fillSuperView(self.view))
                self.view.endEditing(true)
                waitingRoomView = waitingView
-               waitingView.show(status: status)
+               waitingView.show(status: ParticipantMeetingStatus.getStatus(status: status))
            }
        }
     }
