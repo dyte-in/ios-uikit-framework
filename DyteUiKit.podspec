@@ -26,7 +26,7 @@ Pod::Spec.new do |s|
   s.ios.frameworks = ['UIKit', 'AVFAudio']
   s.resource_bundle = { 'DyteUiKit' => 'DyteUiKit/Resources/*' }
   s.module_name = 'DyteUiKit'
-  s.dependency 'DyteiOSCore', '~> 1.34.4'
+  s.dependency 'DyteiOSCore', '~> 1.34.6'
   s.dependency 'DyteWebRTC', '~> 0.0.4'
   s.dependency 'AmazonIVSPlayer', '~> 1.19.0'
 end
