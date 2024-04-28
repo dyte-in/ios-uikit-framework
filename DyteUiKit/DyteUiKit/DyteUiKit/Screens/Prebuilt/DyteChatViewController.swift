@@ -256,8 +256,12 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     }
     
     private func refreshPermission() {
-        let canSendFiles = self.meeting.localUser.permissions.chat.canSendFiles
-        let canSendText = self.meeting.localUser.permissions.chat.canSendText
+        var canSendFiles = self.meeting.localUser.permissions.chat.canSendFiles
+        var canSendText = self.meeting.localUser.permissions.chat.canSendText
+        if self.meeting.localUser.permissions.chat.canSend == false {
+            canSendText = false
+            canSendFiles = false
+        }
         self.sendTextViewDisabledView.isHidden = canSendText
         self.sendFileButtonDisabledView.isHidden = canSendFiles
         messageTextView.resignFirstResponder()

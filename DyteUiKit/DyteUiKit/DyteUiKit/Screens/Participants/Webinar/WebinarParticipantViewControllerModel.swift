@@ -166,27 +166,31 @@ extension WebinarParticipantViewControllerModel {
     }
    
     private func getOnStageSection(minimumParticpantCountToShowSearchBar: Int) ->  BaseConfiguratorSection<CollectionTableConfigurator> {
-        let joinedParticipants = self.mobileClient.participants.active
+        var arrJoinedParticipants = self.mobileClient.participants.joined
+        var onStageParticipants = [DyteJoinedMeetingParticipant]()
+        for participant in arrJoinedParticipants {
+            if participant.stageStatus == StageStatus.onStage {
+                onStageParticipants.append(participant)
+            }
+        }
         let sectionTwo =  BaseConfiguratorSection<CollectionTableConfigurator>()
         
-        if joinedParticipants.count > 0 {
+        if onStageParticipants.count > 0 {
             var participantCount = ""
-            if joinedParticipants.count > 1 {
-                participantCount = " (\(joinedParticipants.count))"
+            if onStageParticipants.count > 1 {
+                participantCount = " (\(onStageParticipants.count))"
             }
             sectionTwo.insert(TableItemConfigurator<TitleTableViewCell,TitleTableViewCellModel>(model:TitleTableViewCellModel(title: "On stage\(participantCount)")))
             
-            if joinedParticipants.count > minimumParticpantCountToShowSearchBar {
+            if onStageParticipants.count > minimumParticpantCountToShowSearchBar {
                 sectionTwo.insert(TableItemConfigurator<SearchTableViewCell,SearchTableViewCellModel>(model:SearchTableViewCellModel(placeHolder: "Search Participant")))
-                
             }
             
-            for (index, participant) in joinedParticipants.enumerated() {
+            for (index, participant) in onStageParticipants.enumerated() {
                 var showBottomSeparator = true
-                if index == joinedParticipants.count - 1 {
+                if index == onStageParticipants.count - 1 {
                     showBottomSeparator = false
                 }
-                
                 func showMoreButton() -> Bool {
                     var canShow = false
                     let hostPermission = self.mobileClient.localUser.permissions.host

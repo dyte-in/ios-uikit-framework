@@ -294,6 +294,9 @@ public class  DyteStageActionButtonControlBar: DyteControlBarButton {
         removeAlertView()
         Shared.data.delegate?.webinarJoinStagePopupDidHide(click: .cancel)
         self.stateMachine.handleEvent(event: .onFail)
+        self.selfListner.leaveWebinarStage { success in
+            
+        }
     }
     
     @objc func click(button: DyteControlBarButton) {

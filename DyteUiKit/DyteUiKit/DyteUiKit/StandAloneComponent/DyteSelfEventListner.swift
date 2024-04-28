@@ -229,6 +229,10 @@ public class DyteEventSelfListner  {
 }
 
 extension DyteEventSelfListner: DyteStageEventListener {
+    public func onPresentRequestRejected(participant: DyteJoinedMeetingParticipant) {
+        
+    }
+    
 
     public func onParticipantStartedPresenting(participant: DyteJoinedMeetingParticipant) {
         
@@ -265,8 +269,6 @@ extension DyteEventSelfListner: DyteStageEventListener {
             update()
         }
     }
-    
-    public func onPresentRequestRejected(participant: DyteJoinedMeetingParticipant) {}
     
     public func onPresentRequestWithdrawn(participant: DyteJoinedMeetingParticipant) {
         if participant.id == self.dyteMobileClient.localUser.id {
