@@ -19,7 +19,27 @@ public protocol MeetingViewControllerDataSource {
     func getBottomTabbar(viewController: MeetingViewController) -> DyteMeetingControlBar?
 }
 
-public class MeetingViewController: DyteBaseViewController {
+open class DyteBaseMeetingViewController: DyteBaseViewController {
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        initialisePrivateChatNotificationLookup()
+    }
+    private func initialisePrivateChatNotificationLookup() {
+        Shared.data.privateChatReadLookup[DyteChatViewController.keyEveryOne] = false
+         for participant in self.meeting.participants.joined {
+             if participant.userId != self.meeting.localUser.userId {
+                 if self.meeting.chat.getPrivateChatMessages(participant: participant).count > 0 {
+                     Shared.data.privateChatReadLookup[participant.userId] = true
+                 }else {
+                     Shared.data.privateChatReadLookup[participant.userId] = false
+
+                 }
+             }
+         }
+     }
+}
+
+public class MeetingViewController: DyteBaseMeetingViewController {
     
     private var gridView: GridView<DyteParticipantTileContainerView>!
     let pluginScreenShareView: DytePluginsView
@@ -198,22 +218,9 @@ public class MeetingViewController: DyteBaseViewController {
             self.refreshMeetingGrid()
             self.refreshPluginsScreenShareView()
         }
-        initialisePrivateChatNotificationLookup()
     }
     
-    private func initialisePrivateChatNotificationLookup() {
-        Shared.data.privateChatReadLookup[DyteChatViewController.keyEveryOne] = false
-         for participant in self.meeting.participants.joined {
-             if participant.userId != self.meeting.localUser.userId {
-                 if self.meeting.chat.getPrivateChatMessages(participant: participant).count > 0 {
-                     Shared.data.privateChatReadLookup[participant.userId] = true
-                 }else {
-                     Shared.data.privateChatReadLookup[participant.userId] = false
-
-                 }
-             }
-         }
-     }
+   
      
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)

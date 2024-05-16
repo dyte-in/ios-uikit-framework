@@ -162,7 +162,7 @@ extension ChatParticipantSelectionViewController: UITableViewDelegate, UITableVi
         } else {
             delegate?.didSelectChat(withParticipant: filteredParticipants[indexPath.row])
         }
-        dismiss(animated: true, completion: nil)
+        
     }
 }
 
