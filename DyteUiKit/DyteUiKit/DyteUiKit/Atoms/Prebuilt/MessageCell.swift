@@ -100,6 +100,15 @@ class MessageCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        nameLabel.text = nil
+        messageLabel.text = nil
+        messageImageView.image = nil
+    }
+
+    
     @objc private func downloadButtonTapped() {
         // Call the download button action closure
         downloadButtonAction?()

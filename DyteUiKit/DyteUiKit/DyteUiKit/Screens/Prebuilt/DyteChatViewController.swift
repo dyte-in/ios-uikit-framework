@@ -20,6 +20,12 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     var messageTextFieldBottomConstraint: NSLayoutConstraint?
     var sendFileButtonBottomConstraint: NSLayoutConstraint?
     var sendButtonBottomConstraint: NSLayoutConstraint?
+    var selectedParticipant: DyteJoinedMeetingParticipant?
+    static let keyEveryOne = "everyone"
+    private let everyOneText = "Everyone in meeting"
+    let chatSelectorLabel = DyteUIUTility.createLabel()
+    public var notificationBadge = DyteNotificationBadgeView()
+    private var isNewChatAvailable : Bool = false
     
     let sendFileButtonDisabledView: UIView = {
         let view = UIView()
@@ -61,8 +67,10 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     
     var viewDidAppear = false
     var messageLoaded = false
-
+    let meetingObserver: DyteMeetingEventListner
+    private var participantSelectionController: ChatParticipantSelectionViewController?
     override public init(meeting: DyteMobileClient) {
+        meetingObserver = DyteMeetingEventListner(mobileClient: meeting)
         super.init(meeting: meeting)
     }
     
@@ -83,6 +91,53 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
         setUpReconnection(failed: {}, success: {})
         loadChatMessages()
         addPermissionUpdateObserver()
+        meetingObserver.observeParticipantLeave { [weak self] participant in
+            guard let self = self else{ return }
+            self.removeParticipant(participantUserId: participant.userId)
+        }
+        
+        meetingObserver.observeParticipantJoin { [weak self] participant in
+            guard let self = self else { return }
+            if let cont = self.participantSelectionController {
+                var participants = meeting.participants.joined
+                participants.removeAll { participant in
+                    participant.id == self.meeting.localUser.id
+                }
+                cont.setParticipants(participants: participants)
+                cont.onParticipantJoin(userId: participant.userId)
+            }
+        }
+        
+        showNotiificationBadge()
+    }
+    
+  
+    @objc func showChatParticipantSelectionOverlay() {
+        let viewCont = ChatParticipantSelectionViewController()
+        var participants = meeting.participants.joined
+        participants.removeAll { participant in
+            participant.id == meeting.localUser.id
+        }
+        viewCont.setParticipants(participants: participants)
+        viewCont.delegate = self
+        viewCont.selectedParticipant = selectedParticipant
+        viewCont.modalPresentationStyle = .fullScreen
+        let popoverPresentationController = viewCont.popoverPresentationController
+        popoverPresentationController?.sourceView = self.view
+        popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+        popoverPresentationController?.permittedArrowDirections = []
+        present(viewCont, animated: true, completion: nil)
+        viewCont.addTopBar(dismissAnimation: true) { [weak self]  in
+               guard let self = self else {return}
+               self.participantSelectionController = nil
+               self.didSelectChat(withParticipant: self.selectedParticipant)
+        }
+        
+        self.participantSelectionController = viewCont
+    }
+    
+    private func selectParticipant(withParticipant participant: DyteJoinedMeetingParticipant) {
+        self.selectedParticipant = participant
     }
     
     func addPermissionUpdateObserver() {
@@ -110,10 +165,14 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
         self.view.addSubview(self.activityIndicator)
         self.activityIndicator.set(.centerView(self.view))
         DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) { [weak self] in
-                guard let self = self else { return }
+            guard let self = self else { return }
+            if let participant = selectedParticipant {
+                self.messages = meeting.chat.getPrivateChatMessages(participant: participant)
+            } else {
                 self.messages = self.meeting.chat.messages
-                self.messageLoaded = true
-                self.loadMessageToUI()
+            }
+            self.messageLoaded = true
+            self.loadMessageToUI()
         }
     }
     
@@ -168,91 +227,154 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     
     // MARK: - Setup Views
     private func setupViews() {
-    // configure messageTableView
-    messageTableView.backgroundColor = backgroundColor
-    messageTableView.separatorStyle = .none
-    self.view.backgroundColor = backgroundColor
-    messageTableView.delegate = self
-    messageTableView.keyboardDismissMode = .onDrag
-    messageTableView.dataSource = self
-    messageTableView.register(MessageCell.self, forCellReuseIdentifier: "MessageCell")
-    messageTableView.register(FileMessageCell.self, forCellReuseIdentifier: "FileMessageCell")
-    messageTableView.translatesAutoresizingMaskIntoConstraints = false
-    view.addSubview(lblNoPollExist)
-    lblNoPollExist.set(.centerView(view), .leading(view, spaceToken.space5))
-    view.addSubview(messageTableView)
-    
-    // configure messageTextField
-    messageTableView.rowHeight = UITableView.automaticDimension
-    messageTextView.textStorage.delegate = self
-    messageTextView.font = UIFont.boldSystemFont(ofSize: 14)
-    messageTextView.isScrollEnabled = false
-    messageTextView.backgroundColor = DesignLibrary.shared.color.background.shade900
-    let borderRadiusType: BorderRadiusToken.RadiusType = AppTheme.shared.cornerRadiusTypeNameTextField ?? .rounded
-    messageTextView.layer.cornerRadius = DesignLibrary.shared.borderRadius.getRadius(size: .one,
-                                                                                        radius: borderRadiusType)
-    messageTextView.clipsToBounds = true
-    messageTextView.delegate = self
-    messageTextView.textColor = .black
-    messageTextView.translatesAutoresizingMaskIntoConstraints = false
-    view.addSubview(messageTextView)
-    
-    let leftButton: DyteControlBarButton = {
-        let button = DyteControlBarButton(image: DyteImage(image: ImageProvider.image(named: "icon_cross")))
-        button.accessibilityIdentifier = "Cross_Button"
-        return button
-    }()
+        // configure messageTableView
+        messageTableView.backgroundColor = backgroundColor
+        messageTableView.separatorStyle = .none
+        self.view.backgroundColor = backgroundColor
+        messageTableView.delegate = self
+        messageTableView.keyboardDismissMode = .onDrag
+        messageTableView.dataSource = self
+        messageTableView.register(MessageCell.self, forCellReuseIdentifier: "MessageCell")
+        messageTableView.register(FileMessageCell.self, forCellReuseIdentifier: "FileMessageCell")
+        messageTableView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(lblNoPollExist)
+        lblNoPollExist.set(.centerView(view), .leading(view, spaceToken.space5))
+        view.addSubview(messageTableView)
         
-    leftButton.backgroundColor = navigationItem.backBarButtonItem?.tintColor
-    leftButton.addTarget(self, action: #selector(goBack), for: .touchUpInside)
-    let customBarButtonItem = UIBarButtonItem(customView: leftButton)
-    navigationItem.leftBarButtonItem = customBarButtonItem
-    
-    let label = DyteUIUTility.createLabel(text: "Chat")
-    label.font = UIFont.boldSystemFont(ofSize: 18)
-    label.textColor = DesignLibrary.shared.color.textColor.onBackground.shade900
-    navigationItem.titleView = label
-    
-    // configure sendButton
-    let fileIcon = ImageProvider.image(named: "icon_chat_add")
-    sendFileButton.setImage(fileIcon, for: .normal)
-    sendFileButton.addTarget(self, action: #selector(menuTapped), for: .touchUpInside)
-    view.addSubview(sendFileButton)
-    sendFileButton.set(.width(48))
-    sendFileButton.addSubview(sendFileButtonDisabledView)
-    sendFileButtonDisabledView.set(.fillSuperView(sendFileButton))
-    sendMessageButton.set(.width(48))
-    sendMessageButton.backgroundColor = dyteSharedTokenColor.brand.shade500
-    sendMessageButton.clipsToBounds = true
-    sendMessageButton.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
-    view.addSubview(sendMessageButton)
-    
-    // add constraints
-    let constraints = [
-                messageTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-                messageTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                messageTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                messageTableView.bottomAnchor.constraint(equalTo: messageTextView.topAnchor, constant: -8),
-                messageTextView.trailingAnchor.constraint(equalTo: sendMessageButton.leadingAnchor, constant: -8),
-                messageTextView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
-                messageTextView.topAnchor.constraint(equalTo: messageTableView.bottomAnchor, constant: 8),
-                
-                sendFileButton.trailingAnchor.constraint(equalTo: messageTextView.leadingAnchor, constant: -8),
-                sendFileButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
-                sendFileButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
-                
-                sendMessageButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
-                sendMessageButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
-            ]
-    
-    NSLayoutConstraint.activate(constraints)
-    messageTextViewHeightConstraint = messageTextView.heightAnchor.constraint(equalToConstant: 48)
-    messageTextViewHeightConstraint?.isActive = true
-    view.addSubview(sendTextViewDisabledView)
-    sendTextViewDisabledView.set(.sameTopBottom(sendMessageButton),
+        // configure messageTextField
+        messageTableView.rowHeight = UITableView.automaticDimension
+        messageTextView.textStorage.delegate = self
+        messageTextView.font = UIFont.boldSystemFont(ofSize: 14)
+        messageTextView.isScrollEnabled = false
+        messageTextView.backgroundColor = DesignLibrary.shared.color.background.shade900
+        let borderRadiusType: BorderRadiusToken.RadiusType = AppTheme.shared.cornerRadiusTypeNameTextField ?? .rounded
+        messageTextView.layer.cornerRadius = DesignLibrary.shared.borderRadius.getRadius(size: .one,
+                                                                                         radius: borderRadiusType)
+        messageTextView.clipsToBounds = true
+        messageTextView.delegate = self
+        messageTextView.textColor = .black
+        messageTextView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(messageTextView)
+        
+        let leftButton: DyteControlBarButton = {
+            let button = DyteControlBarButton(image: DyteImage(image: ImageProvider.image(named: "icon_cross")))
+            button.accessibilityIdentifier = "Cross_Button"
+            return button
+        }()
+        
+        leftButton.backgroundColor = navigationItem.backBarButtonItem?.tintColor
+        leftButton.addTarget(self, action: #selector(goBack), for: .touchUpInside)
+        let customBarButtonItem = UIBarButtonItem(customView: leftButton)
+        navigationItem.leftBarButtonItem = customBarButtonItem
+        
+        let label = DyteUIUTility.createLabel(text: "Chat")
+        label.font = UIFont.boldSystemFont(ofSize: 18)
+        label.textColor = DesignLibrary.shared.color.textColor.onBackground.shade900
+        navigationItem.titleView = label
+        
+        
+        // configure sendButton
+        let fileIcon = ImageProvider.image(named: "icon_chat_add")
+        sendFileButton.setImage(fileIcon, for: .normal)
+        sendFileButton.addTarget(self, action: #selector(menuTapped), for: .touchUpInside)
+        view.addSubview(sendFileButton)
+        sendFileButton.set(.width(48))
+        sendFileButton.addSubview(sendFileButtonDisabledView)
+        sendFileButtonDisabledView.set(.fillSuperView(sendFileButton))
+        sendMessageButton.set(.width(48))
+        sendMessageButton.backgroundColor = dyteSharedTokenColor.brand.shade500
+        sendMessageButton.clipsToBounds = true
+        sendMessageButton.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
+        view.addSubview(sendMessageButton)
+        
+        let chatSelectorView = UIView()
+        chatSelectorView.backgroundColor = DesignLibrary.shared.color.background.shade900
+        let imageView = DyteUIUTility.createImageView(image: DyteImage(image:ImageProvider.image(named: "icon_up_arrow")))
+        chatSelectorLabel.text = everyOneText
+        chatSelectorView.addSubview(chatSelectorLabel)
+        chatSelectorView.addSubview(imageView)
+        view.addSubViews(chatSelectorView)
+        
+        chatSelectorView.isHidden = !meeting.localUser.permissions.chat.canSend
+        
+        let padding: CGFloat = 16
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.showChatParticipantSelectionOverlay))
+        chatSelectorView.addGestureRecognizer(tap)
+        
+        // Disable autoresizing mask constraints
+        chatSelectorView.translatesAutoresizingMaskIntoConstraints = false
+        chatSelectorLabel.translatesAutoresizingMaskIntoConstraints = false
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        
+        chatSelectorView.addSubview(notificationBadge)
+        let notificationBadgeHeight = dyteSharedTokenSpace.space4
+        notificationBadge.set(.top(imageView),
+                              .before(imageView, padding),
+                              .height(notificationBadgeHeight),
+                              .width(notificationBadgeHeight*2.5, .lessThanOrEqual))
+        
+        notificationBadge.layer.cornerRadius = notificationBadgeHeight/2.0
+        notificationBadge.layer.masksToBounds = true
+        notificationBadge.backgroundColor = dyteSharedTokenColor.brand.shade500
+        notificationBadge.isHidden = true
+        
+        
+        // add constraints
+        let constraints = [
+            chatSelectorView.leadingAnchor.constraint(equalTo: sendFileButton.leadingAnchor),
+            chatSelectorView.trailingAnchor.constraint(equalTo: sendMessageButton.trailingAnchor),
+            chatSelectorView.bottomAnchor.constraint(equalTo: messageTextView.topAnchor, constant: -8),
+            chatSelectorView.heightAnchor.constraint(equalToConstant: 48),
+            
+            chatSelectorLabel.leadingAnchor.constraint(equalTo: chatSelectorView.leadingAnchor, constant: padding),
+            chatSelectorLabel.topAnchor.constraint(equalTo: chatSelectorView.topAnchor, constant: padding),
+            chatSelectorLabel.bottomAnchor.constraint(equalTo: chatSelectorView.bottomAnchor, constant: -padding),
+            
+            imageView.trailingAnchor.constraint(equalTo: chatSelectorView.trailingAnchor, constant: -padding),
+            imageView.topAnchor.constraint(equalTo: chatSelectorView.topAnchor, constant: padding),
+            imageView.bottomAnchor.constraint(equalTo: chatSelectorView.bottomAnchor, constant: -padding),
+            
+            messageTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            messageTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            messageTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            messageTableView.bottomAnchor.constraint(equalTo: chatSelectorView.topAnchor, constant: -8),
+            messageTextView.trailingAnchor.constraint(equalTo: sendMessageButton.leadingAnchor, constant: -8),
+            messageTextView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
+            messageTextView.topAnchor.constraint(equalTo: messageTableView.bottomAnchor, constant: 8),
+            
+            sendFileButton.trailingAnchor.constraint(equalTo: messageTextView.leadingAnchor, constant: -8),
+            sendFileButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
+            sendFileButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
+            
+            sendMessageButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
+            sendMessageButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+        messageTextViewHeightConstraint = messageTextView.heightAnchor.constraint(equalToConstant: 48)
+        messageTextViewHeightConstraint?.isActive = true
+        view.addSubview(sendTextViewDisabledView)
+        sendTextViewDisabledView.set(.sameTopBottom(sendMessageButton),
                                      .leading(messageTextView),
                                      .trailing(sendMessageButton))
-     refreshPermission()
+        refreshPermission()
+    }
+    
+    private func removeParticipant(participantUserId: String) {
+        if selectedParticipant?.userId == participantUserId {
+            Shared.data.privateChatReadLookup.removeValue(forKey: participantUserId)
+            setDefaultParticipantToEveryOne()
+        }
+        if let cont = self.participantSelectionController {
+            var participants = meeting.participants.joined
+            participants.removeAll { participant in
+                participant.id == meeting.localUser.id
+            }
+            cont.setParticipants(participants: participants)
+            cont.onRemove(userId: participantUserId)
+        }
+
     }
     
     private func refreshPermission() {
@@ -267,6 +389,13 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
         messageTextView.resignFirstResponder()
     }
     
+    private func refreshPrivatePermission() {
+        var canSendFiles = self.meeting.localUser.permissions.privateChat.canSendFiles
+        var canSendText = self.meeting.localUser.permissions.privateChat.canSendText
+        self.sendTextViewDisabledView.isHidden = canSendText
+        self.sendFileButtonDisabledView.isHidden = canSendFiles
+        messageTextView.resignFirstResponder()
+    }
     
     private func createMoreMenu() {
         var menus = [MenuType]()
@@ -286,9 +415,10 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
         moreMenu.show(on: view)
     }
     
-      // MARK: - Actions
+    // MARK: - Actions
     
     @objc func goBack() {
+        meeting.removeChatEventsListener(chatEventsListener: self)
         self.dismiss(animated: true)
     }
     
@@ -322,7 +452,11 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
             
             let spacing = CharacterSet.whitespacesAndNewlines
             let message = messageTextView.text.trimmingCharacters(in: spacing)
-            try?meeting.chat.sendTextMessage(message: message)
+            if let id = selectedParticipant?.id, !id.isEmpty {
+                try?meeting.chat.sendTextMessage(message: message, peerIds: [id])
+            } else {
+                try?meeting.chat.sendTextMessage(message: message)
+            }
             
             messageTextView.text = ""
             messageTextViewHeightConstraint?.constant = 48
@@ -331,6 +465,11 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     }
     
     private func reloadMessageTableView() {
+        if let participant = selectedParticipant {
+            self.messages = meeting.chat.getPrivateChatMessages(participant: participant)
+        } else {
+            self.messages = self.meeting.chat.messages
+        }
         lblNoPollExist.isHidden = (messages?.count ?? 0) > 0 ? true : false
         messageTableView.isHidden = !lblNoPollExist.isHidden
         if (messages?.count ?? 0) > 0 {
@@ -417,7 +556,11 @@ extension DyteChatViewController: UIImagePickerControllerDelegate, UINavigationC
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let url = info[UIImagePickerController.InfoKey.imageURL] as? URL {
             sendMessageButton.showActivityIndicator()
-            self.meeting.chat.sendImageMessage(imagePath: url.path)
+            if let id = selectedParticipant?.id, !id.isEmpty {
+                self.meeting.chat.sendImageMessage(imagePath: url.path, peerIds: [id])
+            } else {
+                self.meeting.chat.sendImageMessage(imagePath: url.path)
+            }
         }
         dismiss(animated: true, completion: nil)
     }
@@ -429,7 +572,11 @@ extension DyteChatViewController: UIDocumentPickerDelegate {
             return
         }
         sendMessageButton.showActivityIndicator()
-        self.meeting.chat.sendFileMessage(filePath: selectedFileURL.path)
+        if let id = selectedParticipant?.id, !id.isEmpty {
+            self.meeting.chat.sendFileMessage(filePath: selectedFileURL.path, peerIds: [id])
+        } else {
+            self.meeting.chat.sendFileMessage(filePath: selectedFileURL.path)
+        }
     }
 }
 
@@ -460,18 +607,89 @@ extension DyteChatViewController: UITextViewDelegate {
     }
 }
 
-extension DyteChatViewController: DyteChatEventsListener {
-    public func onNewChatMessage(message: DyteChatMessage) {
-       
+extension DyteChatViewController: ChatParticipantSelectionDelegate {
+    
+    func didSelectChat(withParticipant participant: DyteJoinedMeetingParticipant?) {
+        if let dyteJoinedMeetingParticipant = participant {
+            selectedParticipant = dyteJoinedMeetingParticipant
+            chatSelectorLabel.text = "To \(dyteJoinedMeetingParticipant.name) (Direct)"
+            setReadFor(dyteJoinedMeetingParticipant)
+        } else {
+            setDefaultParticipantToEveryOne()
+        }
+        
+        showNotiificationBadge()
+        self.participantSelectionController = nil
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+            self.reloadMessageTableView()
+        })
     }
     
+    private func showNotiificationBadge() {
+        var showNotificationBadge = false
+        for (_, value) in Shared.data.privateChatReadLookup {
+            if value == true {
+                showNotificationBadge =  true
+                break;
+            }
+        }
+        notificationBadge.isHidden = !showNotificationBadge
+    }
+    private func setDefaultParticipantToEveryOne() {
+        selectedParticipant = nil
+        Shared.data.privateChatReadLookup[Self.keyEveryOne] = false
+        chatSelectorLabel.text = everyOneText
+        refreshPermission()
+    }
+}
+
+extension DyteChatViewController: DyteChatEventsListener {
+    public func onNewChatMessage(message: DyteChatMessage) {
+        notificationBadge.isHidden = true
+        if let targetUserIds = message.targetUserIds {
+            var forEveryOne =  targetUserIds.isEmpty
+            if forEveryOne {
+                if selectedParticipant == nil {
+                    // Mean current selected is Everyone only, So don't do anything
+                    if let cont = self.participantSelectionController {
+                        Shared.data.privateChatReadLookup[Self.keyEveryOne] = true
+                    }
+                }else {
+                    // Message is for everone , but current selected user is different , so showing blue dot
+                    notificationBadge.isHidden = false
+                    Shared.data.privateChatReadLookup[Self.keyEveryOne] = true
+                }
+            } else {
+                let localUserId = meeting.localUser.userId
+                let messageReceiverIDs = targetUserIds
+                    .filter { $0 != localUserId }
+                messageReceiverIDs.forEach {
+                       if selectedParticipant?.userId != $0 {
+                            // If current selected user is not same then show blue dot
+                            Shared.data.privateChatReadLookup[$0] = true
+                            notificationBadge.isHidden = false
+                       }else {
+                           if let cont = self.participantSelectionController {
+                               Shared.data.privateChatReadLookup[$0] = true
+                           }
+                       }
+                }
+            }
+            self.participantSelectionController?.newChatReceived(message: message)
+        }
+    }
+    
+    func setReadFor(_ participant: DyteJoinedMeetingParticipant) {
+        Shared.data.privateChatReadLookup[participant.userId] = false
+    }
+
     public  func onChatUpdates(messages: [DyteChatMessage]) {
         if isOnScreen {
             NotificationCenter.default.post(name: Notification.Name("NotificationAllChatsRead"), object: nil)
         }
         Shared.data.setChatReadCount(totalMessage: self.meeting.chat.messages.count)
         sendMessageButton.hideActivityIndicator()
-        self.messages = meeting.chat.messages
         reloadMessageTableView()
     }
 }

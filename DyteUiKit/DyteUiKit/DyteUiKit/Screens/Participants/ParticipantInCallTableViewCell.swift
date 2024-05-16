@@ -25,14 +25,24 @@ class ParticipantInCallTableViewCell: ParticipantTableViewCell {
         button.backgroundColor = .clear
         return button
     }()
-    
-    let moreButton = {
+    var notificationBadge: DyteNotificationBadgeView?
+    var moreButton = {
         let button = DyteButton(style: .iconOnly(icon: DyteImage(image: ImageProvider.image(named: "icon_more_tabbar"))), dyteButtonState: .active)
         return button
     }()
     private var viewModel: ParticipantInCallTableViewCellModel?
     var buttonMoreClick:((DyteButton) -> Void)?
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        profileAvatarView.backgroundColor = dyteSharedTokenColor.brand.shade500
+        profileAvatarView.profileImageView.image = nil
+        profileAvatarView.initialName.text = nil
+        backgroundColor = .clear
+        contentView.backgroundColor = .clear
+        notificationBadge?.isHidden = true
+    }
+    
     override func createSubView(on baseView: UIView) {
         super.createSubView(on: baseView)
         let videoButtonStackView = DyteUIUTility.createStackView(axis: .horizontal, spacing: 0)

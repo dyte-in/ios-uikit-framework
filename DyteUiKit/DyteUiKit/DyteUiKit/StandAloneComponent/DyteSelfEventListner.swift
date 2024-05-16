@@ -29,6 +29,8 @@ public class DyteEventSelfListner  {
     private var selfCancelRequestToGetPermissionToJoinStageCompletion:((Bool)->Void)?
     private var selfMeetingInitStateCompletion:((Bool, String?)->Void)?
     private var selfLeaveStateCompletion:((Bool)->Void)?
+    private var selfLeaveMeetingForAllCompletion:((Bool)->Void)?
+    private var selfEndMeetingForAllCompletion:((Bool)->Void)?
     private var selfRemovedStateCompletion:((Bool)->Void)?
     private var selfTabBarSyncStateCompletion:((String)->Void)?
     private var selfObserveReconnectionStateCompletion:((Reconnection)->Void)?
@@ -74,6 +76,10 @@ public class DyteEventSelfListner  {
     
     public func observeSelfRemoved(update:((_ success: Bool)->Void)?) {
         self.selfRemovedStateCompletion = update
+    }
+    
+    public func observeSelfMeetingEndForAll(update:((_ success: Bool)->Void)?) {
+        self.selfEndMeetingForAllCompletion = update
     }
     
     public func observePluginScreenShareTabSync(update:((_ id: String)->Void)?) {
@@ -181,10 +187,12 @@ public class DyteEventSelfListner  {
     
 
     func leaveMeeting(kickAll: Bool, completion:@escaping(_ success: Bool)->Void) {
-        self.selfLeaveStateCompletion = completion
-        self.dyteMobileClient.leaveRoom()
         if kickAll {
             self.dyteMobileClient.participants.kickAll()
+            self.selfLeaveMeetingForAllCompletion = completion
+        }else {
+            self.dyteMobileClient.leaveRoom()
+            self.selfLeaveStateCompletion = completion
         }
     }
    
@@ -370,6 +378,21 @@ extension DyteEventSelfListner: DyteSelfEventsListener {
 }
 
 extension  DyteEventSelfListner: DyteMeetingRoomEventsListener {
+
+    public func onActiveTabUpdate(activeTab: ActiveTab) {
+
+    }
+    
+    public func onMeetingEnded() {
+        if let completion = self.selfLeaveMeetingForAllCompletion {
+            completion(true)
+        }
+        
+        if let completion = self.selfEndMeetingForAllCompletion {
+            completion(true)
+        }
+    }
+    
     public func onActiveTabUpdate(id: String, tabType: ActiveTabType) {
         self.selfTabBarSyncStateCompletion?(id)
     }

@@ -63,8 +63,11 @@ public class ScreenShareViewModel {
     public var arrScreenShareParticipants = [ParticipantsShareControl]()
     private var dict = [String : Int]()
     public var selectedIndex: (UInt, String)?
-    public init() {
+    private let selfActiveTab: ActiveTab?
+    public init(selfActiveTab: ActiveTab?) {
+        self.selfActiveTab = selfActiveTab
     }
+    
     public func refresh(plugins: [DytePlugin], selectedPlugin: DytePlugin?) {
         for plugin in plugins {
             if dict[plugin.id] == nil {
@@ -125,27 +128,33 @@ public class ScreenShareViewModel {
     }
     
     private func selectPlugin(oldId: String?) {
-        var newIndex: (UInt,String)?
         let oldId = oldId
-        var index: UInt = 0
-        
-        for model in arrScreenShareParticipants {
-            if selectedIndex == nil {
-                selectedIndex = (0, model.id)
+
+        if let selfActiveTab = self.selfActiveTab , selectedIndex == nil {
+            var index: UInt = 0
+            for model in arrScreenShareParticipants {
+                if model.id == selfActiveTab.id {
+                    selectedIndex = (index, model.id)
+                    return;
+                }
+                index += 1
             }
-            if oldId == model.id {
-                newIndex = (index , model.id)
+        }
+           
+        var index: UInt = 0
+        for model in arrScreenShareParticipants {
+            if model.id == oldId {
+                selectedIndex = (index, model.id)
+                return;
             }
             index += 1
         }
-        if newIndex != nil {
-            selectedIndex = newIndex
+        
+        
+        if arrScreenShareParticipants.count >= 1 {
+            selectedIndex = (0, arrScreenShareParticipants[0].id)
         }else {
-            if arrScreenShareParticipants.count >= 1 {
-                selectedIndex = (0, arrScreenShareParticipants[0].id)
-            }else {
-                selectedIndex = nil
-            }
+            selectedIndex = nil
         }
     }
 }
@@ -218,7 +227,7 @@ public final class MeetingViewModel {
     var chatDelegate: ChatDelegate?
     var currentlyShowingItemOnSinglePage: UInt
     var arrGridParticipants = [GridCellViewModel]()
-    var screenShareViewModel = ScreenShareViewModel()
+    let screenShareViewModel: ScreenShareViewModel
     var shouldShowShareScreen = false
     let dyteNotification = DyteNotification()
     
@@ -226,6 +235,7 @@ public final class MeetingViewModel {
     
     public init(dyteMobileClient: DyteMobileClient) {
         self.dyteMobileClient = dyteMobileClient
+        self.screenShareViewModel = ScreenShareViewModel(selfActiveTab: dyteMobileClient.meta.selfActiveTab)
         self.waitlistEventListner = DyteWaitListParticipantUpdateEventListner(mobileClient: dyteMobileClient)
         self.dyteSelfListner = DyteEventSelfListner(mobileClient: dyteMobileClient)
         self.maxParticipantOnpage = 9

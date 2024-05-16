@@ -55,6 +55,7 @@ public class DyteLeaveDialog {
             alert.addAction(UIAlertAction(title: "End Meeting for all", style: .default, handler: { action in
                 self.onClick?(.willEndMeetingForAll)
                 NotificationCenter.default.post(name: Self.onEndMeetingForAllButtonPress, object: nil)
+                
                 self.dyteSelfListner.leaveMeeting(kickAll: true, completion: { success in
                     self.onClick?(.didEndMeetingForAll)
                 })

@@ -11,12 +11,12 @@ import DyteiOSCore
 
 public class DyteAvatarView: UIView {
    
-    private let profileImageView: BaseImageView = {
+    var profileImageView: BaseImageView = {
         let imageView = DyteUIUTility.createImageView(image: nil)
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
-    private let initialName: DyteLabel = DyteUIUTility.createLabel(text: "")
+    let initialName: DyteLabel = DyteUIUTility.createLabel(text: "")
     private var participant: DyteMeetingParticipant?
     
     public init() {

@@ -59,6 +59,14 @@ class FileMessageCell: UITableViewCell {
         setupViews()
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        fileTitleLabel.text = nil
+        fileTypeLabel.text = nil
+        fileSizeLabel.text = nil
+        nameLabel.text = nil
+    }
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         

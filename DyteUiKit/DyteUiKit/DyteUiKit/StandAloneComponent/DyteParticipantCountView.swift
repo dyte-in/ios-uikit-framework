@@ -39,6 +39,15 @@ public class DyteParticipantCountView: DyteLabel {
 }
 
 extension DyteParticipantCountView: DyteMeetingRoomEventsListener {
+    public func onActiveTabUpdate(activeTab: ActiveTab) {
+        
+    }
+    
+    public func onMeetingEnded() {
+        
+    }
+    
+
     
     public func onActiveTabUpdate(id: String, tabType: ActiveTabType) {
         

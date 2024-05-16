@@ -114,6 +114,27 @@ public class MeetingViewController: DyteBaseViewController {
         setInitialsConfiguration()
         setupNotifications()
         self.viewModel.delegate = self
+        
+        self.viewModel.dyteSelfListner.observeSelfMeetingEndForAll { [weak self]  success in
+            guard let self = self else {return}
+            
+            func showWaitingRoom(status: ParticipantMeetingStatus, time:TimeInterval, onComplete:@escaping()->Void) {
+                if status != .none {
+                    let waitingView = WaitingRoomView(automaticClose: true, onCompletion: onComplete)
+                    waitingView.backgroundColor = self.view.backgroundColor
+                    self.view.addSubview(waitingView)
+                    waitingView.set(.fillSuperView(self.view))
+                    self.view.endEditing(true)
+                    waitingView.show(status: status)
+                }
+            }
+            //self.dismiss(animated: true)
+            showWaitingRoom(status: .meetingEnded, time: 2) { [weak self] in
+                guard let self = self else {return}
+                self.viewModel.clean()
+                self.onFinishedMeeting()
+            }
+        }
                 
         self.viewModel.dyteSelfListner.observeSelfRemoved { [weak self] success in
             guard let self = self else {return}
@@ -129,7 +150,7 @@ public class MeetingViewController: DyteBaseViewController {
                 }
             }
             //self.dismiss(animated: true)
-            showWaitingRoom(status: .meetingEnded, time: 2) { [weak self] in
+            showWaitingRoom(status: .kicked, time: 2) { [weak self] in
                 guard let self = self else {return}
                 self.viewModel.clean()
                 self.onFinishedMeeting()
@@ -177,8 +198,23 @@ public class MeetingViewController: DyteBaseViewController {
             self.refreshMeetingGrid()
             self.refreshPluginsScreenShareView()
         }
+        initialisePrivateChatNotificationLookup()
     }
     
+    private func initialisePrivateChatNotificationLookup() {
+        Shared.data.privateChatReadLookup[DyteChatViewController.keyEveryOne] = false
+         for participant in self.meeting.participants.joined {
+             if participant.userId != self.meeting.localUser.userId {
+                 if self.meeting.chat.getPrivateChatMessages(participant: participant).count > 0 {
+                     Shared.data.privateChatReadLookup[participant.userId] = true
+                 }else {
+                     Shared.data.privateChatReadLookup[participant.userId] = false
+
+                 }
+             }
+         }
+     }
+     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if viewWillAppear == false {
@@ -564,12 +600,14 @@ extension MeetingViewController : MeetingViewModelDelegate {
     }
     
     func participantJoined(participant: DyteMeetingParticipant) {
+        self.topBar.refreshNextPreviouButtonState()
         if Shared.data.notification.participantJoined.showToast {
             self.view.showToast(toastMessage: "\(participant.name) just joined", duration: 2.0, uiBlocker: false)
         }
     }
     
     func participantLeft(participant: DyteMeetingParticipant) {
+        self.topBar.refreshNextPreviouButtonState()
         if Shared.data.notification.participantLeft.showToast {
             self.view.showToast(toastMessage: "\(participant.name) left", duration: 2.0, uiBlocker: false)
         }
@@ -674,6 +712,19 @@ extension MeetingViewController : MeetingViewModelDelegate {
                 }
                 for (index, element) in arrButtons.enumerated() {
                     element.isSelected = index == button.index ? true : false
+                }
+            }
+            
+            self.pluginScreenShareView.observeSyncButtonClick { syncButton in
+                if syncButton.isSelected == false {
+                    if let selectedIndex = self.viewModel.screenShareViewModel.selectedIndex {
+                        let model = self.viewModel.screenShareViewModel.arrScreenShareParticipants[Int(selectedIndex.0)]
+                        if let model = model as? ScreenSharePluginsProtocol {
+                            self.meeting.meta.syncTab(id: model.id, tabType: .screenshare)
+                        }else if let model = model as? PluginsButtonModelProtocol {
+                            self.meeting.meta.syncTab(id: model.id, tabType: .plugin)
+                        }
+                    }
                 }
             }
         }
@@ -796,11 +847,9 @@ extension MeetingViewController : MeetingViewModelDelegate {
     }
     
     private func meetingGridPageBecomeVisible() {
-        
         if let participant = meeting.participants.pinned {
             self.refreshMeetingGridTile(participant: participant)
         }
-
         self.topBar.refreshNextPreviouButtonState()
     }
 }
@@ -820,7 +869,9 @@ extension MeetingViewController: DyteNotificationDelegate {
             }
             NotificationCenter.default.post(name: Notification.Name("Notify_NewChatArrived"), object: nil, userInfo: nil)
             self.moreButtonBottomBar?.notificationBadge.isHidden = false
-            self.moreButtonBottomBar?.notificationBadge.setBadgeCount(Shared.data.getTotalUnreadCountPollsAndChat(totalMessage: self.meeting.chat.messages.count, totalsPolls: self.meeting.polls.polls.count))
+            
+            let totalMessage = self.meeting.chat.messages.count
+            self.moreButtonBottomBar?.notificationBadge.setBadgeCount(Shared.data.getTotalUnreadCountPollsAndChat(totalMessage: totalMessage, totalsPolls: self.meeting.polls.polls.count))
             
         case .Poll:
             NotificationCenter.default.post(name: Notification.Name("Notify_NewPollArrived"), object: nil, userInfo: nil)
@@ -906,6 +957,18 @@ extension MeetingViewController: DyteChatEventsListener {
                 }
             }
             notificationDelegate?.didReceiveNotification(type: .Chat(message:chat))
+        }
+        
+        if let targetUserIds = message.targetUserIds {
+            
+            if !targetUserIds.isEmpty {
+                let localUserId = meeting.localUser.userId
+                targetUserIds
+                    .filter { $0 != localUserId }
+                    .forEach {
+                        Shared.data.privateChatReadLookup[$0] = true
+                    }
+            }
         }
     }
 }

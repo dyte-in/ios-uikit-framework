@@ -191,6 +191,7 @@ public class DytePluginsView: UIView {
     public let syncButton: SyncScreenShareTabButton?
 
     private var clickAction:((DytePluginScreenShareTabButton, Bool)-> Void)?
+    private var syncButtonClickAction:((SyncScreenShareTabButton)-> Void)?
     private let stackView = DyteUIUTility.createStackView(axis: .vertical, spacing: 0)
     private let activeSpeakerView: ActiveSpeakerPinView
     private let backgroundColorValue = DesignLibrary.shared.color.background.video
@@ -232,8 +233,12 @@ public class DytePluginsView: UIView {
         self.syncButton?.addTarget(self, action: #selector(syncButtonClick(button:)), for: .touchUpInside)
     }
     
+    public func observeSyncButtonClick(clickAction:((SyncScreenShareTabButton)-> Void)?) {
+        self.syncButtonClickAction = clickAction
+    }
     @objc func syncButtonClick(button: SyncScreenShareTabButton) {
         button.isSelected = !button.isSelected
+        self.syncButtonClickAction?(button)
     }
     
     public func setButtons(buttons: [DytePluginScreenShareTabButton],  selectedIndex: Int?, clickAction:@escaping(DytePluginScreenShareTabButton, Bool)->Void)  {

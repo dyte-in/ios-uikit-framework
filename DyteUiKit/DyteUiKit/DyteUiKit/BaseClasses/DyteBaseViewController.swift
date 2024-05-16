@@ -46,28 +46,30 @@ open class DyteBaseViewController: UIViewController, AdaptableUI {
     
     public func addWaitingRoom(completion:@escaping()->Void) {
         self.dyteSelfListner.waitListStatusUpdate = { [weak self] status in
-            guard self != nil else {return}
+            guard let self = self else {return}
             let callBack : ()-> Void = {
                 completion()
             }
-            showWaitingRoom(status: status, completion: callBack)
+            self.waitingRoomView?.removeFromSuperview()
+            if let waitingView = showWaitingRoom(status: status, completion: callBack) {
+                waitingView.backgroundColor = self.view.backgroundColor
+                waitingView.set(.fillSuperView(self.view))
+                self.view.endEditing(true)
+                self.view.addSubview(waitingView)
+                self.waitingRoomView = waitingView
+            }
         }
         
-        func showWaitingRoom(status: WaitListStatus, completion: @escaping()->Void) {
-           waitingRoomView?.removeFromSuperview()
+        func showWaitingRoom(status: WaitListStatus, completion: @escaping()->Void) -> WaitingRoomView? {
            if status != .none {
-               let waitingView = WaitingRoomView(automaticClose: false, onCompletion: { [weak self] in
-                   guard self != nil else {return}
-                   completion()
+               let waitingView = WaitingRoomView(automaticClose: false, onCompletion: {
+                  completion()
                })
                waitingView.accessibilityIdentifier = "WaitingRoom_View"
-               waitingView.backgroundColor = self.view.backgroundColor
-               self.view.addSubview(waitingView)
-               waitingView.set(.fillSuperView(self.view))
-               self.view.endEditing(true)
-               waitingRoomView = waitingView
                waitingView.show(status: ParticipantMeetingStatus.getStatus(status: status))
+               return waitingView
            }
+            return nil
        }
     }
     

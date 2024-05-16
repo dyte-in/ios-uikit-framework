@@ -20,6 +20,7 @@ class Shared {
     private var viewedPollCount: Int = 0
     var delegate: DyteUiKitLifeCycle?
     var notification: DyteNotificationConfig!
+    var privateChatReadLookup = [String:Bool]()
     
     func getUnreadChatCount(totalMessage: Int) -> Int {
         let unreadCount = totalMessage - chatReadCount

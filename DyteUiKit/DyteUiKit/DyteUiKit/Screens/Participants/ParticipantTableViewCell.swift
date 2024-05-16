@@ -12,7 +12,7 @@ import DyteiOSCore
 class ParticipantTableViewCell: BaseTableViewCell {
     let profileAvatarViewBaseView : BaseView = BaseView()
     
-    let profileAvatarView: DyteAvatarView = {
+    var profileAvatarView: DyteAvatarView = {
         let view = DyteAvatarView()
         view.setInitialName(font: UIFont.boldSystemFont(ofSize: 12))
         return view
