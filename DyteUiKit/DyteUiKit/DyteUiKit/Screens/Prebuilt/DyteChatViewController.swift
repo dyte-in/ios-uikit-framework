@@ -10,8 +10,13 @@ import DyteiOSCore
 import MobileCoreServices
 import UniformTypeIdentifiers
 
-public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelegate {
+public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelegate, SetTopbar {
+    public let topBar: DyteNavigationBar = {
+        let topBar = DyteNavigationBar(title: "Chat")
+        return topBar
+    }()
     // MARK: - Properties
+    public var shouldShowTopBar: Bool = true
     fileprivate var messages: [DyteChatMessage]?
     let messageTableView = UITableView()
     fileprivate let messageTextView = UITextView()
@@ -23,7 +28,7 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     var selectedParticipant: DyteJoinedMeetingParticipant?
     static let keyEveryOne = "everyone"
     private let everyOneText = "Everyone in meeting"
-    let chatSelectorLabel = DyteUIUTility.createLabel()
+    let chatSelectorLabel = DyteUIUTility.createLabel(alignment: .left)
     public var notificationBadge = DyteNotificationBadgeView()
     private var isNewChatAvailable : Bool = false
     
@@ -33,6 +38,8 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
         view.alpha = 0.8
         return view
     }()
+    
+    
     
     let sendTextViewDisabledView: UIView = {
         let view = UIView()
@@ -69,6 +76,12 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     var messageLoaded = false
     let meetingObserver: DyteMeetingEventListner
     private var participantSelectionController: ChatParticipantSelectionViewController?
+       
+    public override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        topBar.set(.top(self.view, self.view.safeAreaInsets.top))
+    }
+
     override public init(meeting: DyteMobileClient) {
         meetingObserver = DyteMeetingEventListner(mobileClient: meeting)
         super.init(meeting: meeting)
@@ -123,7 +136,7 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
         controller.selectedParticipant = selectedParticipant
         controller.view.backgroundColor = self.view.backgroundColor
         self.view.addSubview(controller.view)
-        controller.view.set(.top(messageTableView), .sameLeadingTrailing(self.view), .bottom(self.view))
+        controller.view.set(.top(self.topBar), .sameLeadingTrailing(self.view), .bottom(self.view))
         controller.addTopBar(dismissAnimation: true) { [weak self]  in
             guard let self = self else {return}
             self.participantSelectionController?.view.removeFromSuperview()
@@ -252,19 +265,10 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
         messageTextView.textColor = .black
         messageTextView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(messageTextView)
-        let leftButton: DyteControlBarButton = {
-          let button = DyteControlBarButton(image: DyteImage(image: ImageProvider.image(named: "icon_cross")))
-          button.accessibilityIdentifier = "Cross_Button"
-          return button
-        }()
-        leftButton.backgroundColor = navigationItem.backBarButtonItem?.tintColor
-        leftButton.addTarget(self, action: #selector(goBack), for: .touchUpInside)
-        let customBarButtonItem = UIBarButtonItem(customView: leftButton)
-        navigationItem.leftBarButtonItem = customBarButtonItem
-        let label = DyteUIUTility.createLabel(text: "Chat")
-        label.font = UIFont.boldSystemFont(ofSize: 18)
-        label.textColor = DesignLibrary.shared.color.textColor.onBackground.shade900
-        navigationItem.titleView = label
+        self.addTopBar(dismissAnimation: true) { [weak self] in
+            self?.goBack()
+        }
+        
         // configure sendButton
         let fileIcon = ImageProvider.image(named: "icon_chat_add")
         sendFileButton.setImage(fileIcon, for: .normal)
@@ -316,7 +320,7 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
           chatSelectorLabel.leadingAnchor.constraint(equalTo: chatSelectorView.leadingAnchor, constant: padding),
           chatSelectorLabel.topAnchor.constraint(equalTo: chatSelectorView.topAnchor, constant: padding),
           chatSelectorLabel.bottomAnchor.constraint(equalTo: chatSelectorView.bottomAnchor, constant: -padding),
-          messageTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+          messageTableView.topAnchor.constraint(equalTo: self.topBar.bottomAnchor),
           messageTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
           messageTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
           messageTableView.bottomAnchor.constraint(equalTo: chatSelectorView.topAnchor, constant: -8),
@@ -368,8 +372,8 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     }
     
     private func refreshPrivatePermission() {
-        var canSendFiles = self.meeting.localUser.permissions.privateChat.canSendFiles
-        var canSendText = self.meeting.localUser.permissions.privateChat.canSendText
+        let canSendFiles = self.meeting.localUser.permissions.privateChat.canSendFiles
+        let canSendText = self.meeting.localUser.permissions.privateChat.canSendText
         self.sendTextViewDisabledView.isHidden = canSendText
         self.sendFileButtonDisabledView.isHidden = canSendFiles
         messageTextView.resignFirstResponder()
@@ -592,6 +596,7 @@ extension DyteChatViewController: ChatParticipantSelectionDelegate {
             selectedParticipant = dyteJoinedMeetingParticipant
             chatSelectorLabel.text = "To \(dyteJoinedMeetingParticipant.name) (Direct)"
             setReadFor(dyteJoinedMeetingParticipant)
+            refreshPrivatePermission()
         } else {
             setDefaultParticipantToEveryOne()
         }

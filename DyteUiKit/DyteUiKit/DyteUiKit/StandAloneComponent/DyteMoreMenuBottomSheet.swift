@@ -118,9 +118,8 @@ private extension DyteMoreMenuBottomSheet {
     
     private func onChatTapped() {
         let controller = DyteChatViewController(meeting: self.meeting)
-        let navigationController = UINavigationController(rootViewController: controller)
-        navigationController.modalPresentationStyle = .fullScreen
-        self.presentingViewController.present(navigationController, animated: true, completion: nil)
+        controller.modalPresentationStyle = .fullScreen
+        self.presentingViewController.present(controller, animated: true, completion: nil)
         Shared.data.setChatReadCount(totalMessage: self.meeting.chat.messages.count)
     }
    
