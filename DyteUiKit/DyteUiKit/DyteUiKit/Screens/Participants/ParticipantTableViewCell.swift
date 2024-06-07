@@ -65,6 +65,10 @@ class ParticipantTableViewCell: BaseTableViewCell {
                      .above(cellSeparatorBottom, dyteSharedTokenSpace.space3),       .sameLeadingTrailing(cellSeparatorBottom))
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.pinView.isHidden  = true
+    }
 
     func setPinView(isHidden: Bool) {
         self.pinView.isHidden  = isHidden

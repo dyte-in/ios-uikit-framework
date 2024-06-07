@@ -125,9 +125,9 @@ extension ParticipantViewController: UITableViewDelegate {
                         sectionToBeSearch.insert(item)
                     }
                     
-                    return true
+                    return false
                 }
-                return false
+                return true
             }
             self.openSearchController(originalItems: [sectionToBeSearch])
         }

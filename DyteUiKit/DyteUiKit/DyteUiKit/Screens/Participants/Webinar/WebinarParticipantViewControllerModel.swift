@@ -13,7 +13,7 @@ public class WebinarParticipantViewControllerModel {
     let waitlistEventListner: DyteWaitListParticipantUpdateEventListner
     let dyteSelfListner: DyteEventSelfListner
     private let isDebugModeOn = DyteUiKit.isDebugModeOn
-    private let searchControllerMinimumParticipant = 10
+    private let searchControllerMinimumParticipant = 5
     
     required init(mobileClient: DyteMobileClient) {
         self.mobileClient = mobileClient

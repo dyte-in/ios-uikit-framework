@@ -290,7 +290,6 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
         chatSelectorView.addSubview(chatSelectorLabel)
         chatSelectorView.addSubview(imageView)
         view.addSubViews(chatSelectorView)
-        chatSelectorView.isHidden = !meeting.localUser.permissions.chat.canSend
         let padding: CGFloat = 16
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.showChatParticipantSelectionOverlay))
         chatSelectorView.addGestureRecognizer(tap)

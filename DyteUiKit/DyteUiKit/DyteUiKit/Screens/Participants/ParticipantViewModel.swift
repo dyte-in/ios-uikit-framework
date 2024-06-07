@@ -76,7 +76,7 @@ public class ParticipantViewControllerModel: ParticipantViewControllerModelProto
     public var waitlistEventListner: DyteWaitListParticipantUpdateEventListner
     var meetingEventListner: DyteMeetingEventListner
     private let showAcceptAllButton = true
-    private let searchControllerMinimumParticipant = 10
+    private let searchControllerMinimumParticipant = 5
     
     required init(meeting: DyteMobileClient) {
         self.meeting = meeting
