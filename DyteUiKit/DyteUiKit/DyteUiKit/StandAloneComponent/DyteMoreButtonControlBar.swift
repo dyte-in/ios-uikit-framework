@@ -44,18 +44,34 @@ open class  DyteMoreButtonControlBar: DyteControlBarButton {
         self.bottomSheet = DyteMoreMenuBottomSheet(menus: getMenu(), meeting: self.meeting, presentingViewController: self.presentingViewController)
         self.bottomSheet.show()
     }
-    
+    private func isExtensionProperlyConfigured() -> Bool {
+          guard let infoDictionary = Bundle.main.infoDictionary else {return false}
+          guard let groupIdentifier = infoDictionary["RTCAppGroupIdentifier"] else {return false}
+          guard let groupIdentifier = infoDictionary["RTCScreenSharingExtension"] else {return false}
+          return true
+      }
     private func getMenu() -> [MenuType] {
         var menus = [MenuType]()
         
         if meeting.localUser.permissions.host.canMuteAudio {
             menus.append(.muteAllAudio)
         }
-        
+
         if meeting.localUser.permissions.host.canMuteVideo {
             menus.append(.muteAllVideo)
         }
         
+        if meeting.localUser.canEnableScreenShare() {
+            if self.isExtensionProperlyConfigured() == false {
+                print("Please add upload extension in your main app to allow ScreenShare to work properly,\n Please follow Dyte documentation https://docs.dyte.io/ios-core/local-user/screen-share-guide ")
+            }else {
+                if meeting.localUser.screenShareTrack != nil {
+                    menus.append(.stopScreenShare)
+                }else {
+                    menus.append(.startScreenShare)
+                }
+            }
+        }
 //        menus.append(.shareMeetingUrl)
         let recordingState = self.meeting.recording.recordingState
         let permissions = self.meeting.localUser.permissions

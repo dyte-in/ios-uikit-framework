@@ -7,6 +7,7 @@
 
 import UIKit
 import DyteiOSCore
+import ReplayKit
 
 class DyteMoreMenuBottomSheet {
     private let presentingViewController: UIViewController
@@ -41,6 +42,10 @@ class DyteMoreMenuBottomSheet {
                 self.shareMeetingUrl()
             case .chat:
                 self.onChatTapped()
+            case .startScreenShare:
+                self.onScreenShareTapped()
+            case .stopScreenShare:
+                self.onStopScreenShareTapped()
             case .poll:
                 self.launchPollsScreen()
             case .recordingStart:
@@ -72,6 +77,8 @@ class DyteMoreMenuBottomSheet {
         moreMenu.hideSheet()
     }
 }
+
+
 
 private extension DyteMoreMenuBottomSheet {
     private func launchPollsScreen() {
@@ -121,6 +128,14 @@ private extension DyteMoreMenuBottomSheet {
         controller.modalPresentationStyle = .fullScreen
         self.presentingViewController.present(controller, animated: true, completion: nil)
         Shared.data.setChatReadCount(totalMessage: self.meeting.chat.messages.count)
+    }
+    
+    private func onScreenShareTapped() {
+        self.meeting.localUser.enableScreenshare()
+    }
+    
+    private func onStopScreenShareTapped() {
+        self.meeting.localUser.disableScreenshare()
     }
    
     private func onPluginTapped() {

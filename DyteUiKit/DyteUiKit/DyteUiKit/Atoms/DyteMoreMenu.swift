@@ -26,6 +26,8 @@ public enum MenuType {
     case allowToJoinStage
     case denyToJoinStage
     case removeFromStage
+    case startScreenShare
+    case stopScreenShare
     case kick
     case files
     case images
@@ -46,7 +48,12 @@ extension MenuType {
 
         case .plugins:
             return "MoreMenu_Option_Plugins"
-
+        
+        case .startScreenShare:
+            return "MoreMenu_Option_Start_Screenshare"
+        case .stopScreenShare:
+            return "MoreMenu_Option_Stop_Screenshare"
+            
         case .settings:
             return "MoreMenu_Option_Settings"
 
@@ -403,6 +410,19 @@ public class DyteMoreMenu: UIView {
                     onSelect(feature)
                     self.hideSheet()
                 }))
+            case .startScreenShare:
+                model.append(BottomSheetModel(type: feature, image: DyteImage(image: ImageProvider.image(named: "icon_start_screenshare")), title: "Screen Share", onTap: { [weak self] bottomSheet in
+                    guard let self = self else {return}
+                    onSelect(feature)
+                    self.hideSheet()
+                }))
+            case .stopScreenShare:
+                model.append(BottomSheetModel(type: feature, image: DyteImage(image: ImageProvider.image(named: "icon_start_screenshare")), title: "Stop screen share", onTap: { [weak self] bottomSheet in
+                    guard let self = self else {return}
+                    onSelect(feature)
+                    self.hideSheet()
+                }))
+                
             case .muteAudio:
                 model.append(BottomSheetModel(type: feature, image: DyteImage(image: ImageProvider.image(named: "icon_mic_disabled")), title: "Mute", onTap: { [weak self] bottomSheet in
                     guard let self = self else {return}

@@ -446,6 +446,7 @@ extension  DyteEventSelfListner: DyteMeetingRoomEventsListener {
     
     
     public func onMeetingInitCompleted() {
+        dyteMobileClient.setUiKitInfo(name: "ios-ui-kit", version: Constants.sdkVersion)
         self.selfMeetingInitStateCompletion?(true, "")
     }
     

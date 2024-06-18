@@ -573,6 +573,7 @@ extension DyteSetupViewController {
             let waitingView = WaitingRoomView(automaticClose: false, onCompletion: { [weak self] in
                 guard let self = self else {return}
                 self.completion()
+                self.meeting.leaveRoom()
             })
             waitingView.accessibilityIdentifier = "WaitingRoom_View"
             waitingView.backgroundColor = self.view.backgroundColor

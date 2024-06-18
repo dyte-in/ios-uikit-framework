@@ -43,7 +43,7 @@ public class WaitingRoomView: UIView {
     }()
     
     public var button: DyteButton = {
-        return DyteUIUTility.createButton(text: "close")
+        return DyteUIUTility.createButton(text: "Leave")
     }()
     
     private let automaticClose: Bool
@@ -96,7 +96,6 @@ public class WaitingRoomView: UIView {
     }
     
     public func show(status: ParticipantMeetingStatus) {
-        self.button.isHidden = true
         if status == .waiting {
             self.titleLabel.text = "You are in the waiting room, the host will let you in soon."
             self.titleLabel.textColor = dyteSharedTokenColor.textColor.onBackground.shade1000
@@ -106,17 +105,14 @@ public class WaitingRoomView: UIView {
         }else if status == .rejected {
             self.titleLabel.text = "Your request to join the meeting was denied."
             self.titleLabel.textColor = dyteSharedTokenColor.status.danger
-            self.button.isHidden = false
         }
         else if status == .kicked {
             self.titleLabel.text = "Your were removed from the meeting"
             self.titleLabel.textColor = dyteSharedTokenColor.status.danger
-            self.button.isHidden = false
         }
         else if status == .meetingEnded {
             self.titleLabel.text = "The meeting ended."
             self.titleLabel.textColor = dyteSharedTokenColor.textColor.onBackground.shade1000
-            self.button.isHidden = false
         }
 
     }
