@@ -9,7 +9,7 @@
 import Foundation
 
 struct Constants {
-    static let sdkVersion = "0.7.1"
+    static let sdkVersion = "0.7.4"
     static let errorLoadingImage = "Error Loading Image!"
     static let errorTitle = "Error!"
     static let recordingError = "Something is wrong with recording, don't worry already, we're on it!"

@@ -53,9 +53,10 @@ open class DyteBaseViewController: UIViewController, AdaptableUI {
             self.waitingRoomView?.removeFromSuperview()
             if let waitingView = showWaitingRoom(status: status, completion: callBack) {
                 waitingView.backgroundColor = self.view.backgroundColor
+                self.view.addSubview(waitingView)
                 waitingView.set(.fillSuperView(self.view))
                 self.view.endEditing(true)
-                self.view.addSubview(waitingView)
+                waitingView.show(status: ParticipantMeetingStatus.getStatus(status: status))
                 self.waitingRoomView = waitingView
             }
         }
@@ -66,7 +67,6 @@ open class DyteBaseViewController: UIViewController, AdaptableUI {
                   completion()
                })
                waitingView.accessibilityIdentifier = "WaitingRoom_View"
-               waitingView.show(status: ParticipantMeetingStatus.getStatus(status: status))
                return waitingView
            }
             return nil

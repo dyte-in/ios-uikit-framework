@@ -104,6 +104,7 @@ class MessageCell: UITableViewCell {
         super.prepareForReuse()
         
         nameLabel.text = nil
+        messageLabel.attributedText = nil
         messageLabel.text = nil
         messageImageView.image = nil
     }
@@ -121,7 +122,7 @@ class MessageCell: UITableViewCell {
         let matches = urlDetector.matches(in: message.message, options: [], range: NSRange(location: 0, length: message.message.utf16.count))
         
         if matches.isEmpty {
-            return NSAttributedString(string: message.message)
+            return nil
         }
         
         for match in matches {
@@ -184,6 +185,7 @@ class MessageCell: UITableViewCell {
             switch msg.type {
             case .text:
                 messageLabel.numberOfLines = 0
+
                 if let textMsg = msg as? DyteTextMessage {
                     if let attributedString = getUrlString(message: textMsg) {
                         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(labelTapped(gesture:)))

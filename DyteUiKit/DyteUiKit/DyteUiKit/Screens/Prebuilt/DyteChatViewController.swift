@@ -19,7 +19,7 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     public var shouldShowTopBar: Bool = true
     fileprivate var messages: [DyteChatMessage]?
     let messageTableView = UITableView()
-    fileprivate let messageTextView = UITextView()
+    public let messageTextView = UITextView()
     var keyboardHeight: CGFloat = 0
     var messageTextViewHeightConstraint: NSLayoutConstraint?
     var messageTextFieldBottomConstraint: NSLayoutConstraint?
@@ -204,6 +204,7 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
+        chatSelectorLabel.superview?.isHidden = true
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             keyboardHeight = keyboardSize.height
             messageTextFieldBottomConstraint?.isActive = false
@@ -225,7 +226,7 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     }
     
     @objc func keyboardWillHide(notification: NSNotification) {
-        
+        chatSelectorLabel.superview?.isHidden = false
         messageTextFieldBottomConstraint?.constant = +keyboardHeight
         sendButtonBottomConstraint?.constant = +keyboardHeight
         sendFileButtonBottomConstraint?.constant = +keyboardHeight
@@ -255,7 +256,7 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
         messageTableView.rowHeight = UITableView.automaticDimension
         messageTextView.textStorage.delegate = self
         messageTextView.font = UIFont.boldSystemFont(ofSize: 14)
-        messageTextView.isScrollEnabled = false
+        messageTextView.isScrollEnabled = true
         messageTextView.backgroundColor = DesignLibrary.shared.color.background.shade900
         let borderRadiusType: BorderRadiusToken.RadiusType = AppTheme.shared.cornerRadiusTypeNameTextField ?? .rounded
         messageTextView.layer.cornerRadius = DesignLibrary.shared.borderRadius.getRadius(size: .one,
@@ -438,7 +439,7 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
             } else {
                 try?meeting.chat.sendTextMessage(message: message)
             }
-            
+            messageTextView.resignFirstResponder()
             messageTextView.text = ""
             messageTextViewHeightConstraint?.constant = 48
             sendMessageButton.isEnabled = false

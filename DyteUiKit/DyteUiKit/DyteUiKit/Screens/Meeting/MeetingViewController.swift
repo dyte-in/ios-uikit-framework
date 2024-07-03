@@ -8,6 +8,7 @@
 import DyteiOSCore
 import UIKit
 import AVFAudio
+import AVKit
 
 public struct Animations {
     public static let gridViewAnimationDuration = 0.3
@@ -75,6 +76,8 @@ public class MeetingViewController: DyteBaseMeetingViewController {
     private var layoutContraintPluginBaseZeroWidth: NSLayoutConstraint!
     
     private var waitingRoomView: WaitingRoomView?
+    private var pipController: AVPictureInPictureController?
+    private var backgroundTaskIdentifier: UIBackgroundTaskIdentifier = .invalid
 
    public init(meeting: DyteMobileClient, completion:@escaping()->Void) {
         //TODO: Check the local user passed now
@@ -111,7 +114,8 @@ public class MeetingViewController: DyteBaseMeetingViewController {
     }
     
     private func shouldShowNotificationBubble() -> Bool {
-        return (self.meeting.getPendingParticipantCount() > 0 || Shared.data.getTotalUnreadCountPollsAndChat(totalMessage: self.meeting.chat.messages.count, totalsPolls: self.meeting.polls.polls.count) > 0)
+        let totalPollsAndChatCount = Shared.data.getTotalUnreadCountPollsAndChat(totalMessage: self.meeting.chat.messages.count, totalsPolls: self.meeting.polls.polls.count)
+        return (self.meeting.getPendingParticipantCount() > 0 || totalPollsAndChatCount > 0)
     }
     
     public func updateMoreButtonNotificationBubble() {
@@ -122,8 +126,25 @@ public class MeetingViewController: DyteBaseMeetingViewController {
         }
     }
     
+    private func setUpBackgroundNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(appdidMoveTobackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appWillMoveToForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+    }
+    
+    @objc
+    func appdidMoveTobackground() {
+        requestBackgroundTime()
+    }
+    
+    @objc
+    func appWillMoveToForeground() {
+        endBackgroundTask()
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
+//        setUpBackgroundNotification()
+//        setupPictureInPicture()
         UIApplication.shared.isIdleTimerDisabled = true
         self.view.accessibilityIdentifier = "Meeting_Base_View"
         self.view.backgroundColor = DesignLibrary.shared.color.background.shade1000
@@ -183,24 +204,24 @@ public class MeetingViewController: DyteBaseMeetingViewController {
         if self.meeting.localUser.permissions.waitingRoom.canAcceptRequests {
             self.viewModel.waitlistEventListner.participantJoinedCompletion = {[weak self] participant in
                 guard let self = self else {return}
-                
                 self.view.showToast(toastMessage: "\(participant.name) has requested to join the call ", duration: 2.0, uiBlocker: false)
                 updateMoreButtonNotificationBubble()
                 NotificationCenter.default.post(name: Notification.Name("Notify_ParticipantListUpdate"), object: nil, userInfo: nil)
-                
             }
             
             self.viewModel.waitlistEventListner.participantRequestRejectCompletion = {[weak self] participant in
                 guard let self = self else {return}
                 updateMoreButtonNotificationBubble()
+                NotificationCenter.default.post(name: Notification.Name("Notify_ParticipantListUpdate"), object: nil, userInfo: nil)
             }
             self.viewModel.waitlistEventListner.participantRequestAcceptedCompletion = {[weak self] participant in
                 guard let self = self else {return}
                 updateMoreButtonNotificationBubble()
+                NotificationCenter.default.post(name: Notification.Name("Notify_ParticipantListUpdate"), object: nil, userInfo: nil)
             }
             self.viewModel.waitlistEventListner.participantRemovedCompletion = {[weak self] participant in
-                guard let _ = self else {return}
-
+                guard let self = self else {return}
+                self.updateMoreButtonNotificationBubble()
                 NotificationCenter.default.post(name: Notification.Name("Notify_ParticipantListUpdate"), object: nil, userInfo: nil)
             }
         }
@@ -220,7 +241,16 @@ public class MeetingViewController: DyteBaseMeetingViewController {
         }
     }
     
-   
+    private func setupPictureInPicture() {
+        
+//        pipController = AVPictureInPictureController(contentSource: self.meeting.localUser.getSelfPreview())
+//            pipController?.delegate = self
+        }
+        
+    func startPictureInPicture() {
+            pipController?.startPictureInPicture()
+        }
+
      
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -347,6 +377,25 @@ public class MeetingViewController: DyteBaseMeetingViewController {
 
 }
 
+//Mark: Background extended time
+extension MeetingViewController {
+    private func requestBackgroundTime() {
+            backgroundTaskIdentifier = UIApplication.shared.beginBackgroundTask(withName: "WebRTCBackgroundTask") { [weak self] in
+                self?.requestBackgroundTime()
+            }
+           print("Background task \(backgroundTaskIdentifier)")
+        }
+        
+        private func endBackgroundTask() {
+            if backgroundTaskIdentifier != .invalid {
+                UIApplication.shared.endBackgroundTask(backgroundTaskIdentifier)
+                backgroundTaskIdentifier = .invalid
+            }
+        }
+}
+extension MeetingViewController: AVPictureInPictureControllerDelegate {
+    
+}
 // Bottom bar related Methods
 extension MeetingViewController {
 private func createBottomBar() {
