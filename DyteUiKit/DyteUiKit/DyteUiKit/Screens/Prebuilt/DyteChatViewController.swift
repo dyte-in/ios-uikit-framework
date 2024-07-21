@@ -11,6 +11,7 @@ import MobileCoreServices
 import UniformTypeIdentifiers
 
 public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelegate, SetTopbar {
+    
     public let topBar: DyteNavigationBar = {
         let topBar = DyteNavigationBar(title: "Chat")
         return topBar
@@ -20,17 +21,43 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     fileprivate var messages: [DyteChatMessage]?
     let messageTableView = UITableView()
     public let messageTextView = UITextView()
-    var keyboardHeight: CGFloat = 0
     var messageTextViewHeightConstraint: NSLayoutConstraint?
-    var messageTextFieldBottomConstraint: NSLayoutConstraint?
-    var sendFileButtonBottomConstraint: NSLayoutConstraint?
-    var sendButtonBottomConstraint: NSLayoutConstraint?
+    var messageInfoErrorViewHeightConstraint: NSLayoutConstraint?
+    var chatSelectorBaseViewHeightConstraint: NSLayoutConstraint?
+    var messageTextViewBottomConstraint: NSLayoutConstraint?
+    var textBoxBaseBottomConstraint: NSLayoutConstraint?
     var selectedParticipant: DyteJoinedMeetingParticipant?
     static let keyEveryOne = "everyone"
     private let everyOneText = "Everyone in meeting"
     let chatSelectorLabel = DyteUIUTility.createLabel(alignment: .left)
     public var notificationBadge = DyteNotificationBadgeView()
     private var isNewChatAvailable : Bool = false
+    private var textBoxBaseView: UIView = { let view = UIView()
+    view.translatesAutoresizingMaskIntoConstraints = false
+    return view }()
+    private var textViewInfoLabel: DyteLabel = {
+        let label =  DyteUIUTility.createLabel(alignment: .right)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 2
+        label.backgroundColor = .green
+        label.font = UIFont.systemFont(ofSize: 10)
+        label.adjustsFontSizeToFitWidth = true
+        return label
+    }()
+    
+    private let messageTextViewHeight = 48.0
+    private let texInfoLabelViewHeight = 12.0
+  
+    private let minimumCharacterCountToShowWarning = 20
+   
+    private var enableMessageRateLimiting = false
+    private var messageWithinMaxCharacterLimit = true
+    
+    private lazy var maxCharacterLimit: Int = {
+        return Int(self.meeting.chat.characterLimit)
+    }()
+    
+    let paddingTextBox = 8.0
     
     let sendFileButtonDisabledView: UIView = {
         let view = UIView()
@@ -39,12 +66,19 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
         return view
     }()
     
-    
-    
     let sendTextViewDisabledView: UIView = {
         let view = UIView()
+        view.isHidden = true
+        view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = DesignLibrary.shared.color.background.shade1000
-        view.alpha = 0.8
+        view.alpha = 0.2
+        return view
+    }()
+
+    let sendTextPermissionDisabledView: UIView = {
+        let view = UIView()
+        view.backgroundColor = DesignLibrary.shared.color.background.shade1000
+        view.alpha = 0.4
         return view
     }()
     
@@ -57,6 +91,8 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     let backgroundColor = DesignLibrary.shared.color.background.shade1000
     
     let spaceToken = DesignLibrary.shared.space
+    let colorToken = DesignLibrary.shared.color
+
     let lblNoPollExist: DyteLabel = {
         let label = DyteUIUTility.createLabel(text: "No messages! \n\n Chat messages will appear here")
         label.accessibilityIdentifier = "No_Chat_Message_Label"
@@ -94,6 +130,7 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     // MARK: - View Life Cycle
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
         meeting.addChatEventsListener(chatEventsListener: self)
         self.view.accessibilityIdentifier = "Chat_Screen"
         sendMessageButton.accessibilityIdentifier = "Send_Chat_Button"
@@ -122,6 +159,7 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
         }
         
         showNotiificationBadge()
+        showWarning(characterUsed: 0, maxCharacter: maxCharacterLimit)
     }
     
   
@@ -204,21 +242,14 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
+        chatSelectorBaseViewHeightConstraint?.constant = 0
         chatSelectorLabel.superview?.isHidden = true
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            keyboardHeight = keyboardSize.height
-            messageTextFieldBottomConstraint?.isActive = false
-            sendFileButtonBottomConstraint?.isActive = false
-            sendButtonBottomConstraint?.isActive = false
-            messageTextFieldBottomConstraint = messageTextView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8)
-            sendFileButtonBottomConstraint = sendFileButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8)
-            sendButtonBottomConstraint = sendMessageButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8)
-            messageTextFieldBottomConstraint?.constant = -keyboardHeight
-            sendButtonBottomConstraint?.constant = -keyboardHeight
-            sendFileButtonBottomConstraint?.constant = -keyboardHeight
-            messageTextFieldBottomConstraint?.isActive = true
-            sendButtonBottomConstraint?.isActive = true
-            sendFileButtonBottomConstraint?.isActive = true
+            let keyboardHeight = keyboardSize.height
+            let bottomOffset = UIScreen.main.bounds.height  - CGRectGetMaxY(self.view.frame)
+            textBoxBaseBottomConstraint?.constant = -(keyboardHeight - view.safeAreaInsets.bottom - bottomOffset + paddingTextBox)
+            textBoxBaseBottomConstraint?.isActive = true
+
             UIView.animate(withDuration: 0.25) {
                 self.view.layoutIfNeeded()
             }
@@ -227,19 +258,17 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     
     @objc func keyboardWillHide(notification: NSNotification) {
         chatSelectorLabel.superview?.isHidden = false
-        messageTextFieldBottomConstraint?.constant = +keyboardHeight
-        sendButtonBottomConstraint?.constant = +keyboardHeight
-        sendFileButtonBottomConstraint?.constant = +keyboardHeight
-        
+        chatSelectorBaseViewHeightConstraint?.constant = messageTextViewHeight
+        textBoxBaseBottomConstraint?.constant = 0
         UIView.animate(withDuration: 0.25) {
             self.view.layoutIfNeeded()
         }
     }
-    
-    
+        
     // MARK: - Setup Views
     private func setupViews() {
         // configure messageTableView
+        textViewInfoLabel.backgroundColor = backgroundColor
         messageTableView.backgroundColor = backgroundColor
         messageTableView.separatorStyle = .none
         self.view.backgroundColor = backgroundColor
@@ -265,7 +294,9 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
         messageTextView.delegate = self
         messageTextView.textColor = .black
         messageTextView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(messageTextView)
+        view.addSubview(self.textBoxBaseView)
+        textBoxBaseView.addSubview(textViewInfoLabel)
+        textBoxBaseView.addSubview(messageTextView)
         self.addTopBar(dismissAnimation: true) { [weak self] in
             self?.goBack()
         }
@@ -274,15 +305,15 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
         let fileIcon = ImageProvider.image(named: "icon_chat_add")
         sendFileButton.setImage(fileIcon, for: .normal)
         sendFileButton.addTarget(self, action: #selector(menuTapped), for: .touchUpInside)
-        view.addSubview(sendFileButton)
-        sendFileButton.set(.width(48))
+        textBoxBaseView.addSubview(sendFileButton)
+        sendFileButton.set(.width(messageTextViewHeight))
         sendFileButton.addSubview(sendFileButtonDisabledView)
         sendFileButtonDisabledView.set(.fillSuperView(sendFileButton))
-        sendMessageButton.set(.width(48))
+        sendMessageButton.set(.width(messageTextViewHeight))
         sendMessageButton.backgroundColor = dyteSharedTokenColor.brand.shade500
         sendMessageButton.clipsToBounds = true
         sendMessageButton.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
-        view.addSubview(sendMessageButton)
+        textBoxBaseView.addSubview(sendMessageButton)
         let chatSelectorView = UIView()
         chatSelectorView.backgroundColor = DesignLibrary.shared.color.background.shade900
         let imageView = DyteUIUTility.createImageView(image: DyteImage(image:ImageProvider.image(named: "icon_up_arrow")))
@@ -313,35 +344,166 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
                .after(notificationBadge, padding*0.6, .greaterThanOrEqual))
         // add constraints
         let constraints = [
-          chatSelectorView.leadingAnchor.constraint(equalTo: sendFileButton.leadingAnchor),
-          chatSelectorView.trailingAnchor.constraint(equalTo: sendMessageButton.trailingAnchor),
-          chatSelectorView.bottomAnchor.constraint(equalTo: messageTextView.topAnchor, constant: -8),
-          chatSelectorView.heightAnchor.constraint(equalToConstant: 48),
+          chatSelectorView.leadingAnchor.constraint(equalTo: textBoxBaseView.leadingAnchor),
+          chatSelectorView.trailingAnchor.constraint(equalTo: textBoxBaseView.trailingAnchor),
+          chatSelectorView.bottomAnchor.constraint(equalTo: textBoxBaseView.topAnchor, constant: -paddingTextBox),
+          
           chatSelectorLabel.leadingAnchor.constraint(equalTo: chatSelectorView.leadingAnchor, constant: padding),
           chatSelectorLabel.topAnchor.constraint(equalTo: chatSelectorView.topAnchor, constant: padding),
           chatSelectorLabel.bottomAnchor.constraint(equalTo: chatSelectorView.bottomAnchor, constant: -padding),
+         
           messageTableView.topAnchor.constraint(equalTo: self.topBar.bottomAnchor),
           messageTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
           messageTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-          messageTableView.bottomAnchor.constraint(equalTo: chatSelectorView.topAnchor, constant: -8),
-          messageTextView.trailingAnchor.constraint(equalTo: sendMessageButton.leadingAnchor, constant: -8),
-          messageTextView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
-          messageTextView.topAnchor.constraint(equalTo: messageTableView.bottomAnchor, constant: 8),
-          sendFileButton.trailingAnchor.constraint(equalTo: messageTextView.leadingAnchor, constant: -8),
-          sendFileButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
-          sendFileButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
-          sendMessageButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
-          sendMessageButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
+          messageTableView.bottomAnchor.constraint(equalTo: chatSelectorView.topAnchor, constant: -paddingTextBox),
+         
+          textBoxBaseView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: paddingTextBox),
+          textBoxBaseView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -paddingTextBox),
+
+          messageTextView.trailingAnchor.constraint(equalTo: sendMessageButton.leadingAnchor, constant: -paddingTextBox),
+          messageTextView.topAnchor.constraint(equalTo: textBoxBaseView.topAnchor),
+          messageTextView.leadingAnchor.constraint(equalTo: sendFileButton.trailingAnchor, constant: paddingTextBox),
+
+          textViewInfoLabel.leadingAnchor.constraint(equalTo: messageTextView.leadingAnchor),
+          textViewInfoLabel.trailingAnchor.constraint(equalTo: messageTextView.trailingAnchor),
+          
+          textViewInfoLabel.bottomAnchor.constraint(equalTo: textBoxBaseView.bottomAnchor),
+         
+          sendFileButton.leadingAnchor.constraint(equalTo: textBoxBaseView.leadingAnchor),
+          sendFileButton.bottomAnchor.constraint(equalTo: textBoxBaseView.bottomAnchor),
+         
+          sendMessageButton.trailingAnchor.constraint(equalTo: textBoxBaseView.trailingAnchor),
+          sendMessageButton.bottomAnchor.constraint(equalTo: textBoxBaseView.bottomAnchor),
         ]
         NSLayoutConstraint.activate(constraints)
-        messageTextViewHeightConstraint = messageTextView.heightAnchor.constraint(equalToConstant: 48)
+        chatSelectorBaseViewHeightConstraint = chatSelectorView.heightAnchor.constraint(equalToConstant: messageTextViewHeight)
+        chatSelectorBaseViewHeightConstraint?.isActive = true
+        messageTextViewBottomConstraint = messageTextView.bottomAnchor.constraint(equalTo: textViewInfoLabel.topAnchor, constant: -paddingTextBox/2.0)
+        messageTextViewBottomConstraint?.isActive = true
+        textBoxBaseBottomConstraint = textBoxBaseView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        textBoxBaseBottomConstraint?.isActive = true
+        messageTextViewHeightConstraint = messageTextView.heightAnchor.constraint(equalToConstant: getMessageTextViewHeight())
         messageTextViewHeightConstraint?.isActive = true
-        view.addSubview(sendTextViewDisabledView)
-        sendTextViewDisabledView.set(.sameTopBottom(sendMessageButton),
+        messageInfoErrorViewHeightConstraint = textViewInfoLabel.heightAnchor.constraint(equalToConstant: 0)
+        messageInfoErrorViewHeightConstraint?.isActive = true
+        textBoxBaseView.addSubview(sendTextPermissionDisabledView)
+        sendTextPermissionDisabledView.set(.top(messageTextView),
+                                           .bottom(sendMessageButton),
+                       .leading(messageTextView),
+                       .trailing(sendMessageButton))
+        
+        textBoxBaseView.addSubview(sendTextViewDisabledView)
+
+        sendTextViewDisabledView.set(.top(messageTextView),
+                                     .bottom(sendMessageButton),
                        .leading(messageTextView),
                        .trailing(sendMessageButton))
         refreshPermission()
       }
+    
+   
+    private func showWarning(characterUsed: Int, maxCharacter: Int) {
+        let characterLeft = maxCharacter - characterUsed
+        if characterLeft <= minimumCharacterCountToShowWarning {
+            makeMessageInfoLabel(hidden: false)
+            if characterLeft < 0 {
+                messageWithinMaxCharacterLimit = false
+                showErrorOnCharacterCount(max:maxCharacter)
+            } else {
+                messageWithinMaxCharacterLimit = true
+                if characterLeft == 0 {
+                    textViewInfoLabel.text = "No character left"
+                }else {
+                    textViewInfoLabel.text = "Only \(characterLeft) characters left"
+                }
+                textViewInfoLabel.textColor = colorToken.status.warning
+                messageCharacterLimit(enable: false)
+            }
+        }else {
+            makeMessageInfoLabel(hidden: true)
+            messageWithinMaxCharacterLimit = true
+            messageCharacterLimit(enable: false)
+        }
+    }
+    
+    private func makeMessageInfoLabel(hidden: Bool) {
+        guard let messageTextViewHeightConstraint =  self.messageTextViewHeightConstraint,
+              let messageTextViewBottomConstraint =  self.messageTextViewBottomConstraint else {return}
+              messageTextViewHeightConstraint.constant = getMessageTextViewHeight()
+        if hidden {
+            textViewInfoLabel.text = nil
+            messageTextViewBottomConstraint.constant = 0
+        }else {
+            messageTextViewBottomConstraint.constant = -paddingTextBox/2.0
+        }
+        calculateTextInfoHeight()
+    }
+    
+    private func showMessageToMessageInfoLabel(text: String) {
+        textViewInfoLabel.text = text
+        textViewInfoLabel.textColor = colorToken.textColor.onBackground.shade1000
+        calculateTextInfoHeight()
+    }
+    
+    private func showErrorOnCharacterCount(max: Int) {
+        textViewInfoLabel.textColor = colorToken.status.danger
+        textViewInfoLabel.text = "Max \(max) characters allowed"
+        messageCharacterLimit(enable: true)
+        calculateTextInfoHeight()
+
+    }
+    
+    private func messageCharacterLimit(enable: Bool) {
+        self.sendMessageButton.isEnabled = !enable
+    }
+    
+    private func enableRateLimitButton(sendText: Bool, sendFile: Bool) {
+        self.sendTextViewDisabledView.isHidden = !sendText
+        self.sendFileButtonDisabledView.isHidden = !sendFile
+        self.sendMessageButton.isEnabled = !sendText
+    }
+   
+    private var timerCoolOfTimeForSendMessage: Timer?
+   
+    private func handleRateLimitError(error: DyteError?) -> Bool {
+        if error?.code == ChatErrorCodes.rateLimitBreached.code {
+            if let dict = error?.userInfo, let secondsLeft = dict[ChatErrorCodes.companion.SecondsUntilResetKey] as? Int {
+                showRateLimitText(coolDownTimeLeft: secondsLeft)
+            }
+            return true
+        }
+        return false
+    }
+    
+    private func showRateLimitText(coolDownTimeLeft: Int) {
+        self.enableMessageRateLimiting = true
+        messageTextView.resignFirstResponder()
+        var timeLeft = coolDownTimeLeft
+        self.timerCoolOfTimeForSendMessage = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
+            guard let self = self else {return}
+            if timeLeft > 0 {
+                self.showRateLimitError(coolDownTime: Int(timeLeft))
+            }else {
+                timer.invalidate()
+            }
+            timeLeft -= 1
+        }
+    }
+    
+    private func showRateLimitError(coolDownTime: Int) {
+        textViewInfoLabel.textColor = colorToken.status.danger
+        textViewInfoLabel.text = "Message limit reached, try again after \(coolDownTime) seconds"
+        enableRateLimitButton(sendText: true, sendFile: true)
+        calculateTextInfoHeight()
+    }
+    
+    private func calculateTextInfoHeight() {
+        var requiredLines = textViewInfoLabel.numberOfLinesRequired()
+        if requiredLines > textViewInfoLabel.numberOfLines {
+            requiredLines = textViewInfoLabel.numberOfLines
+        }
+        messageInfoErrorViewHeightConstraint?.constant = texInfoLabelViewHeight * Double(requiredLines)
+    }
     
     private func removeParticipant(participantUserId: String) {
         if selectedParticipant?.userId == participantUserId {
@@ -366,16 +528,19 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
             canSendText = false
             canSendFiles = false
         }
-        self.sendTextViewDisabledView.isHidden = canSendText
-        self.sendFileButtonDisabledView.isHidden = canSendFiles
+        showPermissionView(sendButton: canSendText, fileButton: canSendFiles)
         messageTextView.resignFirstResponder()
+    }
+    
+    private func showPermissionView(sendButton: Bool, fileButton: Bool) {
+        self.sendTextPermissionDisabledView.isHidden = sendButton
+        self.sendFileButtonDisabledView.isHidden = fileButton
     }
     
     private func refreshPrivatePermission() {
         let canSendFiles = self.meeting.localUser.permissions.privateChat.canSendFiles
         let canSendText = self.meeting.localUser.permissions.privateChat.canSendText
-        self.sendTextViewDisabledView.isHidden = canSendText
-        self.sendFileButtonDisabledView.isHidden = canSendFiles
+        showPermissionView(sendButton: canSendText, fileButton: canSendFiles)
         messageTextView.resignFirstResponder()
     }
     
@@ -431,19 +596,28 @@ public class DyteChatViewController: DyteBaseViewController, NSTextStorageDelega
     
     @objc func sendButtonTapped() {
         if !messageTextView.text.isEmpty {
-            
             let spacing = CharacterSet.whitespacesAndNewlines
             let message = messageTextView.text.trimmingCharacters(in: spacing)
+            var error: DyteError?
             if let id = selectedParticipant?.id, !id.isEmpty {
-                try?meeting.chat.sendTextMessage(message: message, peerIds: [id])
+              error =  try?meeting.chat.sendTextMessage(message: message, peerIds: [id])
             } else {
-                try?meeting.chat.sendTextMessage(message: message)
+               error = try?meeting.chat.sendTextMessage(message: message)
+            }
+            
+            if handleRateLimitError(error: error) {
+                return
             }
             messageTextView.resignFirstResponder()
             messageTextView.text = ""
-            messageTextViewHeightConstraint?.constant = 48
+            showWarning(characterUsed: 0, maxCharacter: maxCharacterLimit)
+            messageTextViewHeightConstraint?.constant = getMessageTextViewHeight()
             sendMessageButton.isEnabled = false
         }
+    }
+    private func getMessageTextViewHeight() -> CGFloat {
+
+        return messageTextViewHeight
     }
     
     private func reloadMessageTableView() {
@@ -538,10 +712,21 @@ extension DyteChatViewController: UIImagePickerControllerDelegate, UINavigationC
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let url = info[UIImagePickerController.InfoKey.imageURL] as? URL {
             sendMessageButton.showActivityIndicator()
+           
             if let id = selectedParticipant?.id, !id.isEmpty {
-                self.meeting.chat.sendImageMessage(imagePath: url.path, peerIds: [id])
+                self.meeting.chat.sendImageMessage(imageURL: url, peerIds: [id]) { [weak self] error in
+                    guard let self = self else {return}
+                    if handleRateLimitError(error: error) {
+                        sendMessageButton.hideActivityIndicator()
+                    }
+                }
             } else {
-                self.meeting.chat.sendImageMessage(imagePath: url.path)
+                self.meeting.chat.sendImageMessage(imageURL: url) { [weak self] error in
+                    guard let self = self else {return}
+                    if handleRateLimitError(error: error) {
+                        sendMessageButton.hideActivityIndicator()
+                    }
+                }
             }
         }
         dismiss(animated: true, completion: nil)
@@ -555,9 +740,19 @@ extension DyteChatViewController: UIDocumentPickerDelegate {
         }
         sendMessageButton.showActivityIndicator()
         if let id = selectedParticipant?.id, !id.isEmpty {
-            self.meeting.chat.sendFileMessage(filePath: selectedFileURL.path, peerIds: [id])
+            self.meeting.chat.sendFileMessage(fileURL: selectedFileURL, peerIds: [id]) { [weak self] error in
+                guard let self = self else {return}
+                if handleRateLimitError(error: error) {
+                    sendMessageButton.hideActivityIndicator()
+                }
+            }
         } else {
-            self.meeting.chat.sendFileMessage(filePath: selectedFileURL.path)
+            self.meeting.chat.sendFileMessage(fileURL: selectedFileURL) { [weak self] error in
+                guard let self = self else {return}
+                if handleRateLimitError(error: error) {
+                    sendMessageButton.hideActivityIndicator()
+                }
+            }
         }
     }
 }
@@ -569,22 +764,27 @@ extension DyteChatViewController: UITextViewDelegate {
             textView.textColor = .lightGray
         }
     }
+    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if text.isEmpty, range.length >= 1 {
+            // We should enable deleting of character when max character is reached
+            return !enableMessageRateLimiting
+        }
+        return !enableMessageRateLimiting && messageWithinMaxCharacterLimit
+    }
+   
     public func textViewDidChange(_ textView: UITextView) {
-        let spacing = CharacterSet.whitespacesAndNewlines
-        if !textView.text.trimmingCharacters(in: spacing).isEmpty {
-            sendMessageButton.isEnabled = true
-        } else {
-            sendMessageButton.isEnabled = false
-        }
         let size = textView.sizeThatFits(CGSize(width: textView.frame.width, height: .greatestFiniteMagnitude))
-        
-        if size.height > 48 {
-            messageTextFieldBottomConstraint?.isActive = true
-            sendButtonBottomConstraint?.isActive = true
-            sendFileButtonBottomConstraint?.isActive = true
+        let messageTextViewHeight = getMessageTextViewHeight()
+        if size.height > messageTextViewHeight {
+            textBoxBaseBottomConstraint?.isActive = true
         }
-        
-        messageTextViewHeightConstraint?.constant = size.height > 48 ? size.height : 48
+        let topSpace = CGRectGetMaxY(textBoxBaseView.frame) - CGRectGetMaxY(self.topBar.frame) -  getMessageTextViewHeight()
+        var height = size.height
+        if size.height >= topSpace {
+           height = topSpace
+        }
+        self.showWarning(characterUsed: textView.text.count, maxCharacter: maxCharacterLimit)
+        messageTextViewHeightConstraint?.constant = height > messageTextViewHeight ? height : messageTextViewHeight
         view.layoutIfNeeded()
     }
 }
@@ -630,14 +830,22 @@ extension DyteChatViewController: ChatParticipantSelectionDelegate {
 }
 
 extension DyteChatViewController: DyteChatEventsListener {
+    
+    public func onMessageRateLimitReset() {
+        self.enableMessageRateLimiting = false
+        timerCoolOfTimeForSendMessage?.invalidate()
+        enableRateLimitButton(sendText: false, sendFile: false)
+        showMessageToMessageInfoLabel(text: "You are allowed to send message again")
+    }
+    
     public func onNewChatMessage(message: DyteChatMessage) {
         notificationBadge.isHidden = true
         if let targetUserIds = message.targetUserIds {
-            var forEveryOne =  targetUserIds.isEmpty
+            let forEveryOne =  targetUserIds.isEmpty
             if forEveryOne {
                 if selectedParticipant == nil {
                     // Mean current selected is Everyone only, So don't do anything
-                    if let cont = self.participantSelectionController {
+                    if self.participantSelectionController != nil {
                         Shared.data.privateChatReadLookup[Self.keyEveryOne] = true
                     }
                 }else {
@@ -655,7 +863,7 @@ extension DyteChatViewController: DyteChatEventsListener {
                             Shared.data.privateChatReadLookup[$0] = true
                             notificationBadge.isHidden = false
                        }else {
-                           if let cont = self.participantSelectionController {
+                           if self.participantSelectionController != nil {
                                Shared.data.privateChatReadLookup[$0] = true
                            }
                        }

@@ -264,3 +264,23 @@ extension UIScreen {
     }
 }
 
+extension DyteLabel {
+    func numberOfLinesRequired() -> Int {
+        guard let text = self.text, let font = self.font else {
+            return 0
+        }
+
+        let labelWidth = self.frame.width
+        let singleLineHeight = font.lineHeight
+
+        // Calculate the height required for the text
+        let maxSize = CGSize(width: labelWidth, height: CGFloat.greatestFiniteMagnitude)
+        let textAttributes: [NSAttributedString.Key: Any] = [.font: font]
+        let boundingRect = text.boundingRect(with: maxSize, options: .usesLineFragmentOrigin, attributes: textAttributes, context: nil)
+        let requiredHeight = ceil(boundingRect.height)
+        // Calculate the number of lines needed
+        let numberOfLines = Int(requiredHeight / singleLineHeight)
+
+        return numberOfLines
+    }
+}

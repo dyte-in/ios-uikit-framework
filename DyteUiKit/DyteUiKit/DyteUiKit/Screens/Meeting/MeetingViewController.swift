@@ -996,6 +996,11 @@ extension MeetingViewController: DyteLiveStreamEventsListener {
 }
 
 extension MeetingViewController: DyteChatEventsListener {
+
+    public func onMessageRateLimitReset() {
+        
+    }
+    
     public func onChatUpdates(messages: [DyteChatMessage]) {
         
     }
