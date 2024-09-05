@@ -7,8 +7,11 @@
 
 import UIKit
 
+protocol BaseModel {
+    func clean()
+}
 protocol ConfigureView {
-    associatedtype Model
+    associatedtype Model: BaseModel
     var model: Model {get}
     func configure(model: Model)
 }
@@ -65,11 +68,18 @@ class TableItemConfigurator<Cell : TableViewCell, Model>: CollectionTableConfigu
         }
         view_.configure(model: model)
     }
+    deinit {
+        self.model.clean()
+    }
 }
 
 class TableItemSearchableConfigurator<Cell : TableViewCell, Model>: CollectionTableSearchConfigurator  where Cell.Model == Model, Model: Searchable {
     override var reuseIdentifier: String {
         return Cell.reuseIdentifier
+    }
+    
+    deinit {
+        self.model.clean()
     }
     
     var model: Model

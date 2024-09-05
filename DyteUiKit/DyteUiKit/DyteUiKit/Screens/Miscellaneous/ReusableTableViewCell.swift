@@ -40,8 +40,11 @@ class TitleTableViewCell: BaseTableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
-struct TitleTableViewCellModel {
+struct TitleTableViewCellModel: BaseModel {
     var title: String
+    func clean() {
+        
+    }
 }
 
 extension TitleTableViewCell: ConfigureView {
@@ -120,9 +123,12 @@ class ButtonTableViewCell: BaseTableViewCell {
     }
 }
 
-struct ButtonTableViewCellModel {
+struct ButtonTableViewCellModel: BaseModel {
     var buttonTitle: String
     var titleColor: UIColor = dyteSharedTokenColor.status.success
+    func clean() {
+        
+    }
 }
 
 extension ButtonTableViewCell: ConfigureView {
@@ -141,8 +147,11 @@ extension ButtonTableViewCell: ConfigureView {
 }
 
 
-struct SearchTableViewCellModel {
+struct SearchTableViewCellModel: BaseModel {
     var placeHolder: String
+    func clean() {
+        
+    }
 }
 
 class SearchTableViewCell: BaseTableViewCell {

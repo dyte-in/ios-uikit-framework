@@ -60,6 +60,7 @@ public class VideoPeerViewModel {
     private func update() {
         self.refreshNameTag()
         self.refreshInitialName()
+        participantUpdateListner?.clean()
         participantUpdateListner = DyteParticipantUpdateEventListner(participant: participant)
         addUpdatesListner()
     }

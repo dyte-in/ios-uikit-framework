@@ -8,7 +8,10 @@
 import DyteiOSCore
 
 
-struct ParticipantWaitingTableViewCellModel {
+struct ParticipantWaitingTableViewCellModel: BaseModel {
+    func clean() {
+    }
+    
     var title: String
     var image: DyteImage?
     var showBottomSeparator = false
@@ -16,15 +19,17 @@ struct ParticipantWaitingTableViewCellModel {
     var participant: DyteWaitlistedParticipant
 }
 
-struct OnStageParticipantWaitingRequestTableViewCellModel {
+struct OnStageParticipantWaitingRequestTableViewCellModel: BaseModel {
     var title: String
     var image: DyteImage?
     var showBottomSeparator = false
     var showTopSeparator = false
     var participant: DyteJoinedMeetingParticipant
+    func clean() {
+    }
 }
 
-struct ParticipantInCallTableViewCellModel: Searchable {
+struct ParticipantInCallTableViewCellModel: Searchable, BaseModel {
     func search(text: String) -> Bool {
         let parentText = title.lowercased()
         if parentText.hasPrefix(text) {
@@ -38,9 +43,13 @@ struct ParticipantInCallTableViewCellModel: Searchable {
     var showTopSeparator = false
     var participantUpdateEventListner: DyteParticipantUpdateEventListner
     var showMoreButton: Bool
+    func clean() {
+        self.participantUpdateEventListner.clean()
+    }
 }
 
-struct WebinarViewersTableViewCellModel: Searchable {
+struct WebinarViewersTableViewCellModel: Searchable, BaseModel {
+    
     func search(text: String) -> Bool {
         let parentText = title.lowercased()
         if parentText.hasPrefix(text) {
@@ -54,6 +63,9 @@ struct WebinarViewersTableViewCellModel: Searchable {
     var showTopSeparator = false
     var participantUpdateEventListner: DyteParticipantUpdateEventListner
     var showMoreButton: Bool
+    func clean() {
+        self.participantUpdateEventListner.clean()
+    }
 }
 
 
@@ -67,6 +79,29 @@ struct WebinarViewersTableViewCellModel: Searchable {
     func load(completion:@escaping(Bool)->Void)
     func acceptAll()
     func rejectAll()
+}
+extension ParticipantViewControllerModelProtocol {
+     func moveLocalUserAtTop(section: BaseConfiguratorSection<CollectionTableConfigurator>) {
+        if let indexYouParticipant = section.items.firstIndex(where: { configurator in
+            if let configurator = configurator as? TableItemSearchableConfigurator<ParticipantInCallTableViewCell,ParticipantInCallTableViewCellModel> {
+                if configurator.model.participantUpdateEventListner.participant.userId == meeting.localUser.userId {
+                    return true
+                }
+            }
+            return false
+        }) {
+            if let indexFirstParticipantCell = section.items.firstIndex(where: { configurator in
+                if let configurator = configurator as? TableItemSearchableConfigurator<ParticipantInCallTableViewCell,ParticipantInCallTableViewCellModel> {
+                    return true
+                }
+                return false
+            }) {
+                section.items.swapAt(indexYouParticipant, indexFirstParticipantCell)
+            }
+        }
+       
+    }
+
 }
 
 
@@ -256,15 +291,17 @@ extension ParticipantViewControllerModel {
                 if let imageUrl = participant.picture, let url = URL(string: imageUrl) {
                     image = DyteImage(url: url)
                 }
-                
                 sectionTwo.insert(TableItemSearchableConfigurator<ParticipantInCallTableViewCell,ParticipantInCallTableViewCellModel>(model:ParticipantInCallTableViewCellModel(image: image, title: name, showBottomSeparator: showBottomSeparator, showTopSeparator: false, participantUpdateEventListner: DyteParticipantUpdateEventListner(participant: participant), showMoreButton: showMoreButton())))
             }
         }
+        self.moveLocalUserAtTop(section: sectionTwo)
+
         return sectionTwo
     }
     
-
 }
+
+
 
 public class LiveParticipantViewControllerModel: ParticipantViewControllerModelProtocol, DyteLiveStreamEventsListener {
     var dyteSelfListner: DyteEventSelfListner
@@ -491,6 +528,7 @@ extension LiveParticipantViewControllerModel {
                 sectionTwo.insert(TableItemSearchableConfigurator<ParticipantInCallTableViewCell,ParticipantInCallTableViewCellModel>(model:ParticipantInCallTableViewCellModel(image: image, title: name, showBottomSeparator: showBottomSeparator, showTopSeparator: false, participantUpdateEventListner: DyteParticipantUpdateEventListner(participant: participant), showMoreButton: showMoreButton())))
             }
         }
+        self.moveLocalUserAtTop(section: sectionTwo)
         return sectionTwo
     }
     
@@ -664,8 +702,30 @@ extension ParticipantWebinarViewControllerModel {
                 sectionTwo.insert(TableItemConfigurator<ParticipantInCallTableViewCell,ParticipantInCallTableViewCellModel>(model:ParticipantInCallTableViewCellModel(image: image, title: name, showBottomSeparator: showBottomSeparator, showTopSeparator: false, participantUpdateEventListner: DyteParticipantUpdateEventListner(participant: participant), showMoreButton: showMoreButton())))
             }
         }
+        self.moveLocalUserAtTop(section: sectionTwo)
+
         return sectionTwo
     }
     
+   private func moveLocalUserAtTop(section: BaseConfiguratorSection<CollectionTableConfigurator>) {
+       if let indexYouParticipant = section.items.firstIndex(where: { configurator in
+           if let configurator = configurator as? TableItemSearchableConfigurator<ParticipantInCallTableViewCell,ParticipantInCallTableViewCellModel> {
+               if configurator.model.participantUpdateEventListner.participant.userId == mobileClient.localUser.userId {
+                   return true
+               }
+           }
+           return false
+       }) {
+           if let indexFirstParticipantCell = section.items.firstIndex(where: { configurator in
+               if let configurator = configurator as? TableItemSearchableConfigurator<ParticipantInCallTableViewCell,ParticipantInCallTableViewCellModel> {
+                   return true
+               }
+               return false
+           }) {
+               section.items.swapAt(indexYouParticipant, indexFirstParticipantCell)
+           }
+       }
+      
+   }
 
 }

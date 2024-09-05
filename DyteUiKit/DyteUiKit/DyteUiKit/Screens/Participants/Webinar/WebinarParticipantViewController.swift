@@ -175,35 +175,39 @@ extension WebinarParticipantViewController: UITableViewDataSource {
         cell.backgroundColor = tableView.backgroundColor
         
         if let cell = cell as? ParticipantInCallTableViewCell {
+            let model = cell.model
             cell.buttonMoreClick = { [weak self] button in
                 guard let self = self else {return}
-                if self.createMoreMenu(participantListner: cell.model.participantUpdateEventListner, indexPath: indexPath) {
+                if self.createMoreMenu(participantListner: model.participantUpdateEventListner, indexPath: indexPath) {
                     if self.isDebugModeOn {
                         print("Debug DyteUIKit | Critical UIBug Please check why we are showing this button")
                     }
                 }
             }
-            cell.setPinView(isHidden: !cell.model.participantUpdateEventListner.participant.isPinned)
+            cell.setPinView(isHidden: !model.participantUpdateEventListner.participant.isPinned)
            
         }
         else if let cell = cell as? ParticipantWaitingTableViewCell {
+            let model = cell.model
+
             cell.buttonCrossClick = { [weak self] button in
                 guard let self = self else {return}
                 button.showActivityIndicator()
-                self.viewModel.waitlistEventListner.rejectWaitingRequest(participant: cell.model.participant)
+                self.viewModel.waitlistEventListner.rejectWaitingRequest(participant: model.participant)
             }
             cell.buttonTickClick = { [weak self] button in
                 guard let self = self else {return}
                 button.showActivityIndicator()
-                self.viewModel.waitlistEventListner.acceptWaitingRequest(participant: cell.model.participant)
+                self.viewModel.waitlistEventListner.acceptWaitingRequest(participant: model.participant)
             }
             cell.setPinView(isHidden: true)
 
         }
         else if let cell = cell as? WebinarViewersTableViewCell {
+            let model = cell.model
             cell.buttonMoreClick = { [weak self] button in
                 guard let self = self else {return}
-                    if self.createMoreMenuForViewers(participantListner: cell.model.participantUpdateEventListner, indexPath: indexPath) {
+                    if self.createMoreMenuForViewers(participantListner: model.participantUpdateEventListner, indexPath: indexPath) {
                         if self.isDebugModeOn {
                             print("Debug DyteUIKit | Critical UIBug Please check why we are showing this button")
                         }
@@ -212,23 +216,25 @@ extension WebinarParticipantViewController: UITableViewDataSource {
             cell.setPinView(isHidden: !cell.model.participantUpdateEventListner.participant.isPinned)
         }
         else if let cell = cell as? OnStageWaitingRequestTableViewCell {
+            let model = cell.model
             cell.buttonCrossClick = { [weak self] button in
                 guard let self = self else {return}
                 button.showActivityIndicator()
-                self.viewModel.mobileClient.stage.denyAccess(id: cell.model.participant.id)
+                self.viewModel.mobileClient.stage.denyAccess(id: model.participant.id)
                 button.hideActivityIndicator()
                 self.reloadScreen()
             }
             cell.buttonTickClick = { [weak self] button in
                 guard let self = self else {return}
                 button.showActivityIndicator()
-                self.viewModel.mobileClient.stage.grantAccess(id: cell.model.participant.id)
+                self.viewModel.mobileClient.stage.grantAccess(id: model.participant.id)
                 button.hideActivityIndicator()
                 self.reloadScreen()
             }
-            cell.setPinView(isHidden: !cell.model.participant.isPinned)
+            cell.setPinView(isHidden: !model.participant.isPinned)
 
         } else if let cell = cell as? AcceptButtonJoinStageRequestTableViewCell {
+            
             cell.buttonClick = { [weak self] button in
                 guard let self = self else {return}
                 button.showActivityIndicator()
@@ -303,7 +309,10 @@ extension WebinarParticipantViewController: UITableViewDataSource {
         let participant = participantListner.participant
         let hostPermission = self.viewModel.mobileClient.localUser.permissions.host
         
-        menus.append(.removeFromStage)
+        if participant.userId != self.viewModel.mobileClient.localUser.userId {
+            menus.append(.removeFromStage)
+        }
+        
         if hostPermission.canPinParticipant {
             if participant.isPinned == false {
                 menus.append(.pin)

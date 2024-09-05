@@ -160,45 +160,48 @@ extension ParticipantViewController: UITableViewDataSource {
         cell.backgroundColor = tableView.backgroundColor
         
         if let cell = cell as? ParticipantInCallTableViewCell {
+            let model = cell.model
             cell.buttonMoreClick = { [weak self] button in
                 guard let self = self else {return}
-                
-                if self.createMoreMenu(participantListner: cell.model.participantUpdateEventListner, indexPath: indexPath) {
+                if self.createMoreMenu(participantListner: model.participantUpdateEventListner, indexPath: indexPath) {
                     if self.isDebugModeOn {
                         print("Debug DyteUIKit | Critical UIBug Please check why we are showing this button")
                     }
                 }
-            
             }
             cell.setPinView(isHidden: !cell.model.participantUpdateEventListner.participant.isPinned)
 
             cell.moreButton.accessibilityIdentifier = "InCall_ThreeDots_Button" 
         } else if let cell = cell as? ParticipantWaitingTableViewCell {
+            let model = cell.model
+
             cell.buttonCrossClick = { [weak self] button in
                 guard let self = self else {return}
                 button.showActivityIndicator()
-                self.viewModel.waitlistEventListner.rejectWaitingRequest(participant: cell.model.participant)
+                self.viewModel.waitlistEventListner.rejectWaitingRequest(participant: model.participant)
             }
             cell.buttonTickClick = { [weak self] button in
                 guard let self = self else {return}
                 button.showActivityIndicator()
-                self.viewModel.waitlistEventListner.acceptWaitingRequest(participant: cell.model.participant)
+                self.viewModel.waitlistEventListner.acceptWaitingRequest(participant: model.participant)
                 
             }
             cell.setPinView(isHidden: true)
 
         } else if let cell = cell as? OnStageWaitingRequestTableViewCell {
+            let model = cell.model
+
             cell.buttonCrossClick = { [weak self] button in
                 guard let self = self else {return}
                 button.showActivityIndicator()
-                self.viewModel.meeting.stage.denyAccess(id: cell.model.participant.id)
+                self.viewModel.meeting.stage.denyAccess(id: model.participant.id)
                 button.hideActivityIndicator()
                 self.reloadScreen()
             }
             cell.buttonTickClick = { [weak self] button in
                 guard let self = self else {return}
                 button.showActivityIndicator()
-                self.viewModel.meeting.stage.grantAccess(id: cell.model.participant.id)
+                self.viewModel.meeting.stage.grantAccess(id: model.participant.id)
                 button.hideActivityIndicator()
                 self.reloadScreen()
             }
